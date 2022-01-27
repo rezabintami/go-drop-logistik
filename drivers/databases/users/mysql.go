@@ -19,7 +19,7 @@ func NewMySQLUserRepository(conn *gorm.DB) users.Repository {
 
 func (repository *mysqlUsersRepository) GetByID(ctx context.Context, id int) (users.Domain, error) {
 	usersById := Users{}
-	result := repository.Conn.Preload("Classes").Preload("Classes.Teachers").Where("users.id = ?", id).First(&usersById)
+	result := repository.Conn.Where("users.id = ?", id).First(&usersById)
 	if result.Error != nil {
 		return users.Domain{}, result.Error
 	}
@@ -30,7 +30,7 @@ func (repository *mysqlUsersRepository) GetByID(ctx context.Context, id int) (us
 func (repository *mysqlUsersRepository) GetByEmail(ctx context.Context, email string) (users.Domain, error) {
 	rec := Users{}
 
-	err := repository.Conn.Preload("Classes").Preload("Classes.Teachers").Where("users.email = ?", email).First(&rec).Error
+	err := repository.Conn.Where("users.email = ?", email).First(&rec).Error
 	if err != nil {
 		return users.Domain{}, err
 	}

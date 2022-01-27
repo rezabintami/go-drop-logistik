@@ -9,14 +9,14 @@
       "port": "3306",
       "user": "root",
       "pass": "",
-      "name": "go-schooling"
+      "name": "go-drop-logistik"
   },
   "mongo": {
       "host": "localhost",
       "port": "27017",
       "user": "mongodb",
       "pass": "",
-      "name": "schooling-log"
+      "name": "go-drop-logistik"
   },
   "jwt" : {
     "secret" : "supersecret12345!@#$%",
