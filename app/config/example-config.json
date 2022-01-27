@@ -1,0 +1,27 @@
+{
+    "debug": true,
+    "server": {
+      "address": ":9090"
+    },
+    "context":{
+      "timeout":2
+    },
+    "mysql": {
+        "host": "localhost",
+        "port": "1111",
+        "user": "example",
+        "pass": "example",
+        "name": "example"
+    },
+    "mongo": {
+      "host": "localhost",
+      "port": "1111",
+      "user": "example",
+      "pass": "example",
+      "name": "example"
+    },
+    "jwt" : {
+      "secret" : "supersecret12345!@#$%",
+      "expired" : 1
+    }
+  }

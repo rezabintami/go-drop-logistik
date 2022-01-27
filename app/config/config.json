@@ -1,0 +1,25 @@
+{
+  "debug": true,
+  "server": {
+    "address": "9090",
+    "timeout": 2
+  },
+  "mysql": {
+      "host": "localhost",
+      "port": "3306",
+      "user": "root",
+      "pass": "",
+      "name": "go-schooling"
+  },
+  "mongo": {
+      "host": "localhost",
+      "port": "27017",
+      "user": "mongodb",
+      "pass": "",
+      "name": "schooling-log"
+  },
+  "jwt" : {
+    "secret" : "supersecret12345!@#$%",
+    "expired" : 1
+  }
+}
