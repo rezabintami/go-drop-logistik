@@ -58,7 +58,7 @@ type Config struct {
 
 	//! Server
 	Server struct {
-		Port    string `mapstructure:"address"`
+		Address string `mapstructure:"address"`
 		Timeout int    `mapstructure:"timeout"`
 	} `mapstructure:"server"`
 
