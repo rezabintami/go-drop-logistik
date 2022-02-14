@@ -15,6 +15,14 @@ import (
 	_userController "go-drop-logistik/controllers/users"
 	_userRepo "go-drop-logistik/drivers/databases/users"
 
+	_agentUsecase "go-drop-logistik/business/agents"
+	_agentController "go-drop-logistik/controllers/agents"
+	_agentRepo "go-drop-logistik/drivers/databases/agents"
+
+	_superuserUsecase "go-drop-logistik/business/superusers"
+	_superuserController "go-drop-logistik/controllers/superusers"
+	_superuserRepo "go-drop-logistik/drivers/databases/superusers"
+
 	"log"
 	"time"
 
@@ -62,10 +70,20 @@ func main() {
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
 	userCtrl := _userController.NewUserController(userUsecase)
 
+	agentRepo := _agentRepo.NewMySQLAgentRepository(mysql_db)
+	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext, logger)
+	agentCtrl := _agentController.NewAgentController(agentUsecase)
+
+	superuserRepo := _superuserRepo.NewMySQLSuperusersRepository(mysql_db)
+	superuserUsecase := _superuserUsecase.NewSuperuserUsecase(superuserRepo, &configJWT, timeoutContext, logger)
+	superuserCtrl := _superuserController.NewSuperuserController(superuserUsecase)
+
 	routesInit := _routes.ControllerList{
-		MiddlewareLog:  middlewareLog,
-		JWTMiddleware:  configJWT.Init(),
-		UserController: *userCtrl,
+		MiddlewareLog:       middlewareLog,
+		JWTMiddleware:       configJWT.Init(),
+		UserController:      *userCtrl,
+		AgentController:     *agentCtrl,
+		SuperuserController: *superuserCtrl,
 	}
 	routesInit.RouteRegister(e)
 
