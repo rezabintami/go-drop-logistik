@@ -10,6 +10,7 @@ type Users struct {
 	Name      string
 	Password  string
 	Email     string
+	Roles     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -20,6 +21,7 @@ func (rec *Users) ToDomain() *users.Domain {
 		Name:      rec.Name,
 		Password:  rec.Password,
 		Email:     rec.Email,
+		Roles:     rec.Roles,
 		CreatedAt: rec.CreatedAt,
 		UpdatedAt: rec.UpdatedAt,
 	}
@@ -31,6 +33,7 @@ func fromDomain(userDomain users.Domain) *Users {
 		Name:      userDomain.Name,
 		Password:  userDomain.Password,
 		Email:     userDomain.Email,
+		Roles:     userDomain.Roles,
 		CreatedAt: userDomain.CreatedAt,
 		UpdatedAt: userDomain.UpdatedAt,
 	}

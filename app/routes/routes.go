@@ -29,13 +29,15 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	auth.POST("/login", cl.UserController.Login)
 
 	//! AGENTS
-	agent := apiV1.Group("/admin")
+	agent := apiV1.Group("/agent")
 	agent.POST("/login", cl.AgentController.Login)
+	agent.GET("/profile", cl.AgentController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT", "SUPERUSER"))
 
 	//! SUPERUSERS
-	superuser := apiV1.Group("/auth")
+	superuser := apiV1.Group("/admin")
 	superuser.POST("/register", cl.SuperuserController.Register)
 	superuser.POST("/login", cl.SuperuserController.Login)
+	superuser.GET("/profile", cl.SuperuserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("SUPERUSER"))
 
 	//! USERS
 	user := apiV1.Group("/user")
