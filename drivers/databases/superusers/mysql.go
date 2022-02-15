@@ -38,8 +38,8 @@ func (repository *mysqlSuperusersRepository) GetByEmail(ctx context.Context, ema
 	return *rec.ToDomain(), nil
 }
 
-func (repository *mysqlSuperusersRepository) Register(ctx context.Context, userDomain *superusers.Domain) error {
-	rec := fromDomain(*userDomain)
+func (repository *mysqlSuperusersRepository) Register(ctx context.Context, superuserDomain *superusers.Domain) error {
+	rec := fromDomain(*superuserDomain)
 
 	result := repository.Conn.Create(rec)
 	if result.Error != nil {

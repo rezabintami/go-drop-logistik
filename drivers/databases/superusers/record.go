@@ -10,6 +10,7 @@ type Superusers struct {
 	Name      string
 	Password  string
 	Email     string
+	Roles     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -20,18 +21,20 @@ func (rec *Superusers) ToDomain() *superusers.Domain {
 		Name:      rec.Name,
 		Password:  rec.Password,
 		Email:     rec.Email,
+		Roles:     rec.Roles,
 		CreatedAt: rec.CreatedAt,
 		UpdatedAt: rec.UpdatedAt,
 	}
 }
 
-func fromDomain(userDomain superusers.Domain) *Superusers {
+func fromDomain(superuserDomain superusers.Domain) *Superusers {
 	return &Superusers{
-		ID:        userDomain.ID,
-		Name:      userDomain.Name,
-		Password:  userDomain.Password,
-		Email:     userDomain.Email,
-		CreatedAt: userDomain.CreatedAt,
-		UpdatedAt: userDomain.UpdatedAt,
+		ID:        superuserDomain.ID,
+		Name:      superuserDomain.Name,
+		Password:  superuserDomain.Password,
+		Email:     superuserDomain.Email,
+		Roles:     superuserDomain.Roles,
+		CreatedAt: superuserDomain.CreatedAt,
+		UpdatedAt: superuserDomain.UpdatedAt,
 	}
 }

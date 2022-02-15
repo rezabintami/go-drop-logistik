@@ -19,7 +19,7 @@ func NewMySQLAgentRepository(conn *gorm.DB) agents.Repository {
 
 func (repository *mysqlAgentRepository) GetByID(ctx context.Context, id int) (agents.Domain, error) {
 	agentById := Agents{}
-	result := repository.Conn.Where("agent.id = ?", id).First(&agentById)
+	result := repository.Conn.Where("agents.id = ?", id).First(&agentById)
 	if result.Error != nil {
 		return agents.Domain{}, result.Error
 	}
@@ -30,7 +30,7 @@ func (repository *mysqlAgentRepository) GetByID(ctx context.Context, id int) (ag
 func (repository *mysqlAgentRepository) GetByEmail(ctx context.Context, email string) (agents.Domain, error) {
 	rec := Agents{}
 
-	err := repository.Conn.Where("agent.email = ?", email).First(&rec).Error
+	err := repository.Conn.Where("agents.email = ?", email).First(&rec).Error
 	if err != nil {
 		return agents.Domain{}, err
 	}

@@ -10,6 +10,7 @@ type Agents struct {
 	Name      string
 	Password  string
 	Email     string
+	Roles     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -20,18 +21,20 @@ func (rec *Agents) ToDomain() *agents.Domain {
 		Name:      rec.Name,
 		Password:  rec.Password,
 		Email:     rec.Email,
+		Roles:     rec.Roles,
 		CreatedAt: rec.CreatedAt,
 		UpdatedAt: rec.UpdatedAt,
 	}
 }
 
-func fromDomain(userDomain agents.Domain) *Agents {
+func fromDomain(agentDomain agents.Domain) *Agents {
 	return &Agents{
-		ID:        userDomain.ID,
-		Name:      userDomain.Name,
-		Password:  userDomain.Password,
-		Email:     userDomain.Email,
-		CreatedAt: userDomain.CreatedAt,
-		UpdatedAt: userDomain.UpdatedAt,
+		ID:        agentDomain.ID,
+		Name:      agentDomain.Name,
+		Password:  agentDomain.Password,
+		Email:     agentDomain.Email,
+		Roles:     agentDomain.Roles,
+		CreatedAt: agentDomain.CreatedAt,
+		UpdatedAt: agentDomain.UpdatedAt,
 	}
 }
