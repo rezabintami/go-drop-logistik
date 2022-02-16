@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"go-drop-logistik/app/middleware"
+	"go-drop-logistik/business/agents"
 	"go-drop-logistik/business/superusers"
 	"go-drop-logistik/controllers/superusers/request"
 	"go-drop-logistik/controllers/superusers/response"
@@ -14,11 +15,12 @@ import (
 
 type SuperuserController struct {
 	superuserUsecase superusers.Usecase
+	agentUsecase     agents.Usecase
 }
 
-func NewSuperuserController(uc superusers.Usecase) *SuperuserController {
+func NewSuperuserController(su superusers.Usecase, au agents.Usecase) *SuperuserController {
 	return &SuperuserController{
-		superuserUsecase: uc,
+		superuserUsecase: su,
 	}
 }
 
@@ -68,4 +70,34 @@ func (controller *SuperuserController) GetByID(c echo.Context) error {
 	}
 
 	return base_response.NewSuccessResponse(c, response.FromDomain(user))
+}
+
+func (controller *SuperuserController) AgentGetByID(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	id := middleware.GetUser(c).ID
+
+	user, err := controller.agentUsecase.GetByID(ctx, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return base_response.NewSuccessResponse(c, response.AgentFromDomain(user))
+}
+
+func (controller *SuperuserController) AgentRegister(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	req := request.Agents{}
+	if err := c.Bind(&req); err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	controller.agentUsecase.Register(ctx, req.AgentToDomain(), true)
+
+	err := controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
 }

@@ -76,7 +76,7 @@ func main() {
 
 	superuserRepo := _superuserRepo.NewMySQLSuperusersRepository(mysql_db)
 	superuserUsecase := _superuserUsecase.NewSuperuserUsecase(superuserRepo, &configJWT, timeoutContext, logger)
-	superuserCtrl := _superuserController.NewSuperuserController(superuserUsecase)
+	superuserCtrl := _superuserController.NewSuperuserController(superuserUsecase, agentUsecase)
 
 	routesInit := _routes.ControllerList{
 		MiddlewareLog:       middlewareLog,

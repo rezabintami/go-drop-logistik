@@ -12,17 +12,17 @@ import (
 
 type SuperuserUsecase struct {
 	superuserRepository Repository
-	contextTimeout time.Duration
-	jwtAuth        *middleware.ConfigJWT
-	logger         logging.Logger
+	contextTimeout      time.Duration
+	jwtAuth             *middleware.ConfigJWT
+	logger              logging.Logger
 }
 
 func NewSuperuserUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
 	return &SuperuserUsecase{
 		superuserRepository: ur,
-		jwtAuth:        jwtauth,
-		contextTimeout: timeout,
-		logger:         logger,
+		jwtAuth:             jwtauth,
+		contextTimeout:      timeout,
+		logger:              logger,
 	}
 }
 
@@ -80,16 +80,18 @@ func (uc *SuperuserUsecase) GetByID(ctx context.Context, id int) (Domain, error)
 	return users, nil
 }
 
-func (uc *SuperuserUsecase) Register(ctx context.Context, userDomain *Domain, sso bool) error {
+func (uc *SuperuserUsecase) Register(ctx context.Context, superuserDomain *Domain, sso bool) error {
 	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
 	defer cancel()
 
 	request := map[string]interface{}{
-		"email": userDomain.Email,
-		"name":  userDomain.Name,
+		"email": superuserDomain.Email,
+		"name":  superuserDomain.Name,
 	}
 
-	existedUser, err := uc.superuserRepository.GetByEmail(ctx, userDomain.Email)
+	superuserDomain.Roles = "SUPERUSER"
+
+	existedUser, err := uc.superuserRepository.GetByEmail(ctx, superuserDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
 			result := map[string]interface{}{
@@ -105,10 +107,10 @@ func (uc *SuperuserUsecase) Register(ctx context.Context, userDomain *Domain, ss
 	}
 
 	if !sso {
-		userDomain.Password, _ = encrypt.Hash(userDomain.Password)
+		superuserDomain.Password, _ = encrypt.Hash(superuserDomain.Password)
 	}
 
-	err = uc.superuserRepository.Register(ctx, userDomain)
+	err = uc.superuserRepository.Register(ctx, superuserDomain)
 	if err != nil {
 		result := map[string]interface{}{
 			"success": "false",
