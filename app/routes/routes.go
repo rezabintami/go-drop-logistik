@@ -40,8 +40,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	superuser.GET("/profile", cl.SuperuserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("SUPERUSER"))
 
 	superuserAgent := superuser.Group("/agent", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("SUPERUSER"))
+	superuserAgent.GET("", cl.SuperuserController.AgentFetch)
 	superuserAgent.GET("/:id", cl.SuperuserController.AgentGetByID)
 	superuserAgent.POST("/add", cl.SuperuserController.AgentRegister)
+	superuserAgent.PUT("/:id", cl.SuperuserController.AgentUpdateByID)
 
 	//! USERS
 	user := apiV1.Group("/user")

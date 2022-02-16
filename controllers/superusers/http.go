@@ -2,6 +2,7 @@ package superusers
 
 import (
 	"net/http"
+	"strconv"
 
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/business/agents"
@@ -100,4 +101,39 @@ func (controller *SuperuserController) AgentRegister(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+}
+
+func (controller *SuperuserController) AgentFetch(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	perpage, _ := strconv.Atoi(c.QueryParam("per_page"))
+	articles, count, err := controller.agentUsecase.Fetch(ctx, page, perpage)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return base_response.NewSuccessResponse(c, response.AgentFromListDomain(articles, count))
+}
+
+func (controller *SuperuserController) AgentUpdateByID(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	id := c.Param("id")
+	idInt, _ := strconv.Atoi(id)
+
+	req := request.Agents{}
+	if err := c.Bind(&req); err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	err := controller.agentUsecase.Update(ctx, req.AgentToDomain(), idInt)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+	user, err := controller.agentUsecase.GetByID(ctx, idInt)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+	return base_response.NewSuccessResponse(c, response.AgentFromDomain(user))
 }

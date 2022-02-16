@@ -47,3 +47,37 @@ func (repository *mysqlAgentRepository) Register(ctx context.Context, agentDomai
 	}
 	return nil
 }
+
+func (repository *mysqlAgentRepository) Fetch(ctx context.Context, page, perpage int) ([]agents.Domain, int, error) {
+	rec := []Agents{}
+
+	offset := (page - 1) * perpage
+	err := repository.Conn.Offset(offset).Limit(perpage).Find(&rec).Error
+	if err != nil {
+		return []agents.Domain{}, 0, err
+	}
+
+	var totalData int64
+	err = repository.Conn.Model(&rec).Count(&totalData).Error
+	if err != nil {
+		return []agents.Domain{}, 0, err
+	}
+
+	var result []agents.Domain
+	for _, value := range rec {
+		result = append(result, *value.ToDomain())
+	}
+
+	return result, int(totalData), nil
+}
+
+func (repository *mysqlAgentRepository) Update(ctx context.Context, userDomain *agents.Domain, id int) error {
+	agentUpdate := fromDomain(*userDomain)
+
+	result := repository.Conn.Where("users.id = ?", id).Updates(&agentUpdate)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

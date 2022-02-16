@@ -21,6 +21,11 @@ type Agents struct {
 	Longitude float64 `json:"longitude"`
 }
 
+type AgentsPageResponse struct {
+	Users *[]Agents `json:"agents"`
+	Total int       `json:"total"`
+}
+
 func FromDomain(superuserDomain superusers.Domain) Superusers {
 	return Superusers{
 		ID:    superuserDomain.ID,
@@ -31,12 +36,32 @@ func FromDomain(superuserDomain superusers.Domain) Superusers {
 
 func AgentFromDomain(agentDomain agents.Domain) Agents {
 	return Agents{
-		ID:    agentDomain.ID,
-		Name:  agentDomain.Name,
-		Email: agentDomain.Email,
+		ID:        agentDomain.ID,
+		Name:      agentDomain.Name,
+		Email:     agentDomain.Email,
 		Address:   agentDomain.Address,
 		Balance:   agentDomain.Balance,
 		Latitude:  agentDomain.Latitude,
 		Longitude: agentDomain.Longitude,
 	}
+}
+
+func AgentFromListDomain(agentDomain []agents.Domain, Count int) *AgentsPageResponse {
+	allAgent := []Agents{}
+	for _, value := range agentDomain {
+		agent := Agents{
+			ID:        value.ID,
+			Name:      value.Name,
+			Email:     value.Email,
+			Address:   value.Address,
+			Balance:   value.Balance,
+			Latitude:  value.Latitude,
+			Longitude: value.Longitude,
+		}
+		allAgent = append(allAgent, agent)
+	}
+	result := AgentsPageResponse{}
+	result.Users = &allAgent
+	result.Total = Count
+	return &result
 }
