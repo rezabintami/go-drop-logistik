@@ -11,6 +11,10 @@ type Agents struct {
 	Password  string
 	Email     string
 	Roles     string
+	Address   string
+	Balance   float64
+	Latitude  float64
+	Longitude float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -22,6 +26,10 @@ func (rec *Agents) ToDomain() *agents.Domain {
 		Password:  rec.Password,
 		Email:     rec.Email,
 		Roles:     rec.Roles,
+		Address:   rec.Address,
+		Balance:   rec.Balance,
+		Latitude:  rec.Latitude,
+		Longitude: rec.Longitude,
 		CreatedAt: rec.CreatedAt,
 		UpdatedAt: rec.UpdatedAt,
 	}
@@ -34,6 +42,10 @@ func fromDomain(agentDomain agents.Domain) *Agents {
 		Password:  agentDomain.Password,
 		Email:     agentDomain.Email,
 		Roles:     agentDomain.Roles,
+		Address:   agentDomain.Address,
+		Balance:   agentDomain.Balance,
+		Latitude:  agentDomain.Latitude,
+		Longitude: agentDomain.Longitude,
 		CreatedAt: agentDomain.CreatedAt,
 		UpdatedAt: agentDomain.UpdatedAt,
 	}

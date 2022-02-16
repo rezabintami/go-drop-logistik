@@ -11,6 +11,10 @@ type Domain struct {
 	Password  string
 	Email     string
 	Roles     string
+	Address   string
+	Balance   float64
+	Latitude  float64
+	Longitude float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

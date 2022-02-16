@@ -11,10 +11,10 @@ import (
 )
 
 type ControllerList struct {
-	MiddlewareLog  _middleware.ConfigMiddleware
-	JWTMiddleware  middleware.JWTConfig
-	UserController users.UserController
-	AgentController agents.AgentController
+	MiddlewareLog       _middleware.ConfigMiddleware
+	JWTMiddleware       middleware.JWTConfig
+	UserController      users.UserController
+	AgentController     agents.AgentController
 	SuperuserController superusers.SuperuserController
 }
 
@@ -38,6 +38,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	superuser.POST("/register", cl.SuperuserController.Register)
 	superuser.POST("/login", cl.SuperuserController.Login)
 	superuser.GET("/profile", cl.SuperuserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("SUPERUSER"))
+
+	superuserAgent := superuser.Group("/agent", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("SUPERUSER"))
+	superuserAgent.GET("/:id", cl.SuperuserController.AgentGetByID)
+	superuserAgent.POST("/add", cl.SuperuserController.AgentRegister)
 
 	//! USERS
 	user := apiV1.Group("/user")

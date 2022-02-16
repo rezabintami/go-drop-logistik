@@ -80,16 +80,18 @@ func (uc *AgentUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
 	return users, nil
 }
 
-func (uc *AgentUsecase) Register(ctx context.Context, userDomain *Domain, sso bool) error {
+func (uc *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, sso bool) error {
 	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
 	defer cancel()
 
 	request := map[string]interface{}{
-		"email": userDomain.Email,
-		"name":  userDomain.Name,
+		"email": agentDomain.Email,
+		"name":  agentDomain.Name,
 	}
 
-	existedUser, err := uc.agentRepository.GetByEmail(ctx, userDomain.Email)
+	agentDomain.Roles = "AGENT"
+	
+	existedUser, err := uc.agentRepository.GetByEmail(ctx, agentDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
 			result := map[string]interface{}{
@@ -105,10 +107,10 @@ func (uc *AgentUsecase) Register(ctx context.Context, userDomain *Domain, sso bo
 	}
 
 	if !sso {
-		userDomain.Password, _ = encrypt.Hash(userDomain.Password)
+		agentDomain.Password, _ = encrypt.Hash(agentDomain.Password)
 	}
 
-	err = uc.agentRepository.Register(ctx, userDomain)
+	err = uc.agentRepository.Register(ctx, agentDomain)
 	if err != nil {
 		result := map[string]interface{}{
 			"success": "false",
