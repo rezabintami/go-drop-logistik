@@ -50,7 +50,7 @@ func main() {
 	// 	DB_Port:     configApp.MONGO_DB_PORT,
 	// 	DB_Database: configApp.MONGO_DB_NAME,
 	// }
-
+		
 	mysql_db := mysqlConfigDB.InitialMysqlDB()
 
 	configJWT := _middleware.ConfigJWT{
