@@ -6,7 +6,7 @@ import (
 )
 
 type Agents struct {
-	ID        int `gorm:"primary_key" json:"id"`
+	ID        int `gorm:"primary_key"`
 	Name      string
 	Password  string
 	Email     string

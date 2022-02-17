@@ -3,6 +3,7 @@ package mysql_driver
 import (
 	"fmt"
 	"go-drop-logistik/drivers/databases/agents"
+	"go-drop-logistik/drivers/databases/receipts"
 	"go-drop-logistik/drivers/databases/superusers"
 	"go-drop-logistik/drivers/databases/users"
 
@@ -33,7 +34,7 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&users.Users{},&agents.Agents{},&superusers.Superusers{})
+	db.AutoMigrate(&users.Users{},&agents.Agents{},&superusers.Superusers{},&receipts.Receipts{})
 
 	return db
 }
