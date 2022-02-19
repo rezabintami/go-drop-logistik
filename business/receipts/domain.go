@@ -1,6 +1,7 @@
 package receipts
 
 import (
+	"context"
 	"time"
 )
 
@@ -24,7 +25,15 @@ type Domain struct {
 }
 
 type Usecase interface {
+	StoreReceipt(ctx context.Context, data *Domain) error
+	GetByID(ctx context.Context, id int) (Domain, error)
+	Delete(ctx context.Context, id int) error
+	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)
 }
 
 type Repository interface {
+	StoreReceipt(ctx context.Context, data *Domain) error
+	GetByID(ctx context.Context, id int) (Domain, error)
+	Delete(ctx context.Context, id int) error
+	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)
 }

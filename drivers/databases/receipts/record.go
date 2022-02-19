@@ -3,6 +3,8 @@ package receipts
 import (
 	"go-drop-logistik/business/receipts"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Receipts struct {
@@ -22,6 +24,7 @@ type Receipts struct {
 	DriverPhone   string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt
 }
 
 func (rec *Receipts) ToDomain() *receipts.Domain {

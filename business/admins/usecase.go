@@ -1,4 +1,4 @@
-package superusers
+package admins
 
 import (
 	"context"
@@ -10,29 +10,29 @@ import (
 	"time"
 )
 
-type SuperuserUsecase struct {
-	superuserRepository Repository
-	contextTimeout      time.Duration
-	jwtAuth             *middleware.ConfigJWT
-	logger              logging.Logger
+type AdminUsecase struct {
+	adminRepository Repository
+	contextTimeout  time.Duration
+	jwtAuth         *middleware.ConfigJWT
+	logger          logging.Logger
 }
 
-func NewSuperuserUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
-	return &SuperuserUsecase{
-		superuserRepository: ur,
-		jwtAuth:             jwtauth,
-		contextTimeout:      timeout,
-		logger:              logger,
+func NewAdminUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
+	return &AdminUsecase{
+		adminRepository: ur,
+		jwtAuth:         jwtauth,
+		contextTimeout:  timeout,
+		logger:          logger,
 	}
 }
 
-func (uc *SuperuserUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
+func (uc *AdminUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
 	request := map[string]interface{}{
 		"email": email,
 		"sso":   sso,
 	}
 
-	existedUser, err := uc.superuserRepository.GetByEmail(ctx, email)
+	existedUser, err := uc.adminRepository.GetByEmail(ctx, email)
 	if err != nil {
 		result := map[string]interface{}{
 			"success": "false",
@@ -54,12 +54,12 @@ func (uc *SuperuserUsecase) Login(ctx context.Context, email, password string, s
 	return token, nil
 }
 
-func (uc *SuperuserUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
+func (uc *AdminUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
 	request := map[string]interface{}{
 		"id": id,
 	}
 
-	users, err := uc.superuserRepository.GetByID(ctx, id)
+	users, err := uc.adminRepository.GetByID(ctx, id)
 
 	if err != nil {
 		result := map[string]interface{}{
@@ -80,18 +80,18 @@ func (uc *SuperuserUsecase) GetByID(ctx context.Context, id int) (Domain, error)
 	return users, nil
 }
 
-func (uc *SuperuserUsecase) Register(ctx context.Context, superuserDomain *Domain, sso bool) error {
+func (uc *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, sso bool) error {
 	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
 	defer cancel()
 
 	request := map[string]interface{}{
-		"email": superuserDomain.Email,
-		"name":  superuserDomain.Name,
+		"email": adminDomain.Email,
+		"name":  adminDomain.Name,
 	}
 
-	superuserDomain.Roles = "SUPERUSER"
+	adminDomain.Roles = "ADMIN"
 
-	existedUser, err := uc.superuserRepository.GetByEmail(ctx, superuserDomain.Email)
+	existedUser, err := uc.adminRepository.GetByEmail(ctx, adminDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
 			result := map[string]interface{}{
@@ -107,10 +107,10 @@ func (uc *SuperuserUsecase) Register(ctx context.Context, superuserDomain *Domai
 	}
 
 	if !sso {
-		superuserDomain.Password, _ = encrypt.Hash(superuserDomain.Password)
+		adminDomain.Password, _ = encrypt.Hash(adminDomain.Password)
 	}
 
-	err = uc.superuserRepository.Register(ctx, superuserDomain)
+	err = uc.adminRepository.Register(ctx, adminDomain)
 	if err != nil {
 		result := map[string]interface{}{
 			"success": "false",
