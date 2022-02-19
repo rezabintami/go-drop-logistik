@@ -1,11 +1,11 @@
 package request
 
 import (
+	"go-drop-logistik/business/admins"
 	"go-drop-logistik/business/agents"
-	"go-drop-logistik/business/superusers"
 )
 
-type Superusers struct {
+type Admins struct {
 	Name     string `json:"name"`
 	Password string `json:"password,omitempty"`
 	Email    string `json:"email"`
@@ -21,8 +21,8 @@ type Agents struct {
 	Longitude float64 `json:"longitude"`
 }
 
-func (req *Superusers) ToDomain() *superusers.Domain {
-	return &superusers.Domain{
+func (req *Admins) ToDomain() *admins.Domain {
+	return &admins.Domain{
 		Name:     req.Name,
 		Password: req.Password,
 		Email:    req.Email,

@@ -19,9 +19,13 @@ import (
 	_agentController "go-drop-logistik/controllers/agents"
 	_agentRepo "go-drop-logistik/drivers/databases/agents"
 
-	_superuserUsecase "go-drop-logistik/business/superusers"
-	_superuserController "go-drop-logistik/controllers/superusers"
-	_superuserRepo "go-drop-logistik/drivers/databases/superusers"
+	_adminUsecase "go-drop-logistik/business/admins"
+	_adminController "go-drop-logistik/controllers/admins"
+	_adminRepo "go-drop-logistik/drivers/databases/admins"
+
+	_receiptUsecase "go-drop-logistik/business/receipts"
+	_receiptController "go-drop-logistik/controllers/receipts"
+	_receiptRepo "go-drop-logistik/drivers/databases/receipts"
 
 	"log"
 	"time"
@@ -50,7 +54,7 @@ func main() {
 	// 	DB_Port:     configApp.MONGO_DB_PORT,
 	// 	DB_Database: configApp.MONGO_DB_NAME,
 	// }
-		
+
 	mysql_db := mysqlConfigDB.InitialMysqlDB()
 
 	configJWT := _middleware.ConfigJWT{
@@ -74,16 +78,21 @@ func main() {
 	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext, logger)
 	agentCtrl := _agentController.NewAgentController(agentUsecase)
 
-	superuserRepo := _superuserRepo.NewMySQLSuperusersRepository(mysql_db)
-	superuserUsecase := _superuserUsecase.NewSuperuserUsecase(superuserRepo, &configJWT, timeoutContext, logger)
-	superuserCtrl := _superuserController.NewSuperuserController(superuserUsecase, agentUsecase)
+	adminRepo := _adminRepo.NewMySQLAdminRepository(mysql_db)
+	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
+	adminCtrl := _adminController.NewAdminController(adminUsecase, agentUsecase)
+
+	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(mysql_db)
+	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
+	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase)
 
 	routesInit := _routes.ControllerList{
-		MiddlewareLog:       middlewareLog,
-		JWTMiddleware:       configJWT.Init(),
-		UserController:      *userCtrl,
-		AgentController:     *agentCtrl,
-		SuperuserController: *superuserCtrl,
+		MiddlewareLog:     middlewareLog,
+		JWTMiddleware:     configJWT.Init(),
+		UserController:    *userCtrl,
+		AgentController:   *agentCtrl,
+		AdminController:   *adminCtrl,
+		ReceiptController: *receiptCtrl,
 	}
 	routesInit.RouteRegister(e)
 

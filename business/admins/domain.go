@@ -1,4 +1,4 @@
-package superusers
+package admins
 
 import (
 	"context"

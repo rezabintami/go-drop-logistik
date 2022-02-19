@@ -1,11 +1,11 @@
 package response
 
 import (
+	"go-drop-logistik/business/admins"
 	"go-drop-logistik/business/agents"
-	"go-drop-logistik/business/superusers"
 )
 
-type Superusers struct {
+type Admins struct {
 	ID    int    `gorm:"primary_key" json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
@@ -26,11 +26,11 @@ type AgentsPageResponse struct {
 	Total int       `json:"total"`
 }
 
-func FromDomain(superuserDomain superusers.Domain) Superusers {
-	return Superusers{
-		ID:    superuserDomain.ID,
-		Name:  superuserDomain.Name,
-		Email: superuserDomain.Email,
+func FromDomain(adminDomain admins.Domain) Admins {
+	return Admins{
+		ID:    adminDomain.ID,
+		Name:  adminDomain.Name,
+		Email: adminDomain.Email,
 	}
 }
 
