@@ -34,7 +34,7 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&users.Users{},&agents.Agents{},&admins.Admins{},&receipts.Receipts{})
+	db.AutoMigrate(&users.Users{},&agents.Agents{}, &admins.Admins{},&receipts.Receipts{})
 
 	return db
 }

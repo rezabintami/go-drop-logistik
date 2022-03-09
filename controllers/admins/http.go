@@ -22,6 +22,7 @@ type AdminController struct {
 func NewAdminController(su admins.Usecase, au agents.Usecase) *AdminController {
 	return &AdminController{
 		adminUsecase: su,
+		agentUsecase: au,
 	}
 }
 
@@ -76,8 +77,8 @@ func (controller *AdminController) GetByID(c echo.Context) error {
 func (controller *AdminController) AgentGetByID(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	id := middleware.GetUser(c).ID
-
+	id, _ := strconv.Atoi(c.Param("id"))
+	
 	user, err := controller.agentUsecase.GetByID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
@@ -94,12 +95,13 @@ func (controller *AdminController) AgentRegister(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	controller.agentUsecase.Register(ctx, req.AgentToDomain(), true)
+	controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
 
 	err := controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
+
 	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
 }
 
@@ -108,6 +110,7 @@ func (controller *AdminController) AgentFetch(c echo.Context) error {
 
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	perpage, _ := strconv.Atoi(c.QueryParam("per_page"))
+
 	agents, count, err := controller.agentUsecase.Fetch(ctx, page, perpage)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
