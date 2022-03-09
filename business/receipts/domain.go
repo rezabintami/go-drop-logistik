@@ -6,22 +6,22 @@ import (
 )
 
 type Domain struct {
-	ID            int
-	Code          string
-	Receiver      string
-	Sender        string
-	PhoneReceiver string
-	PhoneSender   string
-	Address       string
-	Weight        float64
-	Price         float64
-	Amount        float64
-	Status        string
-	LicensePlate  string
-	DriverName    string
-	DriverPhone   string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID              int
+	Code            string
+	Receiver        string
+	PhoneReceiver   string
+	AddressReceiver string
+	Sender          string
+	PhoneSender     string
+	AddressSender   string
+	ManifestID      int
+	Weight          float64
+	Price           float64
+	Amount          float64
+	Status          string
+	PickupAt        time.Time
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 type Usecase interface {

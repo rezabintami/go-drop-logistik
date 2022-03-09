@@ -60,7 +60,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	admin.POST("/login", cl.AdminController.Login)
 	admin.GET("/profile", cl.AdminController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
 
-	adminAgent := admin.Group("/agent", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
+	adminAgent := admin.Group("/agent") //, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
 	adminAgent.GET("", cl.AdminController.AgentFetch)
 	adminAgent.GET("/:id", cl.AdminController.AgentGetByID)
 	adminAgent.POST("/add", cl.AdminController.AgentRegister)

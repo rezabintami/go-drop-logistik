@@ -2,23 +2,24 @@ package response
 
 import (
 	"go-drop-logistik/business/receipts"
+	"time"
 )
 
 type Receipts struct {
-	ID            int     `json:"id"`
-	Code          string  `json:"code"`
-	Receiver      string  `json:"receiver"`
-	Sender        string  `json:"sender"`
-	PhoneReceiver string  `json:"phone_receiver"`
-	PhoneSender   string  `json:"phone_sender"`
-	Address       string  `json:"address"`
-	Weight        float64 `json:"weight"`
-	Price         float64 `json:"price"`
-	Amount        float64 `json:"amount"`
-	Status        string  `json:"status"`
-	LicensePlate  string  `json:"license_plate"`
-	DriverName    string  `json:"driver_name"`
-	DriverPhone   string  `json:"driver_phone"`
+	ID              int       `json:"id"`
+	Code            string    `json:"code"`
+	Receiver        string    `json:"receiver"`
+	PhoneReceiver   string    `json:"phone_receiver"`
+	AddressReceiver string    `json:"address_receiver"`
+	Sender          string    `json:"sender"`
+	PhoneSender     string    `json:"phone_sender"`
+	AddressSender   string    `json:"address_sender"`
+	ManifestID      int       `json:"manifest_id"`
+	Weight          float64   `json:"weight"`
+	Price           float64   `json:"price"`
+	Amount          float64   `json:"amount"`
+	Status          string    `json:"status"`
+	PickupAt        time.Time `json:"pickup_at"`
 }
 
 type ReceiptPageResponse struct {
@@ -34,14 +35,14 @@ func FromDomain(receiptDomain receipts.Domain) Receipts {
 		Sender:        receiptDomain.Sender,
 		PhoneReceiver: receiptDomain.PhoneReceiver,
 		PhoneSender:   receiptDomain.PhoneSender,
-		Address:       receiptDomain.Address,
+		AddressReceiver: receiptDomain.AddressReceiver,
+		AddressSender: receiptDomain.AddressSender,
+		ManifestID:    receiptDomain.ManifestID,
 		Weight:        receiptDomain.Weight,
 		Price:         receiptDomain.Price,
 		Amount:        receiptDomain.Amount,
 		Status:        receiptDomain.Status,
-		LicensePlate:  receiptDomain.LicensePlate,
-		DriverName:    receiptDomain.DriverName,
-		DriverPhone:   receiptDomain.DriverPhone,
+		PickupAt:      receiptDomain.PickupAt,
 	}
 }
 
@@ -55,14 +56,14 @@ func FromListDomain(agentDomain []receipts.Domain, Count int) *ReceiptPageRespon
 			Sender:        value.Sender,
 			PhoneReceiver: value.PhoneReceiver,
 			PhoneSender:   value.PhoneSender,
-			Address:       value.Address,
+			AddressReceiver: value.AddressReceiver,
+			AddressSender: value.AddressSender,
+			ManifestID:    value.ManifestID,
 			Weight:        value.Weight,
 			Price:         value.Price,
 			Amount:        value.Amount,
 			Status:        value.Status,
-			LicensePlate:  value.LicensePlate,
-			DriverName:    value.DriverName,
-			DriverPhone:   value.DriverPhone,
+			PickupAt:      value.PickupAt,
 		}
 		allReceipt = append(allReceipt, agent)
 	}
