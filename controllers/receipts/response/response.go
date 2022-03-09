@@ -29,20 +29,19 @@ type ReceiptPageResponse struct {
 
 func FromDomain(receiptDomain receipts.Domain) Receipts {
 	return Receipts{
-		ID:            receiptDomain.ID,
-		Code:          receiptDomain.Code,
-		Receiver:      receiptDomain.Receiver,
-		Sender:        receiptDomain.Sender,
-		PhoneReceiver: receiptDomain.PhoneReceiver,
-		PhoneSender:   receiptDomain.PhoneSender,
+		ID:              receiptDomain.ID,
+		Code:            receiptDomain.Code,
+		Receiver:        receiptDomain.Receiver,
+		Sender:          receiptDomain.Sender,
+		PhoneReceiver:   receiptDomain.PhoneReceiver,
+		PhoneSender:     receiptDomain.PhoneSender,
 		AddressReceiver: receiptDomain.AddressReceiver,
-		AddressSender: receiptDomain.AddressSender,
-		ManifestID:    receiptDomain.ManifestID,
-		Weight:        receiptDomain.Weight,
-		Price:         receiptDomain.Price,
-		Amount:        receiptDomain.Amount,
-		Status:        receiptDomain.Status,
-		PickupAt:      receiptDomain.PickupAt,
+		AddressSender:   receiptDomain.AddressSender,
+		Weight:          receiptDomain.Weight,
+		Price:           receiptDomain.Price,
+		Amount:          receiptDomain.Amount,
+		Status:          receiptDomain.Status,
+		PickupAt:        receiptDomain.PickupAt,
 	}
 }
 
@@ -50,20 +49,19 @@ func FromListDomain(agentDomain []receipts.Domain, Count int) *ReceiptPageRespon
 	allReceipt := []Receipts{}
 	for _, value := range agentDomain {
 		agent := Receipts{
-			ID:            value.ID,
-			Code:          value.Code,
-			Receiver:      value.Receiver,
-			Sender:        value.Sender,
-			PhoneReceiver: value.PhoneReceiver,
-			PhoneSender:   value.PhoneSender,
+			ID:              value.ID,
+			Code:            value.Code,
+			Receiver:        value.Receiver,
+			Sender:          value.Sender,
+			PhoneReceiver:   value.PhoneReceiver,
+			PhoneSender:     value.PhoneSender,
 			AddressReceiver: value.AddressReceiver,
-			AddressSender: value.AddressSender,
-			ManifestID:    value.ManifestID,
-			Weight:        value.Weight,
-			Price:         value.Price,
-			Amount:        value.Amount,
-			Status:        value.Status,
-			PickupAt:      value.PickupAt,
+			AddressSender:   value.AddressSender,
+			Weight:          value.Weight,
+			Price:           value.Price,
+			Amount:          value.Amount,
+			Status:          value.Status,
+			PickupAt:        value.PickupAt,
 		}
 		allReceipt = append(allReceipt, agent)
 	}

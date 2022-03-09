@@ -14,7 +14,6 @@ type Domain struct {
 	Sender          string
 	PhoneSender     string
 	AddressSender   string
-	ManifestID      int
 	Weight          float64
 	Price           float64
 	Amount          float64
