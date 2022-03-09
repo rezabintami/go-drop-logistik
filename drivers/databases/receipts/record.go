@@ -16,7 +16,6 @@ type Receipts struct {
 	Sender          string
 	PhoneSender     string
 	AddressSender   string
-	ManifestID      int
 	Weight          float64
 	Price           float64
 	Amount          float64
@@ -37,7 +36,6 @@ func (rec *Receipts) ToDomain() *receipts.Domain {
 		Sender:          rec.Sender,
 		PhoneSender:     rec.PhoneSender,
 		AddressSender:   rec.AddressSender,
-		ManifestID:      rec.ManifestID,
 		Weight:          rec.Weight,
 		Price:           rec.Price,
 		Amount:          rec.Amount,
@@ -58,7 +56,6 @@ func fromDomain(receiptDomain receipts.Domain) *Receipts {
 		Sender:          receiptDomain.Sender,
 		PhoneSender:     receiptDomain.PhoneSender,
 		AddressSender:   receiptDomain.AddressSender,
-		ManifestID:      receiptDomain.ManifestID,
 		Weight:          receiptDomain.Weight,
 		Price:           receiptDomain.Price,
 		Amount:          receiptDomain.Amount,

@@ -12,7 +12,6 @@ type Receipts struct {
 	Sender          string    `json:"sender"`
 	PhoneSender     string    `json:"phone_sender"`
 	AddressSender   string    `json:"address_sender"`
-	ManifestID      int       `json:"manifest_id"`
 	Weight          float64   `json:"weight"`
 	Price           float64   `json:"price"`
 	Amount          float64   `json:"amount"`
@@ -22,17 +21,16 @@ type Receipts struct {
 
 func (req *Receipts) ToDomain() *receipts.Domain {
 	return &receipts.Domain{
-		Receiver: req.Receiver,
-		PhoneReceiver: req.PhoneReceiver,
+		Receiver:        req.Receiver,
+		PhoneReceiver:   req.PhoneReceiver,
 		AddressReceiver: req.AddressReceiver,
-		Sender: req.Sender,
-		PhoneSender: req.PhoneSender,
-		AddressSender: req.AddressSender,
-		ManifestID: req.ManifestID,
-		Weight: req.Weight,
-		Price: req.Price,
-		Amount: req.Amount,
-		Status: req.Status,
-		PickupAt: req.PickupAt,
+		Sender:          req.Sender,
+		PhoneSender:     req.PhoneSender,
+		AddressSender:   req.AddressSender,
+		Weight:          req.Weight,
+		Price:           req.Price,
+		Amount:          req.Amount,
+		Status:          req.Status,
+		PickupAt:        req.PickupAt,
 	}
 }
