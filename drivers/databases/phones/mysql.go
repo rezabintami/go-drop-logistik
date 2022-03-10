@@ -37,3 +37,39 @@ func (repository *mysqlPhoneRepository) GetByID(ctx context.Context, id int) (ph
 
 	return *phone.ToDomain(), nil
 }
+
+func (repository *mysqlPhoneRepository) GetAll(ctx context.Context) ([]phones.Domain, error) {
+	rec := []Phones{}
+	result := repository.Conn.Find(&rec)
+	if result.Error != nil {
+		return []phones.Domain{}, result.Error
+	}
+	phoneDomain := []phones.Domain{}
+	for _, value := range rec {
+		phoneDomain = append(phoneDomain, *value.ToDomain())
+	}
+
+	return phoneDomain, nil
+}
+
+
+func (repository *mysqlPhoneRepository) Update(ctx context.Context, phoneDomain *phones.Domain, id int) error {
+	phoneUpdate := fromDomain(*phoneDomain)
+
+	result := repository.Conn.Where("phones.id = ?", id).Updates(&phoneUpdate)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (repository *mysqlPhoneRepository) Delete(ctx context.Context, id int) error {
+	phoneDelete := Phones{}
+	result := repository.Conn.Where("phones.id = ?", id).Delete(&phoneDelete)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

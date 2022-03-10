@@ -13,4 +13,5 @@ type Repository interface {
 	Store(ctx context.Context, phoneId, agentId int) error
 	GetAllByAgentID(ctx context.Context, id int) ([]Domain, error)
 	GetByAgentID(ctx context.Context, id int) (Domain, error)
+	Delete(ctx context.Context, agentId, phoneId int) error
 }

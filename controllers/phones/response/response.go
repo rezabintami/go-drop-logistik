@@ -20,3 +20,18 @@ func FromDomain(phoneDomain phones.Domain) Phones {
 		UpdatedAt: phoneDomain.UpdatedAt,
 	}
 }
+
+func FromListDomain(agentDomain []phones.Domain) *[]Phones {
+	allPhone := []Phones{}
+	for _, value := range agentDomain {
+		phone := Phones{
+			ID:        value.ID,
+			Phone:     value.Phone,
+			CreatedAt: value.CreatedAt,
+			UpdatedAt: value.UpdatedAt,
+		}
+		allPhone = append(allPhone, phone)
+	}
+
+	return &allPhone
+}

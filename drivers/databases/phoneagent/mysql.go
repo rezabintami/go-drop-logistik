@@ -22,7 +22,7 @@ func (repository *mysqlPhoneAgentRepository) Store(ctx context.Context, phoneId,
 		PhoneID: phoneId,
 		AgentID: agentId,
 	}
-	
+
 	rec := fromDomain(*phoneAgent)
 
 	result := repository.Conn.Create(rec)
@@ -56,4 +56,14 @@ func (repository *mysqlPhoneAgentRepository) GetAllByAgentID(ctx context.Context
 	}
 
 	return allPhoneAgentDomain, nil
+}
+
+func (repository *mysqlPhoneAgentRepository) Delete(ctx context.Context, agentId, phoneId int) error {
+	phoneDelete := PhoneAgent{}
+	result := repository.Conn.Where("agent_id = ?", agentId).Where("phone_id = ?", phoneId).Delete(&phoneDelete)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
