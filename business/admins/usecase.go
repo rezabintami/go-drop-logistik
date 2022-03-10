@@ -26,19 +26,19 @@ func NewAdminUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.
 	}
 }
 
-func (uc *AdminUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
+func (usecase *AdminUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
 	request := map[string]interface{}{
 		"email": email,
 		"sso":   sso,
 	}
 
-	existedUser, err := uc.adminRepository.GetByEmail(ctx, email)
+	existedUser, err := usecase.adminRepository.GetByEmail(ctx, email)
 	if err != nil {
 		result := map[string]interface{}{
-			"success": "false",
+			"susecasecess": "false",
 			"error":   err.Error(),
 		}
-		uc.logger.LogEntry(request, result).Error(err.Error())
+		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return "", err
 	}
 
@@ -46,26 +46,26 @@ func (uc *AdminUsecase) Login(ctx context.Context, email, password string, sso b
 		return "", business.ErrEmailPasswordNotFound
 	}
 
-	token := uc.jwtAuth.GenerateToken(existedUser.ID, existedUser.Roles)
+	token := usecase.jwtAuth.GenerateToken(existedUser.ID, existedUser.Roles)
 	result := map[string]interface{}{
-		"success": "true",
+		"susecasecess": "true",
 	}
-	uc.logger.LogEntry(request, result).Info("incoming request")
+	usecase.logger.LogEntry(request, result).Info("incoming request")
 	return token, nil
 }
 
-func (uc *AdminUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
+func (usecase *AdminUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
 	request := map[string]interface{}{
 		"id": id,
 	}
 
-	users, err := uc.adminRepository.GetByID(ctx, id)
+	users, err := usecase.adminRepository.GetByID(ctx, id)
 
 	if err != nil {
 		result := map[string]interface{}{
 			"error": err.Error(),
 		}
-		uc.logger.LogEntry(request, result).Error(err.Error())
+		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return Domain{}, err
 	}
 
@@ -75,13 +75,13 @@ func (uc *AdminUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
 		"email": users.Email,
 	}
 
-	uc.logger.LogEntry(request, result).Info("incoming request")
+	usecase.logger.LogEntry(request, result).Info("incoming request")
 
 	return users, nil
 }
 
-func (uc *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, sso bool) error {
-	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
+func (usecase *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, sso bool) error {
+	ctx, cancel := context.WithTimeout(ctx, usecase.contextTimeout)
 	defer cancel()
 
 	request := map[string]interface{}{
@@ -91,14 +91,14 @@ func (uc *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, sso b
 
 	adminDomain.Roles = "ADMIN"
 
-	existedUser, err := uc.adminRepository.GetByEmail(ctx, adminDomain.Email)
+	existedUser, err := usecase.adminRepository.GetByEmail(ctx, adminDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
 			result := map[string]interface{}{
-				"success": "false",
+				"susecasecess": "false",
 				"error":   err.Error(),
 			}
-			uc.logger.LogEntry(request, result).Error(err.Error())
+			usecase.logger.LogEntry(request, result).Error(err.Error())
 			return err
 		}
 	}
@@ -110,20 +110,20 @@ func (uc *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, sso b
 		adminDomain.Password, _ = encrypt.Hash(adminDomain.Password)
 	}
 
-	err = uc.adminRepository.Register(ctx, adminDomain)
+	err = usecase.adminRepository.Register(ctx, adminDomain)
 	if err != nil {
 		result := map[string]interface{}{
-			"success": "false",
+			"susecasecess": "false",
 			"error":   err.Error(),
 		}
-		uc.logger.LogEntry(request, result).Error(err.Error())
+		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return err
 	}
 
 	result := map[string]interface{}{
-		"success": "true",
+		"susecasecess": "true",
 	}
-	uc.logger.LogEntry(request, result).Info("incoming request")
+	usecase.logger.LogEntry(request, result).Info("incoming request")
 
 	return nil
 }
