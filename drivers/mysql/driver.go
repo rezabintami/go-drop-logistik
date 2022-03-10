@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go-drop-logistik/drivers/databases/admins"
 	"go-drop-logistik/drivers/databases/agents"
+	"go-drop-logistik/drivers/databases/phoneagent"
+	"go-drop-logistik/drivers/databases/phones"
 	"go-drop-logistik/drivers/databases/receipts"
 	"go-drop-logistik/drivers/databases/users"
 
@@ -34,7 +36,7 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&users.Users{},&agents.Agents{}, &admins.Admins{},&receipts.Receipts{})
+	db.AutoMigrate(&users.Users{}, &agents.Agents{}, &admins.Admins{}, &receipts.Receipts{}, &phones.Phones{}, &phoneagent.PhoneAgent{})
 
 	return db
 }

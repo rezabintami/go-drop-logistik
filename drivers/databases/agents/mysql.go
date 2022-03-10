@@ -27,15 +27,15 @@ func (repository *mysqlAgentRepository) GetByID(ctx context.Context, id int) (ag
 	return *agentById.ToDomain(), nil
 }
 
-func (repository *mysqlAgentRepository) GetByEmail(ctx context.Context, email string) (agents.Domain, error) {
+func (repository *mysqlAgentRepository) GetByEmail(ctx context.Context, email string) (agents.ExistingDomain, error) {
 	rec := Agents{}
 
 	err := repository.Conn.Where("agents.email = ?", email).First(&rec).Error
 	if err != nil {
-		return agents.Domain{}, err
+		return agents.ExistingDomain{}, err
 	}
 
-	return *rec.ToDomain(), nil
+	return *rec.ToExistingDomain(), nil
 }
 
 func (repository *mysqlAgentRepository) Register(ctx context.Context, agentDomain *agents.Domain) error {

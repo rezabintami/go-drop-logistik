@@ -19,6 +19,17 @@ type Agents struct {
 	UpdatedAt time.Time
 }
 
+func (rec *Agents) ToExistingDomain() *agents.ExistingDomain {
+	return &agents.ExistingDomain{
+		ID:        rec.ID,
+		Password:  rec.Password,
+		Email:     rec.Email,
+		Roles:     rec.Roles,
+		CreatedAt: rec.CreatedAt,
+		UpdatedAt: rec.UpdatedAt,
+	}
+}
+
 func (rec *Agents) ToDomain() *agents.Domain {
 	return &agents.Domain{
 		ID:        rec.ID,

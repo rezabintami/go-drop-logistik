@@ -4,6 +4,7 @@ import (
 	_middleware "go-drop-logistik/app/middleware"
 	"go-drop-logistik/controllers/admins"
 	"go-drop-logistik/controllers/agents"
+	"go-drop-logistik/controllers/phones"
 	"go-drop-logistik/controllers/receipts"
 	"go-drop-logistik/controllers/users"
 
@@ -12,12 +13,13 @@ import (
 )
 
 type ControllerList struct {
-	MiddlewareLog   _middleware.ConfigMiddleware
-	JWTMiddleware   middleware.JWTConfig
-	UserController  users.UserController
-	AgentController agents.AgentController
-	AdminController admins.AdminController
+	MiddlewareLog     _middleware.ConfigMiddleware
+	JWTMiddleware     middleware.JWTConfig
+	UserController    users.UserController
+	AgentController   agents.AgentController
+	AdminController   admins.AdminController
 	ReceiptController receipts.ReceiptController
+	PhoneController   phones.PhonesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -54,6 +56,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// manifest.GET("/:id/finish", cl.AgentController.Login)
 	// manifest.DELETE("/:id/decline", cl.AgentController.Login)
 
+	agentPhone := apiV1.Group("/agent/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
+	agentPhone.POST("/add", cl.PhoneController.StorePhone)
+	// agentPhone.DELETE("/:id", cl.PhoneController.DeletePhone)
+	// agentPhone.PUT("/:id", cl.PhoneController.UpdatePhone)
+
 	//! ADMINS
 	admin := apiV1.Group("/admin")
 	admin.POST("/register", cl.AdminController.Register)
@@ -65,6 +72,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	adminAgent.GET("/:id", cl.AdminController.AgentGetByID)
 	adminAgent.POST("/add", cl.AdminController.AgentRegister)
 	adminAgent.PUT("/:id", cl.AdminController.AgentUpdateByID)
+	
 
 	//! USERS
 	user := apiV1.Group("/user")

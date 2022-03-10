@@ -19,6 +19,12 @@ import (
 	_agentController "go-drop-logistik/controllers/agents"
 	_agentRepo "go-drop-logistik/drivers/databases/agents"
 
+	_phoneAgentRepo "go-drop-logistik/drivers/databases/phoneagent"
+
+	_phoneUsecase "go-drop-logistik/business/phones"
+	_phoneController "go-drop-logistik/controllers/phones"
+	_phoneRepo "go-drop-logistik/drivers/databases/phones"
+
 	_adminUsecase "go-drop-logistik/business/admins"
 	_adminController "go-drop-logistik/controllers/admins"
 	_adminRepo "go-drop-logistik/drivers/databases/admins"
@@ -74,8 +80,14 @@ func main() {
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
 	userCtrl := _userController.NewUserController(userUsecase)
 
+	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(mysql_db)
+
+	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(mysql_db)
+	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, phoneAgentRepo, &configJWT, timeoutContext)
+	phoneCtrl := _phoneController.NewPhonesController(phoneUsecase)
+
 	agentRepo := _agentRepo.NewMySQLAgentRepository(mysql_db)
-	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext, logger)
+	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, phoneAgentRepo, phoneUsecase, &configJWT, timeoutContext, logger)
 	agentCtrl := _agentController.NewAgentController(agentUsecase)
 
 	adminRepo := _adminRepo.NewMySQLAdminRepository(mysql_db)
@@ -93,6 +105,7 @@ func main() {
 		AgentController:   *agentCtrl,
 		AdminController:   *adminCtrl,
 		ReceiptController: *receiptCtrl,
+		PhoneController:   *phoneCtrl,
 	}
 	routesInit.RouteRegister(e)
 
