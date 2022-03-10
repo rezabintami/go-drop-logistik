@@ -58,8 +58,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	agentPhone := apiV1.Group("/agent/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)
-	// agentPhone.DELETE("/:id", cl.PhoneController.DeletePhone)
-	// agentPhone.PUT("/:id", cl.PhoneController.UpdatePhone)
+	agentPhone.GET("", cl.PhoneController.GetAll)
+	agentPhone.DELETE("/:id", cl.PhoneController.DeletePhone)
+	agentPhone.PUT("/:id", cl.PhoneController.UpdatePhone)
 
 	//! ADMINS
 	admin := apiV1.Group("/admin")
