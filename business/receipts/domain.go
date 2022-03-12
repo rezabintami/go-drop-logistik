@@ -7,6 +7,7 @@ import (
 
 type Domain struct {
 	ID              int
+	ManifestID      int
 	Code            string
 	Receiver        string
 	PhoneReceiver   string
@@ -24,15 +25,17 @@ type Domain struct {
 }
 
 type Usecase interface {
-	StoreReceipt(ctx context.Context, data *Domain) error
+	StoreReceipt(ctx context.Context, data *Domain) (int, error)
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Delete(ctx context.Context, id int) error
 	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)
+	Update(ctx context.Context, data *Domain, id int) error
 }
 
 type Repository interface {
-	StoreReceipt(ctx context.Context, data *Domain) error
+	StoreReceipt(ctx context.Context, data *Domain) (int, error)
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Delete(ctx context.Context, id int) error
 	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)
+	Update(ctx context.Context, data *Domain, id int) error
 }

@@ -17,15 +17,18 @@ type Manifest struct {
 	DeletedAt gorm.DeletedAt
 }
 
-func (rec *Manifest) ToDomain() *manifest.Domain {
-	return &manifest.Domain{
-		ID:        rec.ID,
-		Code:      rec.Code,
-		Status:    rec.Status,
-		DriverID:  rec.DriverID,
-		CreatedAt: rec.CreatedAt,
-		UpdatedAt: rec.UpdatedAt,
+func (rec *Manifest) ToDomain() (res *manifest.Domain) {
+	if rec != nil {
+		res = &manifest.Domain{
+			ID:        rec.ID,
+			Code:      rec.Code,
+			Status:    rec.Status,
+			DriverID:  rec.DriverID,
+			CreatedAt: rec.CreatedAt,
+			UpdatedAt: rec.UpdatedAt,
+		}
 	}
+	return res
 }
 
 func fromDomain(manifestDomain manifest.Domain) *Manifest {

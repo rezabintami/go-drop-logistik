@@ -10,31 +10,31 @@ import (
 )
 
 type ReceiptUsecase struct {
-	receiptRepository Repository
-	contextTimeout    time.Duration
-	jwtAuth           *middleware.ConfigJWT
-	logger            logging.Logger
+	receiptRepository         Repository
+	contextTimeout            time.Duration
+	jwtAuth                   *middleware.ConfigJWT
+	logger                    logging.Logger
 }
 
-func NewReceiptUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
+func NewReceiptUsecase(ur Repository,  jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
 	return &ReceiptUsecase{
-		receiptRepository: ur,
-		jwtAuth:           jwtauth,
-		contextTimeout:    timeout,
-		logger:            logger,
+		receiptRepository:         ur,
+		jwtAuth:                   jwtauth,
+		contextTimeout:            timeout,
+		logger:                    logger,
 	}
 }
 
-func (usecase *ReceiptUsecase) StoreReceipt(ctx context.Context, receiptDomain *Domain) error {
+func (usecase *ReceiptUsecase) StoreReceipt(ctx context.Context, receiptDomain *Domain) (int, error) {
 	receiptDomain.Code = code.GenerateReceipt()
 	receiptDomain.Status = enum.PROCESS
 
-	err := usecase.receiptRepository.StoreReceipt(ctx, receiptDomain)
+	receiptId, err := usecase.receiptRepository.StoreReceipt(ctx, receiptDomain)
 	if err != nil {
-		return err
+		return receiptId, err
 	}
-
-	return nil
+	
+	return receiptId, nil
 }
 
 func (usecase *ReceiptUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
@@ -65,6 +65,15 @@ func (usecase *ReceiptUsecase) Fetch(ctx context.Context, page, perpage int) ([]
 
 func (usecase *ReceiptUsecase) Delete(ctx context.Context, id int) error {
 	err := usecase.receiptRepository.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (usecase *ReceiptUsecase) Update(ctx context.Context, manifestDomain *Domain, id int) error {
+	err := usecase.receiptRepository.Update(ctx, manifestDomain, id)
 	if err != nil {
 		return err
 	}

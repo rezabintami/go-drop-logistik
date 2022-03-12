@@ -21,6 +21,9 @@ import (
 
 	_phoneAgentRepo "go-drop-logistik/drivers/databases/phoneagent"
 
+	_manifestreceiptUsecase "go-drop-logistik/business/manifestreceipt"
+	_manifestreceiptRepo "go-drop-logistik/drivers/databases/manifestreceipt"
+
 	_phoneUsecase "go-drop-logistik/business/phones"
 	_phoneController "go-drop-logistik/controllers/phones"
 	_phoneRepo "go-drop-logistik/drivers/databases/phones"
@@ -80,40 +83,41 @@ func main() {
 
 	middlewareLog := _middleware.NewMiddleware(logger)
 
+	//! REPO
 	userRepo := _userRepo.NewMySQLUserRepository(mysql_db)
-	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
-	userCtrl := _userController.NewUserController(userUsecase)
-
 	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(mysql_db)
-
 	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(mysql_db)
-	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, phoneAgentRepo, &configJWT, timeoutContext)
-	phoneCtrl := _phoneController.NewPhonesController(phoneUsecase)
-
 	agentRepo := _agentRepo.NewMySQLAgentRepository(mysql_db)
-	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, phoneAgentRepo, phoneUsecase, &configJWT, timeoutContext, logger)
-	agentCtrl := _agentController.NewAgentController(agentUsecase)
-
 	adminRepo := _adminRepo.NewMySQLAdminRepository(mysql_db)
-	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
-	adminCtrl := _adminController.NewAdminController(adminUsecase, agentUsecase)
-
 	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(mysql_db)
-	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
-	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase)
-
+	manifestReceiptRepo := _manifestreceiptRepo.NewMySQLManifestReceiptRepository(mysql_db)
 	manifestRepo := _manifestRepo.NewMySQLManifestRepository(mysql_db)
+
+	//! USECASE
+	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
+	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, phoneAgentRepo, &configJWT, timeoutContext)
+	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, phoneAgentRepo, phoneUsecase, &configJWT, timeoutContext, logger)
+	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
+	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
+	manifestReceiptUsecase := _manifestreceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
 	manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
-	manifestCtrl := _manifestController.NewManifestController(manifestUsecase)
+
+	//! CONTROLLER
+	userCtrl := _userController.NewUserController(userUsecase)
+	phoneCtrl := _phoneController.NewPhonesController(phoneUsecase)
+	agentCtrl := _agentController.NewAgentController(agentUsecase)
+	adminCtrl := _adminController.NewAdminController(adminUsecase, agentUsecase)
+	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase, manifestReceiptUsecase)
+	manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase)
 
 	routesInit := _routes.ControllerList{
-		MiddlewareLog:     middlewareLog,
-		JWTMiddleware:     configJWT.Init(),
-		UserController:    *userCtrl,
-		AgentController:   *agentCtrl,
-		AdminController:   *adminCtrl,
-		ReceiptController: *receiptCtrl,
-		PhoneController:   *phoneCtrl,
+		MiddlewareLog:      middlewareLog,
+		JWTMiddleware:      configJWT.Init(),
+		UserController:     *userCtrl,
+		AgentController:    *agentCtrl,
+		AdminController:    *adminCtrl,
+		ReceiptController:  *receiptCtrl,
+		PhoneController:    *phoneCtrl,
 		ManifestController: *manifestCtrl,
 	}
 	routesInit.RouteRegister(e)

@@ -6,6 +6,7 @@ import (
 )
 
 type Receipts struct {
+	ManifestID      int       `json:"manifest_id"`
 	Receiver        string    `json:"receiver"`
 	PhoneReceiver   string    `json:"phone_receiver"`
 	AddressReceiver string    `json:"address_receiver"`
@@ -21,6 +22,7 @@ type Receipts struct {
 
 func (req *Receipts) ToDomain() *receipts.Domain {
 	return &receipts.Domain{
+		ManifestID:      req.ManifestID,
 		Receiver:        req.Receiver,
 		PhoneReceiver:   req.PhoneReceiver,
 		AddressReceiver: req.AddressReceiver,
