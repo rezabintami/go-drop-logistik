@@ -3,7 +3,8 @@ package manifest
 import (
 	"context"
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/helper/receipt"
+	"go-drop-logistik/helper/code"
+	"go-drop-logistik/helper/enum"
 	"time"
 )
 
@@ -22,8 +23,9 @@ func NewManifestUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout ti
 }
 
 func (usecase *ManifestUsecase) StoreManifest(ctx context.Context, manifestDomain *Domain) error {
-	manifestDomain.Code = receipt.GenerateReceipt()
-
+	manifestDomain.Code = code.GenerateManifest()
+	manifestDomain.Status = enum.PROCESS
+	
 	err := usecase.receiptRepository.StoreManifest(ctx, manifestDomain)
 	if err != nil {
 		return err
