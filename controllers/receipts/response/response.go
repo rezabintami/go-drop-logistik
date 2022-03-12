@@ -45,10 +45,10 @@ func FromDomain(receiptDomain receipts.Domain) Receipts {
 	}
 }
 
-func FromListDomain(agentDomain []receipts.Domain, Count int) *ReceiptPageResponse {
+func FromListDomain(receiptDomain []receipts.Domain, Count int) *ReceiptPageResponse {
 	allReceipt := []Receipts{}
-	for _, value := range agentDomain {
-		agent := Receipts{
+	for _, value := range receiptDomain {
+		receipt := Receipts{
 			ID:              value.ID,
 			Code:            value.Code,
 			Receiver:        value.Receiver,
@@ -63,7 +63,7 @@ func FromListDomain(agentDomain []receipts.Domain, Count int) *ReceiptPageRespon
 			Status:          value.Status,
 			PickupAt:        value.PickupAt,
 		}
-		allReceipt = append(allReceipt, agent)
+		allReceipt = append(allReceipt, receipt)
 	}
 	result := ReceiptPageResponse{}
 	result.Receipts = &allReceipt

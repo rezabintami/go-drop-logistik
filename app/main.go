@@ -33,6 +33,10 @@ import (
 	_receiptController "go-drop-logistik/controllers/receipts"
 	_receiptRepo "go-drop-logistik/drivers/databases/receipts"
 
+	_manifestUsecase "go-drop-logistik/business/manifest"
+	_manifestController "go-drop-logistik/controllers/manifest"
+	_manifestRepo "go-drop-logistik/drivers/databases/manifest"
+
 	"log"
 	"time"
 
@@ -98,6 +102,10 @@ func main() {
 	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
 	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase)
 
+	manifestRepo := _manifestRepo.NewMySQLManifestRepository(mysql_db)
+	manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
+	manifestCtrl := _manifestController.NewManifestController(manifestUsecase)
+
 	routesInit := _routes.ControllerList{
 		MiddlewareLog:     middlewareLog,
 		JWTMiddleware:     configJWT.Init(),
@@ -106,6 +114,7 @@ func main() {
 		AdminController:   *adminCtrl,
 		ReceiptController: *receiptCtrl,
 		PhoneController:   *phoneCtrl,
+		ManifestController: *manifestCtrl,
 	}
 	routesInit.RouteRegister(e)
 

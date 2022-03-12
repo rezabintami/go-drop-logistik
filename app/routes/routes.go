@@ -4,6 +4,7 @@ import (
 	_middleware "go-drop-logistik/app/middleware"
 	"go-drop-logistik/controllers/admins"
 	"go-drop-logistik/controllers/agents"
+	"go-drop-logistik/controllers/manifest"
 	"go-drop-logistik/controllers/phones"
 	"go-drop-logistik/controllers/receipts"
 	"go-drop-logistik/controllers/users"
@@ -13,13 +14,14 @@ import (
 )
 
 type ControllerList struct {
-	MiddlewareLog     _middleware.ConfigMiddleware
-	JWTMiddleware     middleware.JWTConfig
-	UserController    users.UserController
-	AgentController   agents.AgentController
-	AdminController   admins.AdminController
-	ReceiptController receipts.ReceiptController
-	PhoneController   phones.PhonesController
+	MiddlewareLog      _middleware.ConfigMiddleware
+	JWTMiddleware      middleware.JWTConfig
+	UserController     users.UserController
+	AgentController    agents.AgentController
+	AdminController    admins.AdminController
+	ReceiptController  receipts.ReceiptController
+	PhoneController    phones.PhonesController
+	ManifestController manifest.ManifestController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -48,13 +50,13 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// resi.GET("/:id/finish", cl.AgentController.Login)
 	resi.DELETE("/:id/decline", cl.ReceiptController.Delete)
 
-	// manifest := agent.Group("/manifest", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
-	// manifest.POST("/add", cl.AgentController.Login)
-	// manifest.GET("", cl.AgentController.Login)
-	// manifest.GET("/:id", cl.AgentController.Login)
-	// manifest.PUT("/:id", cl.AgentController.Login)
+	manifest := agent.Group("/manifest", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
+	manifest.POST("/add", cl.ManifestController.CreateManifest)
+	manifest.GET("", cl.ManifestController.Fetch)
+	manifest.GET("/:id", cl.ManifestController.GetByID)
+	// manifest.PUT("/:id", cl.ManifestController.UpdateManifest)
 	// manifest.GET("/:id/finish", cl.AgentController.Login)
-	// manifest.DELETE("/:id/decline", cl.AgentController.Login)
+	manifest.DELETE("/:id/decline", cl.ManifestController.Delete)
 
 	agentPhone := apiV1.Group("/agent/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)
@@ -73,7 +75,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	adminAgent.GET("/:id", cl.AdminController.AgentGetByID)
 	adminAgent.POST("/add", cl.AdminController.AgentRegister)
 	adminAgent.PUT("/:id", cl.AdminController.AgentUpdateByID)
-	
 
 	//! USERS
 	user := apiV1.Group("/user")
