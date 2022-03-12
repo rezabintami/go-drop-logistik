@@ -45,7 +45,8 @@ func (repository *mysqlManifestReceiptRepository) GetByManifestID(ctx context.Co
 
 func (repository *mysqlManifestReceiptRepository) GetAllByManifestID(ctx context.Context, id int) ([]manifestreceipt.Domain, error) {
 	allManifestReceipt := []ManifestReceipt{}
-	result := repository.Conn.Where("manifest_id = ?", id).Find(&allManifestReceipt)
+
+	result := repository.Conn.Preload("Receipt").Where("manifest_id = ?", id).Find(&allManifestReceipt)
 	if result.Error != nil {
 		return []manifestreceipt.Domain{}, result.Error
 	}
@@ -58,9 +59,20 @@ func (repository *mysqlManifestReceiptRepository) GetAllByManifestID(ctx context
 	return allManifestReceiptDomain, nil
 }
 
-func (repository *mysqlManifestReceiptRepository) Delete(ctx context.Context, manifestId, ReceiptId int) error {
+func (repository *mysqlManifestReceiptRepository) DeleteByReceipt(ctx context.Context, ReceiptId int) error {
 	manifestReceipt := ManifestReceipt{}
-	result := repository.Conn.Where("manifest_id = ?", manifestId).Where("receipt_id = ?", ReceiptId).Delete(&manifestReceipt)
+	result := repository.Conn.Preload("Receipt").Preload("Manifest").Where("receipt_id = ?", ReceiptId).Delete(&manifestReceipt)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+
+func (repository *mysqlManifestReceiptRepository) DeleteByManifest(ctx context.Context, manifestId int) error {
+	manifestReceipt := ManifestReceipt{}
+	result := repository.Conn.Preload("Receipt").Preload("Manifest").Where("manifest_id = ?", manifestId).Delete(&manifestReceipt)
 	if result.Error != nil {
 		return result.Error
 	}

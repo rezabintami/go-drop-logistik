@@ -17,15 +17,14 @@ func NewMySQLReceiptRepository(conn *gorm.DB) receipts.Repository {
 	}
 }
 
-
-func (repository *mysqlReceiptRepository) StoreReceipt(ctx context.Context, receiptDomain *receipts.Domain) error {
+func (repository *mysqlReceiptRepository) StoreReceipt(ctx context.Context, receiptDomain *receipts.Domain) (int, error) {
 	rec := fromDomain(*receiptDomain)
 
 	result := repository.Conn.Create(rec)
 	if result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
-	return nil
+	return rec.ID, nil
 }
 
 func (repository *mysqlReceiptRepository) GetByID(ctx context.Context, id int) (receipts.Domain, error) {
@@ -37,7 +36,6 @@ func (repository *mysqlReceiptRepository) GetByID(ctx context.Context, id int) (
 
 	return *rec.ToDomain(), nil
 }
-
 
 func (repository *mysqlReceiptRepository) Fetch(ctx context.Context, page, perpage int) ([]receipts.Domain, int, error) {
 	rec := []Receipts{}
@@ -65,6 +63,17 @@ func (repository *mysqlReceiptRepository) Fetch(ctx context.Context, page, perpa
 func (repository *mysqlReceiptRepository) Delete(ctx context.Context, id int) error {
 	rec := Receipts{}
 	result := repository.Conn.Where("id = ?", id).Delete(&rec)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (repository *mysqlReceiptRepository) Update(ctx context.Context, receiptDomain *receipts.Domain, id int) error {
+	receiptUpdate := fromDomain(*receiptDomain)
+
+	result := repository.Conn.Where("id = ?", id).Updates(&receiptUpdate)
 	if result.Error != nil {
 		return result.Error
 	}

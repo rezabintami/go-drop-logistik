@@ -14,7 +14,6 @@ type Receipts struct {
 	Sender          string    `json:"sender"`
 	PhoneSender     string    `json:"phone_sender"`
 	AddressSender   string    `json:"address_sender"`
-	ManifestID      int       `json:"manifest_id"`
 	Weight          float64   `json:"weight"`
 	Price           float64   `json:"price"`
 	Amount          float64   `json:"amount"`
@@ -69,4 +68,29 @@ func FromListDomain(receiptDomain []receipts.Domain, Count int) *ReceiptPageResp
 	result.Receipts = &allReceipt
 	result.Total = Count
 	return &result
+}
+
+func FromManifestListDomain(receiptDomain *[]receipts.Domain) (res *[]Receipts) {
+	if receiptDomain != nil {
+		res = &[]Receipts{}
+		for _, value := range *receiptDomain {
+			receipt := Receipts{
+				ID:              value.ID,
+				Code:            value.Code,
+				Receiver:        value.Receiver,
+				Sender:          value.Sender,
+				PhoneReceiver:   value.PhoneReceiver,
+				PhoneSender:     value.PhoneSender,
+				AddressReceiver: value.AddressReceiver,
+				AddressSender:   value.AddressSender,
+				Weight:          value.Weight,
+				Price:           value.Price,
+				Amount:          value.Amount,
+				Status:          value.Status,
+				PickupAt:        value.PickupAt,
+			}
+			*res = append(*res, receipt)
+		}
+	}
+	return res
 }

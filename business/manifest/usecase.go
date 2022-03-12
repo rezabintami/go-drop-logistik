@@ -9,24 +9,24 @@ import (
 )
 
 type ManifestUsecase struct {
-	receiptRepository Repository
-	contextTimeout    time.Duration
-	jwtAuth           *middleware.ConfigJWT
+	manifestRepository Repository
+	contextTimeout     time.Duration
+	jwtAuth            *middleware.ConfigJWT
 }
 
 func NewManifestUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration) Usecase {
 	return &ManifestUsecase{
-		receiptRepository: ur,
-		jwtAuth:           jwtauth,
-		contextTimeout:    timeout,
+		manifestRepository: ur,
+		jwtAuth:            jwtauth,
+		contextTimeout:     timeout,
 	}
 }
 
 func (usecase *ManifestUsecase) StoreManifest(ctx context.Context, manifestDomain *Domain) error {
 	manifestDomain.Code = code.GenerateManifest()
 	manifestDomain.Status = enum.PROCESS
-	
-	err := usecase.receiptRepository.StoreManifest(ctx, manifestDomain)
+
+	err := usecase.manifestRepository.StoreManifest(ctx, manifestDomain)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (usecase *ManifestUsecase) StoreManifest(ctx context.Context, manifestDomai
 }
 
 func (usecase *ManifestUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
-	users, err := usecase.receiptRepository.GetByID(ctx, id)
+	users, err := usecase.manifestRepository.GetByID(ctx, id)
 
 	if err != nil {
 		return Domain{}, err
@@ -52,7 +52,7 @@ func (usecase *ManifestUsecase) Fetch(ctx context.Context, page, perpage int) ([
 		perpage = 25
 	}
 
-	res, total, err := usecase.receiptRepository.Fetch(ctx, page, perpage)
+	res, total, err := usecase.manifestRepository.Fetch(ctx, page, perpage)
 	if err != nil {
 		return []Domain{}, 0, err
 	}
@@ -61,7 +61,16 @@ func (usecase *ManifestUsecase) Fetch(ctx context.Context, page, perpage int) ([
 }
 
 func (usecase *ManifestUsecase) Delete(ctx context.Context, id int) error {
-	err := usecase.receiptRepository.Delete(ctx, id)
+	err := usecase.manifestRepository.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (usecase *ManifestUsecase) Update(ctx context.Context, manifestDomain *Domain, id int) error {
+	err := usecase.manifestRepository.Update(ctx, manifestDomain, id)
 	if err != nil {
 		return err
 	}

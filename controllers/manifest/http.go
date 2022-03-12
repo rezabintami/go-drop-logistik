@@ -5,20 +5,24 @@ import (
 	"strconv"
 
 	"go-drop-logistik/business/manifest"
+	"go-drop-logistik/business/manifestreceipt"
 	"go-drop-logistik/controllers/manifest/request"
 	"go-drop-logistik/controllers/manifest/response"
+	"go-drop-logistik/helper/enum"
 	base_response "go-drop-logistik/helper/response"
 
 	echo "github.com/labstack/echo/v4"
 )
 
 type ManifestController struct {
-	manifestUsecase manifest.Usecase
+	manifestUsecase        manifest.Usecase
+	manifestreceiptUsecase manifestreceipt.Usecase
 }
 
-func NewManifestController(uc manifest.Usecase) *ManifestController {
+func NewManifestController(uc manifest.Usecase, mr manifestreceipt.Usecase) *ManifestController {
 	return &ManifestController{
-		manifestUsecase: uc,
+		manifestUsecase:        uc,
+		manifestreceiptUsecase: mr,
 	}
 }
 
@@ -42,12 +46,21 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	user, err := controller.manifestUsecase.GetByID(ctx, id)
+	manifest, err := controller.manifestUsecase.GetByID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(user))
+	receipt, err := controller.manifestreceiptUsecase.GetAllByManifestID(ctx, manifest.ID)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	for _, value := range receipt {
+		manifest.Receipt = append(manifest.Receipt, *value.Receipt)
+	}
+
+	return base_response.NewSuccessResponse(c, response.FromDomain(manifest))
 }
 
 func (controller *ManifestController) Fetch(c echo.Context) error {
@@ -65,13 +78,51 @@ func (controller *ManifestController) Fetch(c echo.Context) error {
 }
 
 func (controller *ManifestController) Delete(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
 	ctx := c.Request().Context()
+
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := controller.manifestUsecase.Delete(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
+	controller.manifestreceiptUsecase.DeleteByManifest(ctx, id)
 	return base_response.NewSuccessResponse(c, "Delete Successfully")
+}
+
+func (controller *ManifestController) Update(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	req := request.ManifestUpdate{}
+	if err := c.Bind(&req); err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	err := controller.manifestUsecase.Update(ctx, req.ToDomain(), id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return base_response.NewSuccessResponse(c, "Update Successfully")
+}
+
+func (controller *ManifestController) UpdateStatus(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	err := controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: enum.SUCCESS}, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	err = controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+	
+	return base_response.NewSuccessResponse(c, "Update Successfully")
 }

@@ -17,9 +17,8 @@ func NewMySQLManifestRepository(conn *gorm.DB) manifest.Repository {
 	}
 }
 
-
-func (repository *mysqlManifestRepository) StoreManifest(ctx context.Context, receiptDomain *manifest.Domain) error {
-	rec := fromDomain(*receiptDomain)
+func (repository *mysqlManifestRepository) StoreManifest(ctx context.Context, manifestDomain *manifest.Domain) error {
+	rec := fromDomain(*manifestDomain)
 
 	result := repository.Conn.Create(rec)
 	if result.Error != nil {
@@ -37,7 +36,6 @@ func (repository *mysqlManifestRepository) GetByID(ctx context.Context, id int) 
 
 	return *rec.ToDomain(), nil
 }
-
 
 func (repository *mysqlManifestRepository) Fetch(ctx context.Context, page, perpage int) ([]manifest.Domain, int, error) {
 	rec := []Manifest{}
@@ -65,6 +63,17 @@ func (repository *mysqlManifestRepository) Fetch(ctx context.Context, page, perp
 func (repository *mysqlManifestRepository) Delete(ctx context.Context, id int) error {
 	rec := Manifest{}
 	result := repository.Conn.Where("id = ?", id).Delete(&rec)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (repository *mysqlManifestRepository) Update(ctx context.Context, manifestDomain *manifest.Domain, id int) error {
+	manifestUpdate := fromDomain(*manifestDomain)
+
+	result := repository.Conn.Where("id = ?", id).Updates(&manifestUpdate)
 	if result.Error != nil {
 		return result.Error
 	}
