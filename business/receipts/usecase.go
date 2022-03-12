@@ -3,8 +3,9 @@ package receipts
 import (
 	"context"
 	"go-drop-logistik/app/middleware"
+	"go-drop-logistik/helper/code"
+	"go-drop-logistik/helper/enum"
 	"go-drop-logistik/helper/logging"
-	"go-drop-logistik/helper/receipt"
 	"time"
 )
 
@@ -25,8 +26,9 @@ func NewReceiptUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout tim
 }
 
 func (usecase *ReceiptUsecase) StoreReceipt(ctx context.Context, receiptDomain *Domain) error {
-	receiptDomain.Code = receipt.GenerateReceipt()
-	
+	receiptDomain.Code = code.GenerateReceipt()
+	receiptDomain.Status = enum.PROCESS
+
 	err := usecase.receiptRepository.StoreReceipt(ctx, receiptDomain)
 	if err != nil {
 		return err
@@ -69,4 +71,3 @@ func (usecase *ReceiptUsecase) Delete(ctx context.Context, id int) error {
 
 	return nil
 }
-
