@@ -50,7 +50,7 @@ func (controller *PhonesController) GetByID(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, phone)
+	return base_response.NewSuccessResponse(c, response.FromDomain(phone))
 }
 
 func (controller *PhonesController) GetAll(c echo.Context) error {
