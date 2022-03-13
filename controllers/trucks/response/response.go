@@ -16,13 +16,16 @@ type TrucksPageResponse struct {
 	Total  int       `json:"total"`
 }
 
-func FromDomain(truckDomain trucks.Domain) Trucks {
-	return Trucks{
-		ID:           truckDomain.ID,
-		Name:         truckDomain.Name,
-		Type:         truckDomain.Type,
-		LicensePlate: truckDomain.LicensePlate,
+func FromDomain(truckDomain *trucks.Domain) (res *Trucks) {
+	if truckDomain != nil {
+		res = &Trucks{
+			ID:           truckDomain.ID,
+			Name:         truckDomain.Name,
+			Type:         truckDomain.Type,
+			LicensePlate: truckDomain.LicensePlate,
+		}
 	}
+	return res
 }
 
 func FromListDomain(truckDomain []trucks.Domain, Count int) *TrucksPageResponse {
