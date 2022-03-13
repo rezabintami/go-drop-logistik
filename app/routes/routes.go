@@ -7,6 +7,7 @@ import (
 	"go-drop-logistik/controllers/manifest"
 	"go-drop-logistik/controllers/phones"
 	"go-drop-logistik/controllers/receipts"
+	"go-drop-logistik/controllers/trucks"
 	"go-drop-logistik/controllers/users"
 
 	echo "github.com/labstack/echo/v4"
@@ -22,6 +23,7 @@ type ControllerList struct {
 	ReceiptController  receipts.ReceiptController
 	PhoneController    phones.PhonesController
 	ManifestController manifest.ManifestController
+	TruckController    trucks.TrucksController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -54,14 +56,26 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	manifest.GET("", cl.ManifestController.Fetch)
 	manifest.GET("/:id", cl.ManifestController.GetByID)
 	manifest.PUT("/:id", cl.ManifestController.Update)
-	manifest.PUT("/:id/accept", cl.ManifestController.UpdateStatus)
+	manifest.PUT("/:id/finish", cl.ManifestController.UpdateStatus)
 	manifest.DELETE("/:id/decline", cl.ManifestController.Delete)
 
-	agentPhone := apiV1.Group("/agent/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
+	agentPhone := agent.Group("/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)
 	agentPhone.GET("", cl.PhoneController.GetAll)
 	agentPhone.DELETE("/:id", cl.PhoneController.DeletePhone)
 	agentPhone.PUT("/:id", cl.PhoneController.UpdatePhone)
+
+	// drivers := agent.Group("/driver", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
+	// drivers.POST("/add", cl.PhoneController.StorePhone)
+	// drivers.GET("", cl.PhoneController.GetAll)
+	// drivers.DELETE("/:id", cl.PhoneController.DeletePhone)
+	// drivers.PUT("/:id", cl.PhoneController.UpdatePhone)
+
+	trucks := agent.Group("/truck", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
+	trucks.POST("/add", cl.TruckController.StoreTruck)
+	trucks.GET("", cl.TruckController.Fetch)
+	trucks.DELETE("/:id", cl.TruckController.DeleteTruck)
+	trucks.PUT("/:id", cl.TruckController.UpdateTruck)
 
 	//! ADMINS
 	admin := apiV1.Group("/admin")

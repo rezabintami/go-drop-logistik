@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"go-drop-logistik/drivers/databases/admins"
 	"go-drop-logistik/drivers/databases/agents"
+	"go-drop-logistik/drivers/databases/drivers"
 	"go-drop-logistik/drivers/databases/manifest"
 	"go-drop-logistik/drivers/databases/manifestreceipt"
 	"go-drop-logistik/drivers/databases/phoneagent"
 	"go-drop-logistik/drivers/databases/phones"
 	"go-drop-logistik/drivers/databases/receipts"
+	"go-drop-logistik/drivers/databases/trucks"
 	"go-drop-logistik/drivers/databases/users"
 
 	"log"
@@ -47,6 +49,8 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		&phoneagent.PhoneAgent{},
 		&manifest.Manifest{},
 		&manifestreceipt.ManifestReceipt{},
+		&trucks.Trucks{},
+		&drivers.Drivers{},
 	)
 
 	return db
