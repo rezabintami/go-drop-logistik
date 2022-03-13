@@ -4,6 +4,7 @@ import (
 	_middleware "go-drop-logistik/app/middleware"
 	"go-drop-logistik/controllers/admins"
 	"go-drop-logistik/controllers/agents"
+	"go-drop-logistik/controllers/drivers"
 	"go-drop-logistik/controllers/manifest"
 	"go-drop-logistik/controllers/phones"
 	"go-drop-logistik/controllers/receipts"
@@ -24,6 +25,7 @@ type ControllerList struct {
 	PhoneController    phones.PhonesController
 	ManifestController manifest.ManifestController
 	TruckController    trucks.TrucksController
+	DriverController   drivers.DriversController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -65,11 +67,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	agentPhone.DELETE("/:id", cl.PhoneController.DeletePhone)
 	agentPhone.PUT("/:id", cl.PhoneController.UpdatePhone)
 
-	// drivers := agent.Group("/driver", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
-	// drivers.POST("/add", cl.PhoneController.StorePhone)
-	// drivers.GET("", cl.PhoneController.GetAll)
-	// drivers.DELETE("/:id", cl.PhoneController.DeletePhone)
-	// drivers.PUT("/:id", cl.PhoneController.UpdatePhone)
+	drivers := agent.Group("/driver", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
+	drivers.POST("/add", cl.DriverController.Store)
+	drivers.GET("/:id", cl.DriverController.GetByID)
+	drivers.DELETE("/:id", cl.DriverController.Delete)
+	drivers.PUT("/:id", cl.DriverController.Update)
 
 	trucks := agent.Group("/truck", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	trucks.POST("/add", cl.TruckController.StoreTruck)

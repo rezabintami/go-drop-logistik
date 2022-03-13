@@ -23,12 +23,15 @@ func fromDomain(truckDomain trucks.Domain) *Trucks {
 	}
 }
 
-func (rec *Trucks) ToDomain() *trucks.Domain {
-	return &trucks.Domain{
-		ID:           rec.ID,
-		Name:         rec.Name,
-		Type:         rec.Type,
-		LicensePlate: rec.LicensePlate,
-		CreatedAt:    rec.CreatedAt,
+func (rec *Trucks) ToDomain() (res *trucks.Domain) {
+	if rec != nil {
+		res = &trucks.Domain{
+			ID:        rec.ID,
+			Name:      rec.Name,
+			Type:      rec.Type,
+			LicensePlate: rec.LicensePlate,
+			CreatedAt: rec.CreatedAt,
+		}
 	}
+	return res
 }

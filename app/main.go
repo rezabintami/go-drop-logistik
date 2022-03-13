@@ -44,6 +44,10 @@ import (
 	_truckController "go-drop-logistik/controllers/trucks"
 	_truckRepo "go-drop-logistik/drivers/databases/trucks"
 
+	_driverUsecase "go-drop-logistik/business/drivers"
+	_driverController "go-drop-logistik/controllers/drivers"
+	_driverRepo "go-drop-logistik/drivers/databases/drivers"
+
 	"log"
 	"time"
 
@@ -97,6 +101,7 @@ func main() {
 	manifestReceiptRepo := _manifestreceiptRepo.NewMySQLManifestReceiptRepository(mysql_db)
 	manifestRepo := _manifestRepo.NewMySQLManifestRepository(mysql_db)
 	truckRepo := _truckRepo.NewMySQLTruckRepository(mysql_db)
+	driverRepo := _driverRepo.NewMySQLDriverRepository(mysql_db)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
@@ -107,6 +112,7 @@ func main() {
 	manifestReceiptUsecase := _manifestreceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
 	manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
 	truckUsecase := _truckUsecase.NewTrucksUsecase(truckRepo, &configJWT, timeoutContext)
+	driverUsecase := _driverUsecase.NewDriverUsecase(driverRepo, &configJWT, timeoutContext)
 
 	//! CONTROLLER
 	userCtrl := _userController.NewUserController(userUsecase)
@@ -116,6 +122,7 @@ func main() {
 	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase, manifestReceiptUsecase)
 	manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase)
 	truckCtrl := _truckController.NewTrucksController(truckUsecase)
+	driverCtrl := _driverController.NewDriversController(driverUsecase)
 
 	routesInit := _routes.ControllerList{
 		MiddlewareLog:      middlewareLog,
@@ -127,6 +134,7 @@ func main() {
 		PhoneController:    *phoneCtrl,
 		ManifestController: *manifestCtrl,
 		TruckController:    *truckCtrl,
+		DriverController:   *driverCtrl,
 	}
 	routesInit.RouteRegister(e)
 
