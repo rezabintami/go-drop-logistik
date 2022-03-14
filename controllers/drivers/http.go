@@ -42,12 +42,12 @@ func (controller *DriversController) GetByID(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	phone, err := controller.driversUsecase.GetByID(ctx, id)
+	driver, err := controller.driversUsecase.GetByID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(phone))
+	return base_response.NewSuccessResponse(c, response.FromDomain(&driver))
 }
 
 func (controller *DriversController) Delete(c echo.Context) error {

@@ -2,6 +2,7 @@ package manifest
 
 import (
 	"context"
+	"go-drop-logistik/business/drivers"
 	"go-drop-logistik/business/receipts"
 	"time"
 )
@@ -12,6 +13,7 @@ type Domain struct {
 	Status    string
 	Receipt   []receipts.Domain
 	DriverID  int
+	Driver 	  *drivers.Domain
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

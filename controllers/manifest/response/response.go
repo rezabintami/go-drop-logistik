@@ -2,6 +2,7 @@ package response
 
 import (
 	"go-drop-logistik/business/manifest"
+	driverResp "go-drop-logistik/controllers/drivers/response"
 	receiptResp "go-drop-logistik/controllers/receipts/response"
 	"time"
 )
@@ -11,18 +12,18 @@ type Manifest struct {
 	Code      string                  `json:"code"`
 	Status    string                  `json:"status"`
 	Receipt   *[]receiptResp.Receipts `json:"receipts"`
-	DriverID  int                     `json:"driver_id"`
+	Driver    *driverResp.Drivers     `json:"driver"`
 	CreatedAt time.Time               `json:"created_at"`
 	UpdatedAt time.Time               `json:"updated_at"`
 }
 
 type ManifestResponse struct {
-	ID        int       `json:"id"`
-	Code      string    `json:"code"`
-	Status    string    `json:"status"`
-	DriverID  int       `json:"driver_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        int                 `json:"id"`
+	Code      string              `json:"code"`
+	Status    string              `json:"status"`
+	Driver    *driverResp.Drivers `json:"driver"`
+	CreatedAt time.Time           `json:"created_at"`
+	UpdatedAt time.Time           `json:"updated_at"`
 }
 
 type ManifestPageResponse struct {
@@ -36,7 +37,7 @@ func FromDomain(manifestDomain manifest.Domain) Manifest {
 		Code:      manifestDomain.Code,
 		Status:    manifestDomain.Status,
 		Receipt:   receiptResp.FromManifestListDomain(&manifestDomain.Receipt),
-		DriverID:  manifestDomain.DriverID,
+		Driver:    driverResp.FromDomain(manifestDomain.Driver),
 		CreatedAt: manifestDomain.CreatedAt,
 		UpdatedAt: manifestDomain.UpdatedAt,
 	}
@@ -49,7 +50,7 @@ func FromListDomain(manifestDomain []manifest.Domain, Count int) *ManifestPageRe
 			ID:        value.ID,
 			Code:      value.Code,
 			Status:    value.Status,
-			DriverID:  value.DriverID,
+			Driver:    driverResp.FromDomain(value.Driver),
 			CreatedAt: value.CreatedAt,
 			UpdatedAt: value.UpdatedAt,
 		}
