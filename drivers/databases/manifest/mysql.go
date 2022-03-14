@@ -29,7 +29,7 @@ func (repository *mysqlManifestRepository) StoreManifest(ctx context.Context, ma
 
 func (repository *mysqlManifestRepository) GetByID(ctx context.Context, id int) (manifest.Domain, error) {
 	rec := Manifest{}
-	result := repository.Conn.Where("id = ?", id).First(&rec)
+	result := repository.Conn.Preload("Driver").Preload("Driver.Truck").Where("id = ?", id).First(&rec)
 	if result.Error != nil {
 		return manifest.Domain{}, result.Error
 	}
@@ -41,7 +41,7 @@ func (repository *mysqlManifestRepository) Fetch(ctx context.Context, page, perp
 	rec := []Manifest{}
 
 	offset := (page - 1) * perpage
-	err := repository.Conn.Offset(offset).Limit(perpage).Find(&rec).Error
+	err := repository.Conn.Preload("Driver").Preload("Driver.Truck").Offset(offset).Limit(perpage).Find(&rec).Error
 	if err != nil {
 		return []manifest.Domain{}, 0, err
 	}

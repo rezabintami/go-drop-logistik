@@ -2,6 +2,7 @@ package manifest
 
 import (
 	"go-drop-logistik/business/manifest"
+	"go-drop-logistik/drivers/databases/drivers"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,6 +13,7 @@ type Manifest struct {
 	Code      string
 	Status    string
 	DriverID  int
+	Driver    *drivers.Drivers `gorm:"foreignkey:DriverID;references:ID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
@@ -24,6 +26,7 @@ func (rec *Manifest) ToDomain() (res *manifest.Domain) {
 			Code:      rec.Code,
 			Status:    rec.Status,
 			DriverID:  rec.DriverID,
+			Driver:    rec.Driver.ToDomain(),
 			CreatedAt: rec.CreatedAt,
 			UpdatedAt: rec.UpdatedAt,
 		}

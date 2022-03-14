@@ -12,11 +12,14 @@ type Drivers struct {
 	Truck   *truckResp.Trucks `json:"truck"`
 }
 
-func FromDomain(driverDomain drivers.Domain) Drivers {
-	return Drivers{
-		Name:    driverDomain.Name,
-		Phone:   driverDomain.Phone,
-		Address: driverDomain.Address,
-		Truck:   truckResp.FromDomain(driverDomain.Truck),
+func FromDomain(driverDomain *drivers.Domain) (res *Drivers) {
+	if driverDomain != nil {
+		res = &Drivers{
+			Name:    driverDomain.Name,
+			Phone:   driverDomain.Phone,
+			Address: driverDomain.Address,
+			Truck:   truckResp.FromDomain(driverDomain.Truck),
+		}
 	}
+	return res
 }
