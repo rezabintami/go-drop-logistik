@@ -30,20 +30,23 @@ func (rec *Agents) ToExistingDomain() *agents.ExistingDomain {
 	}
 }
 
-func (rec *Agents) ToDomain() *agents.Domain {
-	return &agents.Domain{
-		ID:        rec.ID,
-		Name:      rec.Name,
-		Password:  rec.Password,
-		Email:     rec.Email,
-		Roles:     rec.Roles,
-		Address:   rec.Address,
-		Balance:   rec.Balance,
-		Latitude:  rec.Latitude,
-		Longitude: rec.Longitude,
-		CreatedAt: rec.CreatedAt,
-		UpdatedAt: rec.UpdatedAt,
+func (rec *Agents) ToDomain() (res *agents.Domain) {
+	if rec != nil {
+		res = &agents.Domain{
+			ID:        rec.ID,
+			Name:      rec.Name,
+			Password:  rec.Password,
+			Email:     rec.Email,
+			Roles:     rec.Roles,
+			Address:   rec.Address,
+			Balance:   rec.Balance,
+			Latitude:  rec.Latitude,
+			Longitude: rec.Longitude,
+			CreatedAt: rec.CreatedAt,
+			UpdatedAt: rec.UpdatedAt,
+		}
 	}
+	return res
 }
 
 func fromDomain(agentDomain agents.Domain) *Agents {

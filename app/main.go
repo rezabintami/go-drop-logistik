@@ -19,10 +19,11 @@ import (
 	_agentController "go-drop-logistik/controllers/agents"
 	_agentRepo "go-drop-logistik/drivers/databases/agents"
 
+	_phoneAgentUsecase "go-drop-logistik/business/phoneagent"
 	_phoneAgentRepo "go-drop-logistik/drivers/databases/phoneagent"
 
-	_manifestreceiptUsecase "go-drop-logistik/business/manifestreceipt"
-	_manifestreceiptRepo "go-drop-logistik/drivers/databases/manifestreceipt"
+	_manifestReceiptUsecase "go-drop-logistik/business/manifestreceipt"
+	_manifestReceiptRepo "go-drop-logistik/drivers/databases/manifestreceipt"
 
 	_phoneUsecase "go-drop-logistik/business/phones"
 	_phoneController "go-drop-logistik/controllers/phones"
@@ -98,26 +99,27 @@ func main() {
 	agentRepo := _agentRepo.NewMySQLAgentRepository(mysql_db)
 	adminRepo := _adminRepo.NewMySQLAdminRepository(mysql_db)
 	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(mysql_db)
-	manifestReceiptRepo := _manifestreceiptRepo.NewMySQLManifestReceiptRepository(mysql_db)
+	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(mysql_db)
 	manifestRepo := _manifestRepo.NewMySQLManifestRepository(mysql_db)
 	truckRepo := _truckRepo.NewMySQLTruckRepository(mysql_db)
 	driverRepo := _driverRepo.NewMySQLDriverRepository(mysql_db)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
-	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, phoneAgentRepo, &configJWT, timeoutContext)
-	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, phoneAgentRepo, phoneUsecase, &configJWT, timeoutContext, logger)
+	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, &configJWT, timeoutContext)
+	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext, logger)
 	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
 	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
-	manifestReceiptUsecase := _manifestreceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
+	manifestReceiptUsecase := _manifestReceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
 	manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
 	truckUsecase := _truckUsecase.NewTrucksUsecase(truckRepo, &configJWT, timeoutContext)
 	driverUsecase := _driverUsecase.NewDriverUsecase(driverRepo, &configJWT, timeoutContext)
+	phoneAgentUsecase := _phoneAgentUsecase.NewPhoneAgentUsecase(phoneAgentRepo, &configJWT, timeoutContext)
 
 	//! CONTROLLER
 	userCtrl := _userController.NewUserController(userUsecase)
-	phoneCtrl := _phoneController.NewPhonesController(phoneUsecase)
-	agentCtrl := _agentController.NewAgentController(agentUsecase)
+	phoneCtrl := _phoneController.NewPhonesController(phoneUsecase, phoneAgentUsecase)
+	agentCtrl := _agentController.NewAgentController(agentUsecase, phoneAgentUsecase, phoneUsecase)
 	adminCtrl := _adminController.NewAdminController(adminUsecase, agentUsecase)
 	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase, manifestReceiptUsecase)
 	manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase)

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"go-drop-logistik/app/middleware"
+	"go-drop-logistik/business/phoneagent"
 	"go-drop-logistik/business/phones"
 	"go-drop-logistik/controllers/phones/request"
 	"go-drop-logistik/controllers/phones/response"
@@ -14,12 +15,14 @@ import (
 )
 
 type PhonesController struct {
-	phonesUsecase phones.Usecase
+	phonesUsecase     phones.Usecase
+	phoneAgentUsecase phoneagent.Usecase
 }
 
-func NewPhonesController(uc phones.Usecase) *PhonesController {
+func NewPhonesController(ph phones.Usecase, pa phoneagent.Usecase) *PhonesController {
 	return &PhonesController{
-		phonesUsecase: uc,
+		phonesUsecase:     ph,
+		phoneAgentUsecase: pa,
 	}
 }
 
@@ -33,10 +36,16 @@ func (controller *PhonesController) StorePhone(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err := controller.phonesUsecase.StorePhone(ctx, req.ToDomain(), id)
+	phoneId, err := controller.phonesUsecase.StorePhone(ctx, req.ToDomain(), id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
+
+	err = controller.phoneAgentUsecase.Store(ctx, phoneId, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
 	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
 }
 
@@ -58,12 +67,18 @@ func (controller *PhonesController) GetAll(c echo.Context) error {
 
 	id := middleware.GetUser(c).ID
 
-	phone, err := controller.phonesUsecase.GetAll(ctx, id)
+	allPhone, err := controller.phoneAgentUsecase.GetAllByAgentID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromListDomain(phone))
+	var phoneDomain []phones.Domain
+	for _, value := range allPhone {
+		phone, _ := controller.phonesUsecase.GetByID(ctx, value.PhoneID)
+		phoneDomain = append(phoneDomain, phone)
+	}
+
+	return base_response.NewSuccessResponse(c, response.FromListDomain(phoneDomain))
 }
 
 func (controller *PhonesController) DeletePhone(c echo.Context) error {
@@ -72,7 +87,12 @@ func (controller *PhonesController) DeletePhone(c echo.Context) error {
 
 	agentId := middleware.GetUser(c).ID
 
-	err := controller.phonesUsecase.Delete(ctx, agentId, phoneId)
+	err := controller.phoneAgentUsecase.Delete(ctx, agentId, phoneId)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	err = controller.phonesUsecase.Delete(ctx, phoneId)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}

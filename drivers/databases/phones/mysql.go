@@ -30,7 +30,7 @@ func (repository *mysqlPhoneRepository) StorePhone(ctx context.Context, phoneDom
 
 func (repository *mysqlPhoneRepository) GetByID(ctx context.Context, id int) (phones.Domain, error) {
 	phone := Phones{}
-	result := repository.Conn.Where("phones.id = ?", id).First(&phone)
+	result := repository.Conn.Where("id = ?", id).First(&phone)
 	if result.Error != nil {
 		return phones.Domain{}, result.Error
 	}
@@ -56,7 +56,7 @@ func (repository *mysqlPhoneRepository) GetAll(ctx context.Context) ([]phones.Do
 func (repository *mysqlPhoneRepository) Update(ctx context.Context, phoneDomain *phones.Domain, id int) error {
 	phoneUpdate := fromDomain(*phoneDomain)
 
-	result := repository.Conn.Where("phones.id = ?", id).Updates(&phoneUpdate)
+	result := repository.Conn.Where("id = ?", id).Updates(&phoneUpdate)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -66,7 +66,7 @@ func (repository *mysqlPhoneRepository) Update(ctx context.Context, phoneDomain 
 
 func (repository *mysqlPhoneRepository) Delete(ctx context.Context, id int) error {
 	phoneDelete := Phones{}
-	result := repository.Conn.Where("phones.id = ?", id).Delete(&phoneDelete)
+	result := repository.Conn.Where("id = ?", id).Delete(&phoneDelete)
 	if result.Error != nil {
 		return result.Error
 	}
