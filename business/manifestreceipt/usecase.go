@@ -75,7 +75,6 @@ func (usecase *ManifestReceiptUsecase) UpdateStatusByManifest(ctx context.Contex
 	}
 
 	for _, value := range res {
-
 		err := usecase.receiptRepository.Update(ctx, &receipts.Domain{Status: enum.SUCCESS}, value.ReceiptID)
 		if err != nil {
 			return err

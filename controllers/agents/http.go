@@ -5,6 +5,8 @@ import (
 
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/business/agents"
+	"go-drop-logistik/business/phoneagent"
+	"go-drop-logistik/business/phones"
 	"go-drop-logistik/controllers/agents/request"
 	"go-drop-logistik/controllers/agents/response"
 	base_response "go-drop-logistik/helper/response"
@@ -13,12 +15,16 @@ import (
 )
 
 type AgentController struct {
-	agentUsecase agents.Usecase
+	agentUsecase      agents.Usecase
+	phoneAgentUsecase phoneagent.Usecase
+	phoneUsecase      phones.Usecase
 }
 
-func NewAgentController(uc agents.Usecase) *AgentController {
+func NewAgentController(ag agents.Usecase, pa phoneagent.Usecase, ph phones.Usecase) *AgentController {
 	return &AgentController{
-		agentUsecase: uc,
+		agentUsecase:      ag,
+		phoneAgentUsecase: pa,
+		phoneUsecase:      ph,
 	}
 }
 
@@ -50,6 +56,13 @@ func (controller *AgentController) GetByID(c echo.Context) error {
 	user, err := controller.agentUsecase.GetByID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	phone, _ := controller.phoneAgentUsecase.GetAllByAgentID(ctx, id)
+
+	for _, phones := range phone {
+		number, _ := controller.phoneUsecase.GetByID(ctx, phones.PhoneID)
+		user.Phone = append(user.Phone, number.Phone)
 	}
 
 	return base_response.NewSuccessResponse(c, response.FromDomain(user))

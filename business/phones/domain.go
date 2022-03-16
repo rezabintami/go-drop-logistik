@@ -13,17 +13,15 @@ type Domain struct {
 }
 
 type Usecase interface {
-	StorePhone(ctx context.Context, data *Domain, id int) error
+	StorePhone(ctx context.Context, data *Domain, id int) (int, error)
 	GetByID(ctx context.Context, id int) (Domain, error)
-	GetAll(ctx context.Context, agentId int) ([]Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error
-	Delete(ctx context.Context, agentId, phoneId int) error
+	Delete(ctx context.Context, phoneId int) error
 }
 
 type Repository interface {
 	StorePhone(ctx context.Context, data *Domain) (int, error)
 	GetByID(ctx context.Context, id int) (Domain, error)
-	GetAll(ctx context.Context) ([]Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error
 	Delete(ctx context.Context, id int) error
 }

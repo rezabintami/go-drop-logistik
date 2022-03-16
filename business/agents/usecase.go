@@ -4,8 +4,6 @@ import (
 	"context"
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/business"
-	"go-drop-logistik/business/phoneagent"
-	"go-drop-logistik/business/phones"
 	"go-drop-logistik/helper/encrypt"
 	"go-drop-logistik/helper/logging"
 	"strings"
@@ -13,22 +11,18 @@ import (
 )
 
 type AgentUsecase struct {
-	agentRepository      Repository
-	phoneAgentRepository phoneagent.Repository
-	phoneUsecase         phones.Usecase
-	contextTimeout       time.Duration
-	jwtusecaseth         *middleware.ConfigJWT
-	logger               logging.Logger
+	agentRepository Repository
+	contextTimeout  time.Duration
+	jwtusecaseth    *middleware.ConfigJWT
+	logger          logging.Logger
 }
 
-func NewAgentUsecase(ur Repository, pa phoneagent.Repository, pu phones.Usecase, jwtusecaseth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
+func NewAgentUsecase(ur Repository, jwtusecaseth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
 	return &AgentUsecase{
-		agentRepository:      ur,
-		phoneAgentRepository: pa,
-		phoneUsecase:         pu,
-		jwtusecaseth:         jwtusecaseth,
-		contextTimeout:       timeout,
-		logger:               logger,
+		agentRepository: ur,
+		jwtusecaseth:    jwtusecaseth,
+		contextTimeout:  timeout,
+		logger:          logger,
 	}
 }
 
@@ -82,16 +76,6 @@ func (usecase *AgentUsecase) GetByID(ctx context.Context, id int) (Domain, error
 	}
 
 	usecase.logger.LogEntry(request, result).Info("incoming request")
-
-	var listPhone []string
-	phone, _ := usecase.phoneAgentRepository.GetAllByAgentID(ctx, id)
-
-	for _, phones := range phone {
-		number, _ := usecase.phoneUsecase.GetByID(ctx, phones.PhoneID)
-		listPhone = append(listPhone, number.Phone)
-	}
-	
-	users.Phone = listPhone
 
 	return users, nil
 }
