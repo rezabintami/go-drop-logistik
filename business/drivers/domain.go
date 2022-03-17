@@ -1,26 +1,28 @@
-package phones
+package drivers
 
 import (
 	"context"
-	"time"
+	"go-drop-logistik/business/trucks"
 )
 
 type Domain struct {
-	ID        int
-	Phone     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID      int
+	Name    string
+	Phone   string
+	Address string
+	TruckID int
+	Truck   *trucks.Domain
 }
 
 type Usecase interface {
-	StorePhone(ctx context.Context, data *Domain, id int) (int, error)
+	Store(ctx context.Context, data *Domain) error
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error
-	Delete(ctx context.Context, phoneId int) error
+	Delete(ctx context.Context, id int) error
 }
 
 type Repository interface {
-	StorePhone(ctx context.Context, data *Domain) (int, error)
+	Store(ctx context.Context, data *Domain) error
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error
 	Delete(ctx context.Context, id int) error

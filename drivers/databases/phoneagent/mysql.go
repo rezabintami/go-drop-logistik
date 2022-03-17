@@ -35,7 +35,7 @@ func (repository *mysqlPhoneAgentRepository) Store(ctx context.Context, phoneId,
 
 func (repository *mysqlPhoneAgentRepository) GetByAgentID(ctx context.Context, id int) (phoneagent.Domain, error) {
 	phoneAgent := PhoneAgent{}
-	result := repository.Conn.Where("agent_id = ?", id).First(&phoneAgent)
+	result := repository.Conn.Preload("Phone").Where("agent_id = ?", id).First(&phoneAgent)
 	if result.Error != nil {
 		return phoneagent.Domain{}, result.Error
 	}
@@ -45,7 +45,7 @@ func (repository *mysqlPhoneAgentRepository) GetByAgentID(ctx context.Context, i
 
 func (repository *mysqlPhoneAgentRepository) GetAllByAgentID(ctx context.Context, id int) ([]phoneagent.Domain, error) {
 	allPhoneAgent := []PhoneAgent{}
-	result := repository.Conn.Where("agent_id = ?", id).Find(&allPhoneAgent)
+	result := repository.Conn.Preload("Phone").Where("agent_id = ?", id).Find(&allPhoneAgent)
 	if result.Error != nil {
 		return []phoneagent.Domain{}, result.Error
 	}
@@ -60,7 +60,7 @@ func (repository *mysqlPhoneAgentRepository) GetAllByAgentID(ctx context.Context
 
 func (repository *mysqlPhoneAgentRepository) Delete(ctx context.Context, agentId, phoneId int) error {
 	phoneDelete := PhoneAgent{}
-	result := repository.Conn.Where("agent_id = ?", agentId).Where("phone_id = ?", phoneId).Delete(&phoneDelete)
+	result := repository.Conn.Preload("Phone").Preload("Agent").Where("agent_id = ?", agentId).Where("phone_id = ?", phoneId).Delete(&phoneDelete)
 	if result.Error != nil {
 		return result.Error
 	}

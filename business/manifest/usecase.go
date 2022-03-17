@@ -35,13 +35,13 @@ func (usecase *ManifestUsecase) StoreManifest(ctx context.Context, manifestDomai
 }
 
 func (usecase *ManifestUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
-	users, err := usecase.manifestRepository.GetByID(ctx, id)
+	manifest, err := usecase.manifestRepository.GetByID(ctx, id)
 
 	if err != nil {
 		return Domain{}, err
 	}
 
-	return users, nil
+	return manifest, nil
 }
 
 func (usecase *ManifestUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) {
