@@ -30,16 +30,19 @@ type ManifestPageResponse struct {
 	Total    int                 `json:"total"`
 }
 
-func FromDomain(manifestDomain manifest.Domain) Manifest {
-	return Manifest{
-		ID:        manifestDomain.ID,
-		Code:      manifestDomain.Code,
-		Status:    manifestDomain.Status,
-		Receipt:   receiptResp.FromManifestListDomain(&manifestDomain.Receipt),
-		DriverID:  manifestDomain.DriverID,
-		CreatedAt: manifestDomain.CreatedAt,
-		UpdatedAt: manifestDomain.UpdatedAt,
+func FromDomain(manifestDomain *manifest.Domain) (res *Manifest) {
+	if manifestDomain != nil {
+		res = &Manifest{
+			ID:        manifestDomain.ID,
+			Code:      manifestDomain.Code,
+			Status:    manifestDomain.Status,
+			Receipt:   receiptResp.FromManifestListDomain(&manifestDomain.Receipt),
+			DriverID:  manifestDomain.DriverID,
+			CreatedAt: manifestDomain.CreatedAt,
+			UpdatedAt: manifestDomain.UpdatedAt,
+		}
 	}
+	return res
 }
 
 func FromListDomain(manifestDomain []manifest.Domain, Count int) *ManifestPageResponse {

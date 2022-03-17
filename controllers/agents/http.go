@@ -52,5 +52,5 @@ func (controller *AgentController) GetByID(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(user))
+	return base_response.NewSuccessResponse(c, response.FromDomain(&user))
 }

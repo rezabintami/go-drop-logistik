@@ -15,15 +15,18 @@ type Agents struct {
 	Longitude float64  `json:"longitude"`
 }
 
-func FromDomain(userDomain agents.Domain) Agents {
-	return Agents{
-		ID:        userDomain.ID,
-		Name:      userDomain.Name,
-		Email:     userDomain.Email,
-		Phone:     userDomain.Phone,
-		Address:   userDomain.Address,
-		Balance:   userDomain.Balance,
-		Latitude:  userDomain.Latitude,
-		Longitude: userDomain.Longitude,
+func FromDomain(userDomain *agents.Domain) (res *Agents) {
+	if userDomain != nil {
+		res = &Agents{
+			ID:        userDomain.ID,
+			Name:      userDomain.Name,
+			Email:     userDomain.Email,
+			Phone:     userDomain.Phone,
+			Address:   userDomain.Address,
+			Balance:   userDomain.Balance,
+			Latitude:  userDomain.Latitude,
+			Longitude: userDomain.Longitude,
+		}
 	}
+	return res
 }

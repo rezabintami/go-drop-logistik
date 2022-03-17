@@ -24,8 +24,8 @@ func NewManifestReceiptUsecase(ur Repository, rr receipts.Repository, jwtauth *m
 	}
 }
 
-func (usecase *ManifestReceiptUsecase) Store(ctx context.Context, manifestId, ReceiptId int) error {
-	err := usecase.manifestReceiptRepository.Store(ctx, manifestId, ReceiptId)
+func (usecase *ManifestReceiptUsecase) Store(ctx context.Context, ManifestId, ReceiptId int) error {
+	err := usecase.manifestReceiptRepository.Store(ctx, ManifestId, ReceiptId)
 	if err != nil {
 		return err
 	}

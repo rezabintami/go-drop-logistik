@@ -60,7 +60,7 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 		manifest.Receipt = append(manifest.Receipt, *value.Receipt)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(manifest))
+	return base_response.NewSuccessResponse(c, response.FromDomain(&manifest))
 }
 
 func (controller *ManifestController) Fetch(c echo.Context) error {

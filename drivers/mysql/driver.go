@@ -9,6 +9,8 @@ import (
 	"go-drop-logistik/drivers/databases/phoneagent"
 	"go-drop-logistik/drivers/databases/phones"
 	"go-drop-logistik/drivers/databases/receipts"
+	"go-drop-logistik/drivers/databases/trackmanifest"
+	"go-drop-logistik/drivers/databases/tracks"
 	"go-drop-logistik/drivers/databases/users"
 
 	"log"
@@ -47,6 +49,8 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		&phoneagent.PhoneAgent{},
 		&manifest.Manifest{},
 		&manifestreceipt.ManifestReceipt{},
+		&tracks.Tracks{},
+		&trackmanifest.TrackManifest{},
 	)
 
 	return db
