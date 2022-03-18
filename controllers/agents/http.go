@@ -65,5 +65,5 @@ func (controller *AgentController) GetByID(c echo.Context) error {
 		user.Phone = append(user.Phone, number.Phone)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(user))
+	return base_response.NewSuccessResponse(c, response.FromDomain(&user))
 }

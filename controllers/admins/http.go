@@ -95,8 +95,6 @@ func (controller *AdminController) AgentRegister(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
-
 	err := controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)

@@ -24,8 +24,8 @@ func NewManifestReceiptUsecase(ur Repository, rr receipts.Repository, jwtauth *m
 	}
 }
 
-func (usecase *ManifestReceiptUsecase) Store(ctx context.Context, manifestId, ReceiptId int) error {
-	err := usecase.manifestReceiptRepository.Store(ctx, manifestId, ReceiptId)
+func (usecase *ManifestReceiptUsecase) Store(ctx context.Context, ManifestId, ReceiptId int) error {
+	err := usecase.manifestReceiptRepository.Store(ctx, ManifestId, ReceiptId)
 	if err != nil {
 		return err
 	}
@@ -46,6 +46,14 @@ func (usecase *ManifestReceiptUsecase) GetByManifestID(ctx context.Context, id i
 	res, err := usecase.manifestReceiptRepository.GetByManifestID(ctx, id)
 	if err != nil {
 		return Domain{}, err
+	}
+	return res, nil
+}
+
+func (usecase *ManifestReceiptUsecase) GetByReceiptID(ctx context.Context, id int) (int, error) {
+	res, err := usecase.manifestReceiptRepository.GetByReceiptID(ctx, id)
+	if err != nil {
+		return 0, err
 	}
 	return res, nil
 }

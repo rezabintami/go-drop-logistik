@@ -14,10 +14,15 @@ type Receipts struct {
 	PhoneSender     string    `json:"phone_sender"`
 	AddressSender   string    `json:"address_sender"`
 	Weight          float64   `json:"weight"`
+	Unit            string    `json:"unit"`
 	Price           float64   `json:"price"`
 	Amount          float64   `json:"amount"`
 	Status          string    `json:"status"`
 	PickupAt        time.Time `json:"pickup_at"`
+}
+
+type TrackingReceipts struct {
+	Code string `json:"code"`
 }
 
 func (req *Receipts) ToDomain() *receipts.Domain {
@@ -30,9 +35,16 @@ func (req *Receipts) ToDomain() *receipts.Domain {
 		PhoneSender:     req.PhoneSender,
 		AddressSender:   req.AddressSender,
 		Weight:          req.Weight,
+		Unit:            req.Unit,
 		Price:           req.Price,
 		Amount:          req.Amount,
 		Status:          req.Status,
 		PickupAt:        req.PickupAt,
+	}
+}
+
+func (req *TrackingReceipts) TrackingReceiptToDomain() *receipts.Domain {
+	return &receipts.Domain{
+		Code: req.Code,
 	}
 }

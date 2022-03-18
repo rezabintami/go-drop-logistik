@@ -37,6 +37,16 @@ func (repository *mysqlReceiptRepository) GetByID(ctx context.Context, id int) (
 	return *rec.ToDomain(), nil
 }
 
+func (repository *mysqlReceiptRepository) GetByCode(ctx context.Context, code string) (receipts.TrackDomain, error) {
+	rec := Receipts{}
+	result := repository.Conn.Where("receipts.code = ?", code).First(&rec)
+	if result.Error != nil {
+		return receipts.TrackDomain{}, result.Error
+	}
+
+	return *rec.TrackToDomain(), nil
+}
+
 func (repository *mysqlReceiptRepository) Fetch(ctx context.Context, page, perpage int) ([]receipts.Domain, int, error) {
 	rec := []Receipts{}
 

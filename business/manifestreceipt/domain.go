@@ -17,6 +17,7 @@ type Usecase interface {
 	Store(ctx context.Context, manifestId, ReceiptId int) error
 	GetAllByManifestID(ctx context.Context, id int) ([]Domain, error)
 	GetByManifestID(ctx context.Context, id int) (Domain, error)
+	GetByReceiptID(ctx context.Context, id int) (int, error)
 	DeleteByReceipt(ctx context.Context, ReceiptId int) error
 	DeleteByManifest(ctx context.Context, manifestId int) error
 	UpdateStatusByManifest(ctx context.Context, manifestId int) error
@@ -26,6 +27,7 @@ type Repository interface {
 	Store(ctx context.Context, manifestId, ReceiptId int) error
 	GetAllByManifestID(ctx context.Context, id int) ([]Domain, error)
 	GetByManifestID(ctx context.Context, id int) (Domain, error)
+	GetByReceiptID(ctx context.Context, id int) (int, error)
 	DeleteByReceipt(ctx context.Context, ReceiptId int) error
 	DeleteByManifest(ctx context.Context, manifestId int) error
 }
