@@ -61,7 +61,7 @@ func (controller *UserController) GetByID(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	id := middleware.GetUser(c).ID
-
+	
 	user, err := controller.userUsecase.GetByID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)

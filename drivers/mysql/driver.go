@@ -2,7 +2,19 @@ package mysql_driver
 
 import (
 	"fmt"
+	"go-drop-logistik/drivers/databases/admins"
+	"go-drop-logistik/drivers/databases/agents"
+	"go-drop-logistik/drivers/databases/drivers"
+	"go-drop-logistik/drivers/databases/manifest"
+	"go-drop-logistik/drivers/databases/manifestreceipt"
+	"go-drop-logistik/drivers/databases/phoneagent"
+	"go-drop-logistik/drivers/databases/phones"
+	"go-drop-logistik/drivers/databases/receipts"
+	"go-drop-logistik/drivers/databases/trackmanifest"
+	"go-drop-logistik/drivers/databases/tracks"
+	"go-drop-logistik/drivers/databases/trucks"
 	"go-drop-logistik/drivers/databases/users"
+
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -30,7 +42,20 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&users.Users{})
+	db.AutoMigrate(
+		&users.Users{},
+		&agents.Agents{},
+		&admins.Admins{},
+		&receipts.Receipts{},
+		&phones.Phones{},
+		&phoneagent.PhoneAgent{},
+		&manifest.Manifest{},
+		&manifestreceipt.ManifestReceipt{},
+		&tracks.Tracks{},
+		&trackmanifest.TrackManifest{},
+		&trucks.Trucks{},
+		&drivers.Drivers{},
+	)
 
 	return db
 }
