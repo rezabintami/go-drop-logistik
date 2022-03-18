@@ -6,6 +6,7 @@ import (
 
 	"go-drop-logistik/business/manifestreceipt"
 	"go-drop-logistik/business/receipts"
+	"go-drop-logistik/business/trackmanifest"
 	"go-drop-logistik/controllers/receipts/request"
 	"go-drop-logistik/controllers/receipts/response"
 	base_response "go-drop-logistik/helper/response"
@@ -16,12 +17,14 @@ import (
 type ReceiptController struct {
 	receiptUsecase         receipts.Usecase
 	manifestreceiptUsecase manifestreceipt.Usecase
+	trackManifestUsecase   trackmanifest.Usecase
 }
 
-func NewReceiptController(uc receipts.Usecase, mr manifestreceipt.Usecase) *ReceiptController {
+func NewReceiptController(uc receipts.Usecase, mr manifestreceipt.Usecase, tr trackmanifest.Usecase) *ReceiptController {
 	return &ReceiptController{
 		receiptUsecase:         uc,
 		manifestreceiptUsecase: mr,
+		trackManifestUsecase:   tr,
 	}
 }
 
@@ -57,6 +60,37 @@ func (controller *ReceiptController) GetByID(c echo.Context) error {
 	}
 
 	return base_response.NewSuccessResponse(c, response.FromDomain(receipt))
+}
+
+func (controller *ReceiptController) GetByCode(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	req := request.TrackingReceipts{}
+	if err := c.Bind(&req); err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	receipt, err := controller.receiptUsecase.GetByCode(ctx, req.Code)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	manifestId, err := controller.manifestreceiptUsecase.GetByReceiptID(ctx, receipt.ID)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+	
+	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, manifestId)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	for _, value := range tracks {
+		receipt.Tracks = append(receipt.Tracks, *value.Track)
+	}
+
+
+	return base_response.NewSuccessResponse(c, response.TrackFromDomain(receipt))
 }
 
 func (controller *ReceiptController) Fetch(c echo.Context) error {

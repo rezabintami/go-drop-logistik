@@ -46,7 +46,7 @@ func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, 
 		return "", business.ErrEmailPasswordNotFound
 	}
 
-	token := usecase.jwtusecaseth.GenerateToken(existedUser.ID, existedUser.Roles)
+	token := usecase.jwtusecaseth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
 	result := map[string]interface{}{
 		"success": "true",
 	}

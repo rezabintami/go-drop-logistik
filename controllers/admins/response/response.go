@@ -6,13 +6,13 @@ import (
 )
 
 type Admins struct {
-	ID    int    `gorm:"primary_key" json:"id"`
+	ID    int    `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
 type Agents struct {
-	ID        int     `gorm:"primary_key" json:"id"`
+	ID        int     `json:"id"`
 	Name      string  `json:"name"`
 	Email     string  `json:"email"`
 	Address   string  `json:"address"`

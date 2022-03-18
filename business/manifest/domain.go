@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/drivers"
 	"go-drop-logistik/business/receipts"
+	"go-drop-logistik/business/tracks"
 	"time"
 )
 
@@ -13,7 +14,8 @@ type Domain struct {
 	Status    string
 	Receipt   []receipts.Domain
 	DriverID  int
-	Driver 	  *drivers.Domain
+	Driver    *drivers.Domain
+	Tracks    []tracks.Domain
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

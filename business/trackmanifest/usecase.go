@@ -37,6 +37,16 @@ func (usecase *TrackManifestUsecase) GetByManifestID(ctx context.Context, id int
 	return res, nil
 }
 
+func (usecase *TrackManifestUsecase) GetAllByManifestID(ctx context.Context, id int) ([]Domain, error) {
+	res, err := usecase.trackManifestRepository.GetAllByManifestID(ctx, id)
+
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return res, nil
+}
+
 func (usecase *TrackManifestUsecase) DeleteByManifest(ctx context.Context, manifestId int) error {
 	err := usecase.trackManifestRepository.DeleteByManifest(ctx, manifestId)
 	if err != nil {

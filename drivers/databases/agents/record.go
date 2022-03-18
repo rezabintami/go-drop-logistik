@@ -23,6 +23,7 @@ func (rec *Agents) ToExistingDomain() *agents.ExistingDomain {
 	return &agents.ExistingDomain{
 		ID:        rec.ID,
 		Password:  rec.Password,
+		Name:      rec.Name,
 		Email:     rec.Email,
 		Roles:     rec.Roles,
 		CreatedAt: rec.CreatedAt,

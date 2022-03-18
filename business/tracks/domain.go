@@ -3,30 +3,25 @@ package tracks
 import (
 	"context"
 	"go-drop-logistik/business/agents"
-	"go-drop-logistik/business/manifest"
 	"time"
 )
 
 type Domain struct {
-	ID                 int `gorm:"primary_key"`
+	ID                 int 
 	StartAgentID       int
 	StartAgent         *agents.Domain
 	CurrentAgentID     int
 	CurrentAgent       *agents.Domain
 	DestinationAgentID int
 	DestinationAgent   *agents.Domain
-	ManifestID         int
-	Manifest 		   *manifest.Domain
 	Message            string
 	CreatedAt          time.Time
 }
 
 type Usecase interface {
-	StoreTrack(ctx context.Context, data *Domain) error
-	GetByID(ctx context.Context, id int) (Domain, error)
+	StoreTrack(ctx context.Context, data *Domain, agentName string) (int, error)
 }
 
 type Repository interface {
-	StoreTrack(ctx context.Context, data *Domain) error
-	GetByID(ctx context.Context, id int) (Domain, error)
+	StoreTrack(ctx context.Context, data *Domain) (int, error)
 }

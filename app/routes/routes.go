@@ -8,6 +8,7 @@ import (
 	"go-drop-logistik/controllers/manifest"
 	"go-drop-logistik/controllers/phones"
 	"go-drop-logistik/controllers/receipts"
+	"go-drop-logistik/controllers/tracks"
 	"go-drop-logistik/controllers/trucks"
 	"go-drop-logistik/controllers/users"
 
@@ -26,6 +27,7 @@ type ControllerList struct {
 	ManifestController manifest.ManifestController
 	TruckController    trucks.TrucksController
 	DriverController   drivers.DriversController
+	TrackController   tracks.TracksController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -34,7 +36,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	apiV1 := e.Group("/api/v1")
 
 	//! RESI
-	// apiV1.POST("/tracking", cl.UserController.Login)
+	apiV1.POST("/tracking", cl.ReceiptController.GetByCode)
 
 	//! AUTH
 	auth := apiV1.Group("/auth")
@@ -60,6 +62,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	manifest.PUT("/:id", cl.ManifestController.Update)
 	manifest.PUT("/:id/finish", cl.ManifestController.UpdateStatus)
 	manifest.DELETE("/:id/decline", cl.ManifestController.Delete)
+
+	manifestTrack := manifest.Group("/:id/track")
+	manifestTrack.POST("/add", cl.TrackController.CreateTrack)
 
 	agentPhone := agent.Group("/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)

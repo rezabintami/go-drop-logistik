@@ -35,12 +35,22 @@ func (repository *mysqlManifestReceiptRepository) Store(ctx context.Context, man
 
 func (repository *mysqlManifestReceiptRepository) GetByManifestID(ctx context.Context, id int) (manifestreceipt.Domain, error) {
 	manifestReceipt := ManifestReceipt{}
-	result := repository.Conn.Where("manifest_id = ?", id).First(&manifestReceipt)
+	result := repository.Conn.Preload("Receipt").Where("manifest_id = ?", id).First(&manifestReceipt)
 	if result.Error != nil {
 		return manifestreceipt.Domain{}, result.Error
 	}
 
 	return *manifestReceipt.ToDomain(), nil
+}
+
+func (repository *mysqlManifestReceiptRepository) GetByReceiptID(ctx context.Context, id int) (int, error) {
+	manifestReceipt := ManifestReceipt{}
+	result := repository.Conn.Where("receipt_id = ?", id).First(&manifestReceipt)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return manifestReceipt.ManifestID, nil
 }
 
 func (repository *mysqlManifestReceiptRepository) GetAllByManifestID(ctx context.Context, id int) ([]manifestreceipt.Domain, error) {

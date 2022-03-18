@@ -25,6 +25,9 @@ import (
 	_manifestReceiptUsecase "go-drop-logistik/business/manifestreceipt"
 	_manifestReceiptRepo "go-drop-logistik/drivers/databases/manifestreceipt"
 
+	_trackManifestUsecase "go-drop-logistik/business/trackmanifest"
+	_trackManifestRepo "go-drop-logistik/drivers/databases/trackmanifest"
+
 	_phoneUsecase "go-drop-logistik/business/phones"
 	_phoneController "go-drop-logistik/controllers/phones"
 	_phoneRepo "go-drop-logistik/drivers/databases/phones"
@@ -36,6 +39,10 @@ import (
 	_receiptUsecase "go-drop-logistik/business/receipts"
 	_receiptController "go-drop-logistik/controllers/receipts"
 	_receiptRepo "go-drop-logistik/drivers/databases/receipts"
+
+	_trackUsecase "go-drop-logistik/business/tracks"
+	_trackController "go-drop-logistik/controllers/tracks"
+	_trackRepo "go-drop-logistik/drivers/databases/tracks"
 
 	_manifestUsecase "go-drop-logistik/business/manifest"
 	_manifestController "go-drop-logistik/controllers/manifest"
@@ -103,6 +110,8 @@ func main() {
 	manifestRepo := _manifestRepo.NewMySQLManifestRepository(mysql_db)
 	truckRepo := _truckRepo.NewMySQLTruckRepository(mysql_db)
 	driverRepo := _driverRepo.NewMySQLDriverRepository(mysql_db)
+	trackRepo := _trackRepo.NewMySQLTrackRepository(mysql_db)
+	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(mysql_db)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
@@ -115,16 +124,19 @@ func main() {
 	truckUsecase := _truckUsecase.NewTrucksUsecase(truckRepo, &configJWT, timeoutContext)
 	driverUsecase := _driverUsecase.NewDriverUsecase(driverRepo, &configJWT, timeoutContext)
 	phoneAgentUsecase := _phoneAgentUsecase.NewPhoneAgentUsecase(phoneAgentRepo, &configJWT, timeoutContext)
+	trackUsecase := _trackUsecase.NewTrackUsecase(trackRepo, &configJWT, timeoutContext)
+	trackManifestUsecase := _trackManifestUsecase.NewTrackManifestUsecase(trackManifestRepo, &configJWT, timeoutContext)
 
 	//! CONTROLLER
 	userCtrl := _userController.NewUserController(userUsecase)
 	phoneCtrl := _phoneController.NewPhonesController(phoneUsecase, phoneAgentUsecase)
 	agentCtrl := _agentController.NewAgentController(agentUsecase, phoneAgentUsecase, phoneUsecase)
 	adminCtrl := _adminController.NewAdminController(adminUsecase, agentUsecase)
-	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase, manifestReceiptUsecase)
-	manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase)
+	receiptCtrl := _receiptController.NewReceiptController(receiptUsecase, manifestReceiptUsecase, trackManifestUsecase)
+	manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase, trackManifestUsecase)
 	truckCtrl := _truckController.NewTrucksController(truckUsecase)
 	driverCtrl := _driverController.NewDriversController(driverUsecase)
+	trackCtrl := _trackController.NewTracksController(trackUsecase, trackManifestUsecase)
 
 	routesInit := _routes.ControllerList{
 		MiddlewareLog:      middlewareLog,
@@ -137,6 +149,7 @@ func main() {
 		ManifestController: *manifestCtrl,
 		TruckController:    *truckCtrl,
 		DriverController:   *driverCtrl,
+		TrackController:    *trackCtrl,
 	}
 	routesInit.RouteRegister(e)
 

@@ -4,7 +4,7 @@ import (
 	"go-drop-logistik/business/manifest"
 	driverResp "go-drop-logistik/controllers/drivers/response"
 	receiptResp "go-drop-logistik/controllers/receipts/response"
-	"time"
+	trackResp "go-drop-logistik/controllers/tracks/response"
 )
 
 type Manifest struct {
@@ -13,8 +13,7 @@ type Manifest struct {
 	Status    string                  `json:"status"`
 	Receipt   *[]receiptResp.Receipts `json:"receipts"`
 	Driver    *driverResp.Drivers     `json:"driver"`
-	CreatedAt time.Time               `json:"created_at"`
-	UpdatedAt time.Time               `json:"updated_at"`
+	Tracks    *[]trackResp.Track      `json:"track"`
 }
 
 type ManifestResponse struct {
@@ -22,8 +21,6 @@ type ManifestResponse struct {
 	Code      string              `json:"code"`
 	Status    string              `json:"status"`
 	Driver    *driverResp.Drivers `json:"driver"`
-	CreatedAt time.Time           `json:"created_at"`
-	UpdatedAt time.Time           `json:"updated_at"`
 }
 
 type ManifestPageResponse struct {
@@ -39,8 +36,7 @@ func FromDomain(manifestDomain *manifest.Domain) (res *Manifest) {
 			Status:    manifestDomain.Status,
 			Receipt:   receiptResp.FromManifestListDomain(&manifestDomain.Receipt),
 			Driver:    driverResp.FromDomain(manifestDomain.Driver),
-			CreatedAt: manifestDomain.CreatedAt,
-			UpdatedAt: manifestDomain.UpdatedAt,
+			Tracks:    trackResp.FromListDomain(&manifestDomain.Tracks),
 		}
 	}
 	return res
@@ -54,8 +50,6 @@ func FromListDomain(manifestDomain []manifest.Domain, Count int) *ManifestPageRe
 			Code:      value.Code,
 			Status:    value.Status,
 			Driver:    driverResp.FromDomain(value.Driver),
-			CreatedAt: value.CreatedAt,
-			UpdatedAt: value.UpdatedAt,
 		}
 		allManifest = append(allManifest, manifest)
 	}

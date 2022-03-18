@@ -10,18 +10,18 @@ import (
 )
 
 type ReceiptUsecase struct {
-	receiptRepository         Repository
-	contextTimeout            time.Duration
-	jwtAuth                   *middleware.ConfigJWT
-	logger                    logging.Logger
+	receiptRepository Repository
+	contextTimeout    time.Duration
+	jwtAuth           *middleware.ConfigJWT
+	logger            logging.Logger
 }
 
-func NewReceiptUsecase(ur Repository,  jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
+func NewReceiptUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
 	return &ReceiptUsecase{
-		receiptRepository:         ur,
-		jwtAuth:                   jwtauth,
-		contextTimeout:            timeout,
-		logger:                    logger,
+		receiptRepository: ur,
+		jwtAuth:           jwtauth,
+		contextTimeout:    timeout,
+		logger:            logger,
 	}
 }
 
@@ -33,7 +33,7 @@ func (usecase *ReceiptUsecase) StoreReceipt(ctx context.Context, receiptDomain *
 	if err != nil {
 		return receiptId, err
 	}
-	
+
 	return receiptId, nil
 }
 
@@ -45,6 +45,16 @@ func (usecase *ReceiptUsecase) GetByID(ctx context.Context, id int) (Domain, err
 	}
 
 	return users, nil
+}
+
+func (usecase *ReceiptUsecase) GetByCode(ctx context.Context, code string) (TrackDomain, error) {
+	result, err := usecase.receiptRepository.GetByCode(ctx, code)
+
+	if err != nil {
+		return TrackDomain{}, err
+	}
+
+	return result, nil
 }
 
 func (usecase *ReceiptUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) {

@@ -6,6 +6,7 @@ import (
 
 	"go-drop-logistik/business/manifest"
 	"go-drop-logistik/business/manifestreceipt"
+	"go-drop-logistik/business/trackmanifest"
 	"go-drop-logistik/controllers/manifest/request"
 	"go-drop-logistik/controllers/manifest/response"
 	"go-drop-logistik/helper/enum"
@@ -17,12 +18,14 @@ import (
 type ManifestController struct {
 	manifestUsecase        manifest.Usecase
 	manifestreceiptUsecase manifestreceipt.Usecase
+	trackManifestUsecase   trackmanifest.Usecase
 }
 
-func NewManifestController(uc manifest.Usecase, mr manifestreceipt.Usecase) *ManifestController {
+func NewManifestController(uc manifest.Usecase, mr manifestreceipt.Usecase, tr trackmanifest.Usecase) *ManifestController {
 	return &ManifestController{
 		manifestUsecase:        uc,
 		manifestreceiptUsecase: mr,
+		trackManifestUsecase:   tr,
 	}
 }
 
@@ -60,6 +63,15 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 		manifest.Receipt = append(manifest.Receipt, *value.Receipt)
 	}
 
+	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	for _, value := range tracks {
+		manifest.Tracks = append(manifest.Tracks, *value.Track)
+	}
+
 	return base_response.NewSuccessResponse(c, response.FromDomain(&manifest))
 }
 
@@ -87,7 +99,16 @@ func (controller *ManifestController) Delete(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	controller.manifestreceiptUsecase.DeleteByManifest(ctx, id)
+	err = controller.manifestreceiptUsecase.DeleteByManifest(ctx, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	err = controller.trackManifestUsecase.DeleteByManifest(ctx, id)
+	if err != nil {
+		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
 	return base_response.NewSuccessResponse(c, "Delete Successfully")
 }
 
@@ -123,6 +144,6 @@ func (controller *ManifestController) UpdateStatus(c echo.Context) error {
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
-	
+
 	return base_response.NewSuccessResponse(c, "Update Successfully")
 }

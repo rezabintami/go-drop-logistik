@@ -2,6 +2,7 @@ package response
 
 import (
 	"go-drop-logistik/business/receipts"
+	trackResp "go-drop-logistik/controllers/tracks/response"
 	"time"
 )
 
@@ -15,10 +16,29 @@ type Receipts struct {
 	PhoneSender     string    `json:"phone_sender"`
 	AddressSender   string    `json:"address_sender"`
 	Weight          float64   `json:"weight"`
+	Unit            string    `json:"unit"`
 	Price           float64   `json:"price"`
 	Amount          float64   `json:"amount"`
 	Status          string    `json:"status"`
 	PickupAt        time.Time `json:"pickup_at"`
+}
+
+type TrackReceipts struct {
+	ID              int                `json:"id"`
+	Code            string             `json:"code"`
+	Receiver        string             `json:"receiver"`
+	PhoneReceiver   string             `json:"phone_receiver"`
+	AddressReceiver string             `json:"address_receiver"`
+	Sender          string             `json:"sender"`
+	PhoneSender     string             `json:"phone_sender"`
+	AddressSender   string             `json:"address_sender"`
+	Weight          float64            `json:"weight"`
+	Unit            string             `json:"unit"`
+	Price           float64            `json:"price"`
+	Amount          float64            `json:"amount"`
+	Status          string             `json:"status"`
+	Tracks          *[]trackResp.Track `json:"track"`
+	PickupAt        time.Time          `json:"pickup_at"`
 }
 
 type ReceiptPageResponse struct {
@@ -37,9 +57,30 @@ func FromDomain(receiptDomain receipts.Domain) Receipts {
 		AddressReceiver: receiptDomain.AddressReceiver,
 		AddressSender:   receiptDomain.AddressSender,
 		Weight:          receiptDomain.Weight,
+		Unit:            receiptDomain.Unit,
 		Price:           receiptDomain.Price,
 		Amount:          receiptDomain.Amount,
 		Status:          receiptDomain.Status,
+		PickupAt:        receiptDomain.PickupAt,
+	}
+}
+
+func TrackFromDomain(receiptDomain receipts.TrackDomain) TrackReceipts {
+	return TrackReceipts{
+		ID:              receiptDomain.ID,
+		Code:            receiptDomain.Code,
+		Receiver:        receiptDomain.Receiver,
+		Sender:          receiptDomain.Sender,
+		PhoneReceiver:   receiptDomain.PhoneReceiver,
+		PhoneSender:     receiptDomain.PhoneSender,
+		AddressReceiver: receiptDomain.AddressReceiver,
+		AddressSender:   receiptDomain.AddressSender,
+		Weight:          receiptDomain.Weight,
+		Unit:            receiptDomain.Unit,
+		Price:           receiptDomain.Price,
+		Amount:          receiptDomain.Amount,
+		Status:          receiptDomain.Status,
+		Tracks:          trackResp.FromListDomain(&receiptDomain.Tracks),
 		PickupAt:        receiptDomain.PickupAt,
 	}
 }
@@ -57,6 +98,7 @@ func FromListDomain(receiptDomain []receipts.Domain, Count int) *ReceiptPageResp
 			AddressReceiver: value.AddressReceiver,
 			AddressSender:   value.AddressSender,
 			Weight:          value.Weight,
+			Unit:            value.Unit,
 			Price:           value.Price,
 			Amount:          value.Amount,
 			Status:          value.Status,
@@ -84,6 +126,7 @@ func FromManifestListDomain(receiptDomain *[]receipts.Domain) (res *[]Receipts) 
 				AddressReceiver: value.AddressReceiver,
 				AddressSender:   value.AddressSender,
 				Weight:          value.Weight,
+				Unit:            value.Unit,
 				Price:           value.Price,
 				Amount:          value.Amount,
 				Status:          value.Status,

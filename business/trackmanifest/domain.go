@@ -16,11 +16,13 @@ type Domain struct {
 type Usecase interface {
 	Store(ctx context.Context, manifestId, trackId int) error
 	GetByManifestID(ctx context.Context, id int) (Domain, error)
+	GetAllByManifestID(ctx context.Context, id int) ([]Domain, error)
 	DeleteByManifest(ctx context.Context, manifestId int) error
 }
 
 type Repository interface {
 	Store(ctx context.Context, manifestId, trackId int) error
 	GetByManifestID(ctx context.Context, id int) (Domain, error)
+	GetAllByManifestID(ctx context.Context, id int) ([]Domain, error)
 	DeleteByManifest(ctx context.Context, manifestId int) error
 }

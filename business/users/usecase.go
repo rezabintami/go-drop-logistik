@@ -46,7 +46,7 @@ func (uc *UserUsecase) Login(ctx context.Context, email, password string, sso bo
 		return "", business.ErrEmailPasswordNotFound
 	}
 
-	token := uc.jwtAuth.GenerateToken(existedUser.ID, existedUser.Roles)
+	token := uc.jwtAuth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
 	result := map[string]interface{}{
 		"success": "true",
 	}

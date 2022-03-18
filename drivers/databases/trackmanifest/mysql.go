@@ -43,6 +43,21 @@ func (repository *mysqlTrackManifestRepository) GetByManifestID(ctx context.Cont
 	return *trackManifest.ToDomain(), nil
 }
 
+func (repository *mysqlTrackManifestRepository) GetAllByManifestID(ctx context.Context, id int) ([]trackmanifest.Domain, error) {
+	allTrackManifest := []TrackManifest{}
+
+	result := repository.Conn.Preload("Track.StartAgent").Preload("Track.CurrentAgent").Preload("Track.DestinationAgent").Where("manifest_id = ?", id).Find(&allTrackManifest)
+	if result.Error != nil {
+		return []trackmanifest.Domain{}, result.Error
+	}
+
+	allTrackManifestDomain := []trackmanifest.Domain{}
+	for _, value := range allTrackManifest {
+		allTrackManifestDomain = append(allTrackManifestDomain, *value.ToDomain())
+	}
+
+	return allTrackManifestDomain, nil
+}
 func (repository *mysqlTrackManifestRepository) DeleteByManifest(ctx context.Context, manifestId int) error {
 	trackManifest := TrackManifest{}
 	result := repository.Conn.Preload("Track").Preload("Manifest").Where("manifest_id = ?", manifestId).Delete(&trackManifest)

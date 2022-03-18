@@ -50,6 +50,14 @@ func (usecase *ManifestReceiptUsecase) GetByManifestID(ctx context.Context, id i
 	return res, nil
 }
 
+func (usecase *ManifestReceiptUsecase) GetByReceiptID(ctx context.Context, id int) (int, error) {
+	res, err := usecase.manifestReceiptRepository.GetByReceiptID(ctx, id)
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
+}
+
 func (usecase *ManifestReceiptUsecase) DeleteByReceipt(ctx context.Context, ReceiptId int) error {
 	err := usecase.manifestReceiptRepository.DeleteByReceipt(ctx, ReceiptId)
 	if err != nil {

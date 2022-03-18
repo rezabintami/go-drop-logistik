@@ -36,7 +36,7 @@ func (usecase *AdminUsecase) Login(ctx context.Context, email, password string, 
 	if err != nil {
 		result := map[string]interface{}{
 			"susecasecess": "false",
-			"error":   err.Error(),
+			"error":        err.Error(),
 		}
 		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return "", err
@@ -46,7 +46,7 @@ func (usecase *AdminUsecase) Login(ctx context.Context, email, password string, 
 		return "", business.ErrEmailPasswordNotFound
 	}
 
-	token := usecase.jwtAuth.GenerateToken(existedUser.ID, existedUser.Roles)
+	token := usecase.jwtAuth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
 	result := map[string]interface{}{
 		"susecasecess": "true",
 	}
@@ -96,7 +96,7 @@ func (usecase *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, 
 		if !strings.Contains(err.Error(), "not found") {
 			result := map[string]interface{}{
 				"susecasecess": "false",
-				"error":   err.Error(),
+				"error":        err.Error(),
 			}
 			usecase.logger.LogEntry(request, result).Error(err.Error())
 			return err
@@ -114,7 +114,7 @@ func (usecase *AdminUsecase) Register(ctx context.Context, adminDomain *Domain, 
 	if err != nil {
 		result := map[string]interface{}{
 			"susecasecess": "false",
-			"error":   err.Error(),
+			"error":        err.Error(),
 		}
 		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return err

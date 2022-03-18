@@ -21,10 +21,11 @@ type Domain struct {
 }
 
 type ExistingDomain struct {
-	ID       int
-	Email    string
-	Password string
-	Roles    string
+	ID        int
+	Name      string
+	Email     string
+	Password  string
+	Roles     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

@@ -16,7 +16,6 @@ type Tracks struct {
 	CurrentAgent       *agents.Agents `gorm:"foreignkey:CurrentAgentID;references:ID"`
 	DestinationAgentID int
 	DestinationAgent   *agents.Agents `gorm:"foreignkey:DestinationAgentID;references:ID"`
-	ManifestID         int
 	Message            string
 	CreatedAt          time.Time
 	DeletedAt          gorm.DeletedAt
@@ -32,7 +31,6 @@ func (rec *Tracks) ToDomain() (res *tracks.Domain) {
 			CurrentAgent:       rec.CurrentAgent.ToDomain(),
 			DestinationAgentID: rec.DestinationAgentID,
 			DestinationAgent:   rec.DestinationAgent.ToDomain(),
-			ManifestID:         rec.ManifestID,
 			Message:            rec.Message,
 			CreatedAt:          rec.CreatedAt,
 		}
@@ -40,13 +38,13 @@ func (rec *Tracks) ToDomain() (res *tracks.Domain) {
 	return res
 }
 
+
 func fromDomain(trackDomain tracks.Domain) *Tracks {
 	return &Tracks{
 		ID:                 trackDomain.ID,
 		StartAgentID:       trackDomain.StartAgentID,
 		CurrentAgentID:     trackDomain.CurrentAgentID,
 		DestinationAgentID: trackDomain.DestinationAgentID,
-		ManifestID:         trackDomain.ManifestID,
 		Message:            trackDomain.Message,
 		CreatedAt:          trackDomain.CreatedAt,
 	}
