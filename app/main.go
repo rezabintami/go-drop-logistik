@@ -72,13 +72,12 @@ func main() {
 		DB_Database: configApp.Mysql.Name,
 	}
 	fmt.Println("User :", configApp.Mysql.User)
-	fmt.Println("Pass :", configApp.Mysql.Pass)
 	fmt.Println("Host :", configApp.Mysql.Host)
 	fmt.Println("Port :", configApp.Mysql.Port)
 	fmt.Println("Name :", configApp.Mysql.Name)
+
 	// mongoConfigDB := _dbMongoDriver.ConfigDB{
 	// 	DB_Username: configApp.MONGO_DB_USER,
-	// 	DB_Password: configApp.MONGO_DB_PASS,
 	// 	DB_Host:     configApp.MONGO_DB_HOST,
 	// 	DB_Port:     configApp.MONGO_DB_PORT,
 	// 	DB_Database: configApp.MONGO_DB_NAME,
@@ -153,10 +152,17 @@ func main() {
 	}
 	routesInit.RouteRegister(e)
 
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	now := time.Now().In(loc)
+	fmt.Println("Location :", loc, " Time :", now.Format(time.RFC3339))
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
-	log.Print("listening on PORT : ", port)
+
+	logger.LogServer("Server is running").Info("Server started at port " , port)
+	log.Println("listening on PORT : ", port)
 	log.Fatal(e.Start(":" + port))
+
 }
