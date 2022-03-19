@@ -54,3 +54,13 @@ func (l Logger) LogEntry(request, response interface{}) *log.Entry {
 		"response": response,
 	})
 }
+
+func (l Logger) LogServer(logServer string) *log.Entry {
+	logs := log.New()
+
+	logs.SetFormatter(&log.JSONFormatter{})
+
+	return logs.WithFields(log.Fields{
+		"status": logServer,
+	})
+}

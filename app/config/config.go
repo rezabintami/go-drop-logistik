@@ -90,8 +90,8 @@ type Config struct {
 func GetConfig() Config {
 	var conf Config
 
-	viper.SetConfigName("config")
-	viper.SetConfigType("json")
+	viper.SetConfigName("config.dev")
+	viper.SetConfigType("yaml")
 	viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
 
 	err := viper.ReadInConfig()
