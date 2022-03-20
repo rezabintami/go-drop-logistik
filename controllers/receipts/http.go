@@ -3,6 +3,7 @@ package receipts
 import (
 	"net/http"
 	"strconv"
+	"sync"
 
 	"go-drop-logistik/business/manifestreceipt"
 	"go-drop-logistik/business/receipts"
@@ -79,16 +80,22 @@ func (controller *ReceiptController) GetByCode(c echo.Context) error {
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
-	
+
 	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, manifestId)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	for _, value := range tracks {
-		receipt.Tracks = append(receipt.Tracks, *value.Track)
-	}
-
+	wg := &sync.WaitGroup{}
+	
+	wg.Add(len(tracks))
+	go func() {
+		for _, value := range tracks {
+			receipt.Tracks = append(receipt.Tracks, *value.Track)
+			wg.Done()
+		}
+	}()
+	wg.Wait()
 
 	return base_response.NewSuccessResponse(c, response.TrackFromDomain(receipt))
 }

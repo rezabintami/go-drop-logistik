@@ -4,4 +4,3 @@ app/config/config.dev.yaml
 app/config/config.prod.yaml
 api.log
 .env
-key
