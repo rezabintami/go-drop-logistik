@@ -149,6 +149,7 @@ func main() {
 		TruckController:    *truckCtrl,
 		DriverController:   *driverCtrl,
 		TrackController:    *trackCtrl,
+		ConfigApp:          configApp,
 	}
 	routesInit.RouteRegister(e)
 
@@ -161,7 +162,11 @@ func main() {
 		port = "8000"
 	}
 
-	logger.LogServer("Server is running").Info("Server started at port " , port)
+	log.Println("App :", configApp.App.Env)
+	log.Println("Debug :", configApp.App.Debug)
+	log.Println("App Version :", configApp.App.Version)
+
+	logger.LogServer("Server is running").Info("Server started at port ", port)
 	log.Println("listening on PORT : ", port)
 	log.Fatal(e.Start(":" + port))
 

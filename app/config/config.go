@@ -9,52 +9,13 @@ import (
 )
 
 type Config struct {
-	Debug bool `mapstructure:"DEBUG"`
-
-	// //! Server
-	// SERVER_PORT    string `mapstructure:"SERVER_PORT"`
-	// SERVER_TIMEOUT int    `mapstructure:"SERVER_TIMEOUT"`
-
-	// //! MYSQL
-	// MYSQL_DB_HOST string `mapstructure:"MYSQL_DB_HOST"`
-	// MYSQL_DB_PORT string `mapstructure:"MYSQL_DB_PORT"`
-	// MYSQL_DB_USER string `mapstructure:"MYSQL_DB_USER"`
-	// MYSQL_DB_PASS string `mapstructure:"MYSQL_DB_PASS"`
-	// MYSQL_DB_NAME string `mapstructure:"MYSQL_DB_NAME"`
-
-	// //! MONGO DB
-	// MONGO_DB_HOST string `mapstructure:"MONGO_DB_HOST"`
-	// MONGO_DB_PORT string `mapstructure:"MONGO_DB_PORT"`
-	// MONGO_DB_USER string `mapstructure:"MONGO_DB_USER"`
-	// MONGO_DB_PASS string `mapstructure:"MONGO_DB_PASS"`
-	// MONGO_DB_NAME string `mapstructure:"MONGO_DB_NAME"`
-
-	// //! OUATH2 GOOGLE
-	// GOOGLE_AUTH_CLIENT string `mapstructure:"GOOGLE_AUTH_CLIENT"`
-	// GOOGLE_AUTH_SECRET string `mapstructure:"GOOGLE_AUTH_SECRET"`
-
-	// //! OAUTH2 FACEBOOK
-	// FACEBOOK_AUTH_CLIENT string `mapstructure:"FACEBOOK_AUTH_CLIENT"`
-	// FACEBOOK_AUTH_SECRET string `mapstructure:"FACEBOOK_AUTH_SECRET"`
-
-	// //! MIDTRANS
-	// MIDTRANS_SERVER_KEY  string `mapstructure:"MIDTRANS_SERVER_KEY"`
-	// MIDTRANS_CLIENT_KEY  string `mapstructure:"MIDTRANS_CLIENT_KEY"`
-	// MIDTRANS_MERCHANT_ID string `mapstructure:"MIDTRANS_MERCHANT_ID"`
-
-	// //! JWT
-	// JWT_SECRET  string `mapstructure:"JWT_SECRET"`
-	// JWT_EXPIRED int    `mapstructure:"JWT_EXPIRED"`
-
-	// //! REDIS
-	// REDIS_ENDPOINT string `mapstructure:"REDIS_ENDPOINT"`
-	// REDIS_PASSWORD string `mapstructure:"REDIS_PASSWORD"`
-
-	// //! GOOGLE STORAGE
-	// GOOGLE_STORAGE_BUCKET_NAME  string `mapstructure:"GOOGLE_STORAGE_BUCKET_NAME"`
-	// GOOGLE_STORAGE_PRIVATE_KEY  string `mapstructure:"GOOGLE_STORAGE_PRIVATE_KEY"`
-	// GOOGLE_STORAGE_IAM_EMAIL    string `mapstructure:"GOOGLE_STORAGE_IAM_EMAIL"`
-	// GOOGLE_STORAGE_EXPIRED_TIME int    `mapstructure:"GOOGLE_STORAGE_EXPIRED_TIME"`
+	
+	//! APP
+	App struct {
+		Env string `mapstructure:"env"`
+		Debug bool `mapstructure:"debug"`
+		Version string `mapstructure:"version"`
+	} `mapstructure:"app"`
 
 	//! Server
 	Server struct {

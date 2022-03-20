@@ -12,8 +12,11 @@ import (
 	"go-drop-logistik/controllers/trucks"
 	"go-drop-logistik/controllers/users"
 
+	_config "go-drop-logistik/app/config"
+
 	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type ControllerList struct {
@@ -27,12 +30,19 @@ type ControllerList struct {
 	ManifestController manifest.ManifestController
 	TruckController    trucks.TrucksController
 	DriverController   drivers.DriversController
-	TrackController   tracks.TracksController
+	TrackController    tracks.TracksController
+	ConfigApp          _config.Config
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.Use(cl.MiddlewareLog.MiddlewareLogging)
 
+	// showing swagger files
+	if cl.ConfigApp.App.Env != "PROD" {
+		e.Static("/files", "files")
+		url := echoSwagger.URL("/files/swagger.yaml")
+		e.GET("/swagger/*", echoSwagger.EchoWrapHandler(url))
+	}
 	apiV1 := e.Group("/api/v1")
 
 	//! RESI
