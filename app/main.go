@@ -7,6 +7,7 @@ import (
 	_config "go-drop-logistik/app/config"
 	_dbMysqlDriver "go-drop-logistik/drivers/mysql"
 	"go-drop-logistik/helper/logging"
+	"go-drop-logistik/helper/validation"
 
 	_middleware "go-drop-logistik/app/middleware"
 	_routes "go-drop-logistik/app/routes"
@@ -59,6 +60,8 @@ import (
 	"log"
 	"time"
 
+	"go-drop-logistik/cli/seeder"
+
 	echo "github.com/labstack/echo/v4"
 )
 
@@ -70,6 +73,7 @@ func main() {
 		DB_Host:     configApp.Mysql.Host,
 		DB_Port:     configApp.Mysql.Port,
 		DB_Database: configApp.Mysql.Name,
+		Env:         configApp.App.Env,
 	}
 	fmt.Println("User :", configApp.Mysql.User)
 	fmt.Println("Host :", configApp.Mysql.Host)
@@ -84,6 +88,14 @@ func main() {
 	// }
 
 	mysql_db := mysqlConfigDB.InitialMysqlDB()
+
+	// Init Seeding
+	err := seeder.Seeder(mysql_db)
+
+	// Init Validation
+	validation.Init()
+
+	log.Println(err)
 
 	configJWT := _middleware.ConfigJWT{
 		SecretJWT:       configApp.JWT.Secret,

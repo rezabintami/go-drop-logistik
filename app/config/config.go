@@ -51,7 +51,7 @@ type Config struct {
 func GetConfig() Config {
 	var conf Config
 
-	viper.SetConfigName("config.dev")
+	viper.SetConfigName("config.prod")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
 

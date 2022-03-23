@@ -37,3 +37,11 @@ func NewErrorResponse(c echo.Context, status int, err error) error {
 
 	return c.JSON(status, response)
 }
+
+func NewErrorValidateResponse(c echo.Context, status int, err error, param interface{}) error {
+	response := BaseResponse{}
+	response.Meta.Message = "Something wrong"
+	response.Data = param
+
+	return c.JSON(status, response)
+}
