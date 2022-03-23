@@ -10,13 +10,14 @@ import (
 	"go-drop-logistik/controllers/admins/request"
 	"go-drop-logistik/controllers/admins/response"
 	base_response "go-drop-logistik/helper/response"
+	"go-drop-logistik/helper/validation"
 
 	echo "github.com/labstack/echo/v4"
 )
 
 type AdminController struct {
 	adminUsecase admins.Usecase
-	agentUsecase     agents.Usecase
+	agentUsecase agents.Usecase
 }
 
 func NewAdminController(su admins.Usecase, au agents.Usecase) *AdminController {
@@ -78,7 +79,7 @@ func (controller *AdminController) AgentGetByID(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	id, _ := strconv.Atoi(c.Param("id"))
-	
+
 	user, err := controller.agentUsecase.GetByID(ctx, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
@@ -95,7 +96,13 @@ func (controller *AdminController) AgentRegister(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err := controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
+	validateMessage, validate, err := validation.Validate(&req)
+
+	if validate {
+		return base_response.NewErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	err = controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}

@@ -19,6 +19,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type ConfigDB struct {
@@ -27,7 +28,13 @@ type ConfigDB struct {
 	DB_Host     string
 	DB_Port     string
 	DB_Database string
+	Env         string
 }
+
+var (
+	db  *gorm.DB
+	err error
+)
 
 func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
@@ -36,8 +43,15 @@ func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
 		config.DB_Host,
 		config.DB_Port,
 		config.DB_Database)
+		
+	if config.Env != "PROD" {
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	} else {
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent),
+		})
+	}
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
