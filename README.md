@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/rezabintami/go-drop-logistik/branch/master/graph/badge.svg?token=WIIYL0IBQN)](https://codecov.io/gh/rezabintami/go-drop-logistik)
+[![codecov](https://codecov.io/gh/rezabintami/go-drop-logistik/branch/dev/graph/badge.svg?token=WIIYL0IBQN)](https://codecov.io/gh/rezabintami/go-drop-logistik)
 
 # Clean Architecture Structure Folder
 
