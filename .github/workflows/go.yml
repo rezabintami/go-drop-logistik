@@ -15,9 +15,26 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
+    - name: Check out code
+      uses: actions/checkout@v1
+    - name: Lint Go Code
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin # temporary fix. See https://github.com/actions/setup-go/issues/14
+        go get -u golang.org/x/lint/golint
+        make lint
 
   testing:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
       - name: Running unit testing
         run: go test -v ./... -failfast -cover -coverpkg=./... -coverprofile=coverage.out && go tool cover -html=coverage.out -o cover.html
+      - name: Upload Coverage report to CodeCov
+        uses: codecov/codecov-action@v1.0.0
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          file: ./coverage.txt
