@@ -15,11 +15,6 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
-    - name: Lint Go Code
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
-        go get -u golang.org/x/lint/golint
-        make lint
 
   testing:
     runs-on: ubuntu-latest
