@@ -27,18 +27,8 @@ func NewAgentUsecase(ur Repository, jwtusecaseth *middleware.ConfigJWT, timeout 
 }
 
 func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
-	request := map[string]interface{}{
-		"email": email,
-		"sso":   sso,
-	}
-
 	existedUser, err := usecase.agentRepository.GetByEmail(ctx, email)
 	if err != nil {
-		result := map[string]interface{}{
-			"success": "false",
-			"error":   err.Error(),
-		}
-		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return "", err
 	}
 
@@ -47,35 +37,16 @@ func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, 
 	}
 
 	token := usecase.jwtusecaseth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
-	result := map[string]interface{}{
-		"success": "true",
-	}
-	usecase.logger.LogEntry(request, result).Info("incoming request")
+
 	return token, nil
 }
 
 func (usecase *AgentUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
-	request := map[string]interface{}{
-		"id": id,
-	}
-
 	users, err := usecase.agentRepository.GetByID(ctx, id)
 
 	if err != nil {
-		result := map[string]interface{}{
-			"error": err.Error(),
-		}
-		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return Domain{}, err
 	}
-
-	result := map[string]interface{}{
-		"id":    users.ID,
-		"name":  users.Name,
-		"email": users.Email,
-	}
-
-	usecase.logger.LogEntry(request, result).Info("incoming request")
 
 	return users, nil
 }
@@ -84,21 +55,11 @@ func (usecase *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, 
 	ctx, cancel := context.WithTimeout(ctx, usecase.contextTimeout)
 	defer cancel()
 
-	request := map[string]interface{}{
-		"email": agentDomain.Email,
-		"name":  agentDomain.Name,
-	}
-
 	agentDomain.Roles = "AGENT"
 
 	existedUser, err := usecase.agentRepository.GetByEmail(ctx, agentDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
-			result := map[string]interface{}{
-				"success": "false",
-				"error":   err.Error(),
-			}
-			usecase.logger.LogEntry(request, result).Error(err.Error())
 			return err
 		}
 	}
@@ -112,18 +73,8 @@ func (usecase *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, 
 
 	err = usecase.agentRepository.Register(ctx, agentDomain)
 	if err != nil {
-		result := map[string]interface{}{
-			"success": "false",
-			"error":   err.Error(),
-		}
-		usecase.logger.LogEntry(request, result).Error(err.Error())
 		return err
 	}
-
-	result := map[string]interface{}{
-		"success": "true",
-	}
-	usecase.logger.LogEntry(request, result).Info("incoming request")
 
 	return nil
 }

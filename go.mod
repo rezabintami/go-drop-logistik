@@ -12,9 +12,11 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.10.1
+	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/swaggo/echo-swagger v1.3.0 // indirect
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
 	github.com/swaggo/swag v1.8.0 // indirect
+	github.com/vektra/mockery/v2 v2.10.0 // indirect
 	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gorm.io/driver/mysql v1.2.3
