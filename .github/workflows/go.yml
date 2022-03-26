@@ -17,5 +17,4 @@ jobs:
       with:
         go-version: 1.16
     - name: Running unit testing
-      run: go test ./... -failfast -cover -coverpkg=./... -coverprofile=coverage.out 
-           go tool cover -html=coverage.out -o cover.html
+      run: go test ./... -failfast -cover -coverpkg=./... -coverprofile=coverage.out && go tool cover -html=coverage.out -o cover.html
