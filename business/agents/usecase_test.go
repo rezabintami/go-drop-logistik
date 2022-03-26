@@ -8,7 +8,6 @@ import (
 	"go-drop-logistik/business/agents"
 	agentMock "go-drop-logistik/business/agents/mocks"
 	"go-drop-logistik/helper/encrypt"
-	"go-drop-logistik/helper/logging"
 	"os"
 	"testing"
 
@@ -20,13 +19,11 @@ var (
 	agentRepository agentMock.Repository
 	agentUsecase    agents.Usecase
 	jwtAuth         *middleware.ConfigJWT
-	logger          logging.Logger
 )
 
 func setup() {
 	jwtAuth = &middleware.ConfigJWT{SecretJWT: "abc123", ExpiresDuration: 2}
-	logging.NewLogger()
-	agentUsecase = agents.NewAgentUsecase(&agentRepository, jwtAuth, 2, logger)
+	agentUsecase = agents.NewAgentUsecase(&agentRepository, jwtAuth, 2)
 }
 
 func TestMain(m *testing.M) {
