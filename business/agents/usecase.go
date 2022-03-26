@@ -5,7 +5,6 @@ import (
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/business"
 	"go-drop-logistik/helper/encrypt"
-	"go-drop-logistik/helper/logging"
 	"strings"
 	"time"
 )
@@ -14,15 +13,13 @@ type AgentUsecase struct {
 	agentRepository Repository
 	contextTimeout  time.Duration
 	jwtusecaseth    *middleware.ConfigJWT
-	logger          logging.Logger
 }
 
-func NewAgentUsecase(ur Repository, jwtusecaseth *middleware.ConfigJWT, timeout time.Duration, logger logging.Logger) Usecase {
+func NewAgentUsecase(ur Repository, jwtusecaseth *middleware.ConfigJWT, timeout time.Duration) Usecase {
 	return &AgentUsecase{
 		agentRepository: ur,
 		jwtusecaseth:    jwtusecaseth,
 		contextTimeout:  timeout,
-		logger:          logger,
 	}
 }
 
