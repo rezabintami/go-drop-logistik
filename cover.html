@@ -67,11 +67,11 @@
 				
 				<option value="file5">go-drop-logistik/business/admins/usecase.go (0.0%)</option>
 				
-				<option value="file6">go-drop-logistik/business/agents/mocks/Repository.go (17.0%)</option>
+				<option value="file6">go-drop-logistik/business/agents/mocks/Repository.go (80.9%)</option>
 				
 				<option value="file7">go-drop-logistik/business/agents/mocks/Usecase.go (0.0%)</option>
 				
-				<option value="file8">go-drop-logistik/business/agents/usecase.go (15.7%)</option>
+				<option value="file8">go-drop-logistik/business/agents/usecase.go (100.0%)</option>
 				
 				<option value="file9">go-drop-logistik/business/drivers/usecase.go (0.0%)</option>
 				
@@ -207,7 +207,7 @@
 				
 				<option value="file75">go-drop-logistik/helper/guid/guid.go (0.0%)</option>
 				
-				<option value="file76">go-drop-logistik/helper/logging/log.go (0.0%)</option>
+				<option value="file76">go-drop-logistik/helper/logging/log.go (33.3%)</option>
 				
 				<option value="file77">go-drop-logistik/helper/response/response.go (0.0%)</option>
 				
@@ -856,33 +856,33 @@ type Repository struct {
 }
 
 // Fetch provides a mock function with given fields: ctx, start, last
-func (_m *Repository) Fetch(ctx context.Context, start int, last int) ([]agents.Domain, int, error) <span class="cov0" title="0">{
+func (_m *Repository) Fetch(ctx context.Context, start int, last int) ([]agents.Domain, int, error) <span class="cov8" title="1">{
         ret := _m.Called(ctx, start, last)
 
         var r0 []agents.Domain
         if rf, ok := ret.Get(0).(func(context.Context, int, int) []agents.Domain); ok </span><span class="cov0" title="0">{
                 r0 = rf(ctx, start, last)
-        }</span> else<span class="cov0" title="0"> {
-                if ret.Get(0) != nil </span><span class="cov0" title="0">{
+        }</span> else<span class="cov8" title="1"> {
+                if ret.Get(0) != nil </span><span class="cov8" title="1">{
                         r0 = ret.Get(0).([]agents.Domain)
                 }</span>
         }
 
-        <span class="cov0" title="0">var r1 int
+        <span class="cov8" title="1">var r1 int
         if rf, ok := ret.Get(1).(func(context.Context, int, int) int); ok </span><span class="cov0" title="0">{
                 r1 = rf(ctx, start, last)
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 r1 = ret.Get(1).(int)
         }</span>
 
-        <span class="cov0" title="0">var r2 error
+        <span class="cov8" title="1">var r2 error
         if rf, ok := ret.Get(2).(func(context.Context, int, int) error); ok </span><span class="cov0" title="0">{
                 r2 = rf(ctx, start, last)
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 r2 = ret.Error(2)
         }</span>
 
-        <span class="cov0" title="0">return r0, r1, r2</span>
+        <span class="cov8" title="1">return r0, r1, r2</span>
 }
 
 // GetByEmail provides a mock function with given fields: ctx, email
@@ -907,52 +907,52 @@ func (_m *Repository) GetByEmail(ctx context.Context, email string) (agents.Exis
 }
 
 // GetByID provides a mock function with given fields: ctx, id
-func (_m *Repository) GetByID(ctx context.Context, id int) (agents.Domain, error) <span class="cov0" title="0">{
+func (_m *Repository) GetByID(ctx context.Context, id int) (agents.Domain, error) <span class="cov8" title="1">{
         ret := _m.Called(ctx, id)
 
         var r0 agents.Domain
         if rf, ok := ret.Get(0).(func(context.Context, int) agents.Domain); ok </span><span class="cov0" title="0">{
                 r0 = rf(ctx, id)
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 r0 = ret.Get(0).(agents.Domain)
         }</span>
 
-        <span class="cov0" title="0">var r1 error
+        <span class="cov8" title="1">var r1 error
         if rf, ok := ret.Get(1).(func(context.Context, int) error); ok </span><span class="cov0" title="0">{
                 r1 = rf(ctx, id)
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 r1 = ret.Error(1)
         }</span>
 
-        <span class="cov0" title="0">return r0, r1</span>
+        <span class="cov8" title="1">return r0, r1</span>
 }
 
 // Register provides a mock function with given fields: ctx, data
-func (_m *Repository) Register(ctx context.Context, data *agents.Domain) error <span class="cov0" title="0">{
+func (_m *Repository) Register(ctx context.Context, data *agents.Domain) error <span class="cov8" title="1">{
         ret := _m.Called(ctx, data)
 
         var r0 error
         if rf, ok := ret.Get(0).(func(context.Context, *agents.Domain) error); ok </span><span class="cov0" title="0">{
                 r0 = rf(ctx, data)
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 r0 = ret.Error(0)
         }</span>
 
-        <span class="cov0" title="0">return r0</span>
+        <span class="cov8" title="1">return r0</span>
 }
 
 // Update provides a mock function with given fields: ctx, data, id
-func (_m *Repository) Update(ctx context.Context, data *agents.Domain, id int) error <span class="cov0" title="0">{
+func (_m *Repository) Update(ctx context.Context, data *agents.Domain, id int) error <span class="cov8" title="1">{
         ret := _m.Called(ctx, data, id)
 
         var r0 error
         if rf, ok := ret.Get(0).(func(context.Context, *agents.Domain, int) error); ok </span><span class="cov0" title="0">{
                 r0 = rf(ctx, data, id)
-        }</span> else<span class="cov0" title="0"> {
+        }</span> else<span class="cov8" title="1"> {
                 r0 = ret.Error(0)
         }</span>
 
-        <span class="cov0" title="0">return r0</span>
+        <span class="cov8" title="1">return r0</span>
 }
 </pre>
 		
@@ -1102,18 +1102,8 @@ func NewAgentUsecase(ur Repository, jwtusecaseth *middleware.ConfigJWT, timeout 
 }</span>
 
 func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) <span class="cov8" title="1">{
-        // request := map[string]interface{}{
-        //         "email": email,
-        //         "sso":   sso,
-        // }
-
         existedUser, err := usecase.agentRepository.GetByEmail(ctx, email)
         if err != nil </span><span class="cov8" title="1">{
-                // result := map[string]interface{}{
-                //         "success": "false",
-                //         "error":   err.Error(),
-                // }
-                // usecase.logger.LogEntry(request, result).Error(err.Error())
                 return "", err
         }</span>
 
@@ -1122,109 +1112,70 @@ func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, 
         }</span>
 
         <span class="cov8" title="1">token := usecase.jwtusecaseth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
-        // result := map[string]interface{}{
-        //         "success": "true",
-        // }
-        // usecase.logger.LogEntry(request, result).Info("incoming request")
+
         return token, nil</span>
 }
 
-func (usecase *AgentUsecase) GetByID(ctx context.Context, id int) (Domain, error) <span class="cov0" title="0">{
-        request := map[string]interface{}{
-                "id": id,
-        }
-
+func (usecase *AgentUsecase) GetByID(ctx context.Context, id int) (Domain, error) <span class="cov8" title="1">{
         users, err := usecase.agentRepository.GetByID(ctx, id)
 
-        if err != nil </span><span class="cov0" title="0">{
-                result := map[string]interface{}{
-                        "error": err.Error(),
-                }
-                usecase.logger.LogEntry(request, result).Error(err.Error())
+        if err != nil </span><span class="cov8" title="1">{
                 return Domain{}, err
         }</span>
 
-        <span class="cov0" title="0">result := map[string]interface{}{
-                "id":    users.ID,
-                "name":  users.Name,
-                "email": users.Email,
-        }
-
-        usecase.logger.LogEntry(request, result).Info("incoming request")
-
-        return users, nil</span>
+        <span class="cov8" title="1">return users, nil</span>
 }
 
-func (usecase *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, sso bool) error <span class="cov0" title="0">{
+func (usecase *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, sso bool) error <span class="cov8" title="1">{
         ctx, cancel := context.WithTimeout(ctx, usecase.contextTimeout)
         defer cancel()
-
-        request := map[string]interface{}{
-                "email": agentDomain.Email,
-                "name":  agentDomain.Name,
-        }
 
         agentDomain.Roles = "AGENT"
 
         existedUser, err := usecase.agentRepository.GetByEmail(ctx, agentDomain.Email)
-        if err != nil </span><span class="cov0" title="0">{
-                if !strings.Contains(err.Error(), "not found") </span><span class="cov0" title="0">{
-                        result := map[string]interface{}{
-                                "success": "false",
-                                "error":   err.Error(),
-                        }
-                        usecase.logger.LogEntry(request, result).Error(err.Error())
+        if err != nil </span><span class="cov8" title="1">{
+                if !strings.Contains(err.Error(), "not found") </span><span class="cov8" title="1">{
                         return err
                 }</span>
         }
-        <span class="cov0" title="0">if existedUser != (ExistingDomain{}) </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if existedUser != (ExistingDomain{}) </span><span class="cov8" title="1">{
                 return business.ErrDuplicateData
         }</span>
 
-        <span class="cov0" title="0">if !sso </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if !sso </span><span class="cov8" title="1">{
                 agentDomain.Password, _ = encrypt.Hash(agentDomain.Password)
         }</span>
 
-        <span class="cov0" title="0">err = usecase.agentRepository.Register(ctx, agentDomain)
-        if err != nil </span><span class="cov0" title="0">{
-                result := map[string]interface{}{
-                        "success": "false",
-                        "error":   err.Error(),
-                }
-                usecase.logger.LogEntry(request, result).Error(err.Error())
+        <span class="cov8" title="1">err = usecase.agentRepository.Register(ctx, agentDomain)
+        if err != nil </span><span class="cov8" title="1">{
                 return err
         }</span>
 
-        <span class="cov0" title="0">result := map[string]interface{}{
-                "success": "true",
-        }
-        usecase.logger.LogEntry(request, result).Info("incoming request")
-
-        return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
-func (usecase *AgentUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) <span class="cov0" title="0">{
-        if page &lt;= 0 </span><span class="cov0" title="0">{
+func (usecase *AgentUsecase) Fetch(ctx context.Context, page, perpage int) ([]Domain, int, error) <span class="cov8" title="1">{
+        if page &lt;= 0 </span><span class="cov8" title="1">{
                 page = 1
         }</span>
-        <span class="cov0" title="0">if perpage &lt;= 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if perpage &lt;= 0 </span><span class="cov8" title="1">{
                 perpage = 25
         }</span>
 
-        <span class="cov0" title="0">res, total, err := usecase.agentRepository.Fetch(ctx, page, perpage)
-        if err != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">res, total, err := usecase.agentRepository.Fetch(ctx, page, perpage)
+        if err != nil </span><span class="cov8" title="1">{
                 return []Domain{}, 0, err
         }</span>
 
-        <span class="cov0" title="0">return res, total, nil</span>
+        <span class="cov8" title="1">return res, total, nil</span>
 }
 
-func (usecase *AgentUsecase) Update(ctx context.Context, userDomain *Domain, id int) error <span class="cov0" title="0">{
+func (usecase *AgentUsecase) Update(ctx context.Context, userDomain *Domain, id int) error <span class="cov8" title="1">{
         err := usecase.agentRepository.Update(ctx, userDomain, id)
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return err
         }</span>
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 </pre>
 		
@@ -5284,7 +5235,7 @@ type Logger struct {
         Log *log.Logger
 }
 
-func NewLogger() Logger <span class="cov0" title="0">{
+func NewLogger() Logger <span class="cov8" title="1">{
         logger := log.New()
         f, err := os.OpenFile("api.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
         if err != nil </span><span class="cov0" title="0">{
@@ -5292,7 +5243,7 @@ func NewLogger() Logger <span class="cov0" title="0">{
                 flag.Usage()
                 os.Exit(-1)
         }</span>
-        <span class="cov0" title="0">logger.SetFormatter(&amp;log.JSONFormatter{})
+        <span class="cov8" title="1">logger.SetFormatter(&amp;log.JSONFormatter{})
         logger.SetOutput(f)
         return Logger{
                 Log: logger,
