@@ -125,7 +125,7 @@ func main() {
 	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(mysql_db)
 
 	//! USECASE
-	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext, logger)
+	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
 	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, &configJWT, timeoutContext)
 	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext)
 	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
