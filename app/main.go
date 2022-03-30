@@ -60,8 +60,6 @@ import (
 	"log"
 	"time"
 
-	"go-drop-logistik/cli/seeder"
-
 	echo "github.com/labstack/echo/v4"
 )
 
@@ -89,13 +87,13 @@ func main() {
 
 	mysql_db := mysqlConfigDB.InitialMysqlDB()
 
-	// Init Seeding
-	err := seeder.Seeder(mysql_db)
+	// // Init Seeding
+	// err := seeder.Seeder(mysql_db)
 
 	// Init Validation
 	validation.Init()
 
-	log.Println(err)
+	// log.Println(err)
 
 	configJWT := _middleware.ConfigJWT{
 		SecretJWT:       configApp.JWT.Secret,
