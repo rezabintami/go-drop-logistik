@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/drivers"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlDriverRepository struct {

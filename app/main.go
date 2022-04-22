@@ -5,7 +5,7 @@ import (
 	"os"
 
 	_config "go-drop-logistik/app/config"
-	_dbMysqlDriver "go-drop-logistik/drivers/mysql"
+	_dbPostgresDriver "go-drop-logistik/drivers/postgres"
 	"go-drop-logistik/helper/logging"
 	"go-drop-logistik/helper/validation"
 
@@ -67,18 +67,22 @@ import (
 
 func main() {
 	configApp := _config.GetConfig()
-	mysqlConfigDB := _dbMysqlDriver.ConfigDB{
-		DB_Username: configApp.Mysql.User,
-		DB_Password: configApp.Mysql.Pass,
-		DB_Host:     configApp.Mysql.Host,
-		DB_Port:     configApp.Mysql.Port,
-		DB_Database: configApp.Mysql.Name,
+	postgresConfigDB := _dbPostgresDriver.ConfigDB{
+		DB_Username: configApp.Postgres.User,
+		DB_Password: configApp.Postgres.Pass,
+		DB_Host:     configApp.Postgres.Host,
+		DB_Port:     configApp.Postgres.Port,
+		DB_Database: configApp.Postgres.Name,
+		DB_SSL:      configApp.Postgres.SSL,
 		Env:         configApp.App.Env,
 	}
-	fmt.Println("User :", configApp.Mysql.User)
-	fmt.Println("Host :", configApp.Mysql.Host)
-	fmt.Println("Port :", configApp.Mysql.Port)
-	fmt.Println("Name :", configApp.Mysql.Name)
+
+	fmt.Println("Server is running on port :" + configApp.Server.Address)
+
+	fmt.Println("User :", configApp.Postgres.User)
+	fmt.Println("Host :", configApp.Postgres.Host)
+	fmt.Println("Port :", configApp.Postgres.Port)
+	fmt.Println("Name :", configApp.Postgres.Name)
 
 	// mongoConfigDB := _dbMongoDriver.ConfigDB{
 	// 	DB_Username: configApp.MONGO_DB_USER,
@@ -87,10 +91,10 @@ func main() {
 	// 	DB_Database: configApp.MONGO_DB_NAME,
 	// }
 
-	mysql_db := mysqlConfigDB.InitialMysqlDB()
+	postgres_db := postgresConfigDB.InitialPostgresDB()
 
 	// Init Seeding
-	err := seeder.Seeder(mysql_db)
+	err := seeder.Seeder(postgres_db)
 
 	// Init Validation
 	validation.Init()
@@ -111,18 +115,18 @@ func main() {
 	middlewareLog := _middleware.NewMiddleware(logger)
 
 	//! REPO
-	userRepo := _userRepo.NewMySQLUserRepository(mysql_db)
-	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(mysql_db)
-	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(mysql_db)
-	agentRepo := _agentRepo.NewMySQLAgentRepository(mysql_db)
-	adminRepo := _adminRepo.NewMySQLAdminRepository(mysql_db)
-	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(mysql_db)
-	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(mysql_db)
-	manifestRepo := _manifestRepo.NewMySQLManifestRepository(mysql_db)
-	truckRepo := _truckRepo.NewMySQLTruckRepository(mysql_db)
-	driverRepo := _driverRepo.NewMySQLDriverRepository(mysql_db)
-	trackRepo := _trackRepo.NewMySQLTrackRepository(mysql_db)
-	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(mysql_db)
+	userRepo := _userRepo.NewMySQLUserRepository(postgres_db)
+	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(postgres_db)
+	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(postgres_db)
+	agentRepo := _agentRepo.NewMySQLAgentRepository(postgres_db)
+	adminRepo := _adminRepo.NewMySQLAdminRepository(postgres_db)
+	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(postgres_db)
+	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(postgres_db)
+	manifestRepo := _manifestRepo.NewMySQLManifestRepository(postgres_db)
+	truckRepo := _truckRepo.NewMySQLTruckRepository(postgres_db)
+	driverRepo := _driverRepo.NewMySQLDriverRepository(postgres_db)
+	trackRepo := _trackRepo.NewMySQLTrackRepository(postgres_db)
+	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(postgres_db)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)

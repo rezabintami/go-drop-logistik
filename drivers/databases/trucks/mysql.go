@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/trucks"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlTruckRepository struct {

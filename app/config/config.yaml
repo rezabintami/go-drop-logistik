@@ -1,6 +1,6 @@
 app:
-  env: ""
-  debug: false
+  env: "DEV"
+  debug: true
   version: 1.0.0
 server:
   address: 8000
@@ -17,6 +17,12 @@ mongo:
   user: ""
   pass: ""
   name: ""
+postgres:
+  host: "localhost"
+  port: "5432"
+  user: "postgres"
+  pass: "admin"
+  name: "go-drop-logistik"
 jwt:
-  secret: ""
+  secret: "supersecret12345!@#$%"
   expired: 1

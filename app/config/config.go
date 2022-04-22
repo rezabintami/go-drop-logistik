@@ -9,11 +9,11 @@ import (
 )
 
 type Config struct {
-	
+
 	//! APP
 	App struct {
-		Env string `mapstructure:"env"`
-		Debug bool `mapstructure:"debug"`
+		Env     string `mapstructure:"env"`
+		Debug   bool   `mapstructure:"debug"`
 		Version string `mapstructure:"version"`
 	} `mapstructure:"app"`
 
@@ -41,6 +41,16 @@ type Config struct {
 		Name string `mapstructure:"name"`
 	} `mapstructure:"mongo"`
 
+	//! Postgres DB
+	Postgres struct {
+		Host string `mapstructure:"host"`
+		Port string `mapstructure:"port"`
+		User string `mapstructure:"user"`
+		Pass string `mapstructure:"pass"`
+		Name string `mapstructure:"name"`
+		SSL  string `mapstructure:"ssl"`
+	} `mapstructure:"postgres"`
+
 	//! JWT
 	JWT struct {
 		Secret  string `mapstructure:"secret"`
@@ -51,7 +61,7 @@ type Config struct {
 func GetConfig() Config {
 	var conf Config
 
-	viper.SetConfigName("config.prod")
+	viper.SetConfigName("config.dev")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
 

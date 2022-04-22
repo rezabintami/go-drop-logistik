@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/phoneagent"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlPhoneAgentRepository struct {

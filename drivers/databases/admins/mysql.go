@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/admins"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlAdminRepository struct {

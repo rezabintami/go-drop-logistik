@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type Admins struct {

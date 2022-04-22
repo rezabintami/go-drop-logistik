@@ -1946,7 +1946,7 @@ import (
         "log"
         "time"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type Admins struct {
@@ -3675,7 +3675,7 @@ import (
         "context"
         "go-drop-logistik/business/admins"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlAdminRepository struct {
@@ -3768,7 +3768,7 @@ import (
         "context"
         "go-drop-logistik/business/agents"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlAgentRepository struct {
@@ -3921,7 +3921,7 @@ import (
         "context"
         "go-drop-logistik/business/drivers"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlDriverRepository struct {
@@ -4021,7 +4021,7 @@ import (
         "context"
         "go-drop-logistik/business/manifest"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlManifestRepository struct {
@@ -4106,7 +4106,7 @@ import (
         "go-drop-logistik/drivers/databases/drivers"
         "time"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type Manifest struct {
@@ -4117,7 +4117,7 @@ type Manifest struct {
         Driver    *drivers.Drivers `gorm:"foreignkey:DriverID;references:ID"`
         CreatedAt time.Time
         UpdatedAt time.Time
-        DeletedAt gorm.DeletedAt
+        DeletedAt *time.Time `gorm:"column:deletedAt"`
 }
 
 func (rec *Manifest) ToDomain() (res *manifest.Domain) <span class="cov0" title="0">{
@@ -4153,7 +4153,7 @@ import (
         "context"
         "go-drop-logistik/business/manifestreceipt"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlManifestReceiptRepository struct {
@@ -4278,7 +4278,7 @@ import (
         "context"
         "go-drop-logistik/business/phoneagent"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlPhoneAgentRepository struct {
@@ -4381,7 +4381,7 @@ import (
         "context"
         "go-drop-logistik/business/phones"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlPhoneRepository struct {
@@ -4458,7 +4458,7 @@ import (
         "go-drop-logistik/business/phones"
         "time"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type Phones struct {
@@ -4466,7 +4466,7 @@ type Phones struct {
         Phone     string
         CreatedAt time.Time
         UpdatedAt time.Time
-        DeletedAt gorm.DeletedAt
+        DeletedAt *time.Time `gorm:"column:deletedAt"`
 }
 
 func fromDomain(phoneDomain phones.Domain) *Phones <span class="cov0" title="0">{
@@ -4497,7 +4497,7 @@ import (
         "context"
         "go-drop-logistik/business/receipts"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlReceiptRepository struct {
@@ -4591,7 +4591,7 @@ import (
         "go-drop-logistik/business/receipts"
         "time"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type Receipts struct {
@@ -4611,7 +4611,7 @@ type Receipts struct {
         PickupAt        time.Time
         CreatedAt       time.Time
         UpdatedAt       time.Time
-        DeletedAt       gorm.DeletedAt
+        DeletedAt       *time.Time `gorm:"column:deletedAt"`
 }
 
 func (rec *Receipts) ToDomain() *receipts.Domain <span class="cov0" title="0">{
@@ -4684,7 +4684,7 @@ import (
         "context"
         "go-drop-logistik/business/trackmanifest"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlTrackManifestRepository struct {
@@ -4787,7 +4787,7 @@ import (
         "context"
         "go-drop-logistik/business/tracks"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlTrackRepository struct {
@@ -4818,7 +4818,7 @@ import (
         "go-drop-logistik/drivers/databases/agents"
         "time"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type Tracks struct {
@@ -4831,7 +4831,7 @@ type Tracks struct {
         DestinationAgent   *agents.Agents `gorm:"foreignkey:DestinationAgentID;references:ID"`
         Message            string
         CreatedAt          time.Time
-        DeletedAt          gorm.DeletedAt
+        DeletedAt          *time.Time `gorm:"column:deletedAt"`
 }
 
 func (rec *Tracks) ToDomain() (res *tracks.Domain) <span class="cov0" title="0">{
@@ -4870,7 +4870,7 @@ import (
         "context"
         "go-drop-logistik/business/trucks"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlTruckRepository struct {
@@ -4994,7 +4994,7 @@ import (
         "context"
         "go-drop-logistik/business/users"
 
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
 )
 
 type mysqlUsersRepository struct {
@@ -5101,7 +5101,7 @@ import (
         "log"
 
         "gorm.io/driver/mysql"
-        "gorm.io/gorm"
+        "github.com/jinzhu/gorm"
         "gorm.io/gorm/logger"
 )
 

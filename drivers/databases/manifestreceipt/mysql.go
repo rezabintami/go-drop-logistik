@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/manifestreceipt"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlManifestReceiptRepository struct {

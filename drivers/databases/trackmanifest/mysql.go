@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/trackmanifest"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlTrackManifestRepository struct {

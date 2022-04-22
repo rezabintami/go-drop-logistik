@@ -4,7 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/business/users"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 type mysqlUsersRepository struct {

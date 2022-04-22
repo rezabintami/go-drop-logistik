@@ -17,9 +17,8 @@ import (
 
 	"log"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type ConfigDB struct {
@@ -28,6 +27,7 @@ type ConfigDB struct {
 	DB_Host     string
 	DB_Port     string
 	DB_Database string
+	DB_SSL      string
 	Env         string
 }
 
@@ -36,21 +36,16 @@ var (
 	err error
 )
 
-func (config *ConfigDB) InitialMysqlDB() *gorm.DB {
-	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
+func (config *ConfigDB) InitialPostgresDB() *gorm.DB {
+	dsn := fmt.Sprintf("user=%s host=%s dbname=%s sslmode=%s password=%s port=%s",
 		config.DB_Username,
-		config.DB_Password,
 		config.DB_Host,
-		config.DB_Port,
-		config.DB_Database)
-		
-	if config.Env != "PROD" {
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	} else {
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Silent),
-		})
-	}
+		config.DB_Database,
+		config.DB_SSL,
+		config.DB_Password,
+		config.DB_Port)
+
+	db, err = gorm.Open("postgres", dsn)
 
 	if err != nil {
 		log.Fatal(err)

@@ -4,8 +4,6 @@ import (
 	"go-drop-logistik/business/tracks"
 	"go-drop-logistik/drivers/databases/agents"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Tracks struct {
@@ -18,7 +16,7 @@ type Tracks struct {
 	DestinationAgent   *agents.Agents `gorm:"foreignkey:DestinationAgentID;references:ID"`
 	Message            string
 	CreatedAt          time.Time
-	DeletedAt          gorm.DeletedAt
+	DeletedAt          *time.Time `gorm:"column:deletedAt"`
 }
 
 func (rec *Tracks) ToDomain() (res *tracks.Domain) {
