@@ -11,6 +11,8 @@ type Trucks struct {
 	Type         string
 	LicensePlate string
 	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    *time.Time `gorm:"column:deletedAt"`
 }
 
 func fromDomain(truckDomain trucks.Domain) *Trucks {
@@ -20,17 +22,19 @@ func fromDomain(truckDomain trucks.Domain) *Trucks {
 		Type:         truckDomain.Type,
 		LicensePlate: truckDomain.LicensePlate,
 		CreatedAt:    truckDomain.CreatedAt,
+		UpdatedAt:    truckDomain.UpdatedAt,
 	}
 }
 
 func (rec *Trucks) ToDomain() (res *trucks.Domain) {
 	if rec != nil {
 		res = &trucks.Domain{
-			ID:        rec.ID,
-			Name:      rec.Name,
-			Type:      rec.Type,
+			ID:           rec.ID,
+			Name:         rec.Name,
+			Type:         rec.Type,
 			LicensePlate: rec.LicensePlate,
-			CreatedAt: rec.CreatedAt,
+			CreatedAt:    rec.CreatedAt,
+			UpdatedAt:    rec.UpdatedAt,
 		}
 	}
 	return res

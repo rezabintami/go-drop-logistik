@@ -3,6 +3,7 @@ package drivers
 import (
 	"context"
 	"go-drop-logistik/business/trucks"
+	"time"
 )
 
 type Domain struct {
@@ -12,6 +13,8 @@ type Domain struct {
 	Address string
 	TruckID int
 	Truck   *trucks.Domain
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Usecase interface {

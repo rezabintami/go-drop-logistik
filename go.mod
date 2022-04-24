@@ -7,7 +7,8 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/google/uuid v1.1.2
+	github.com/golang-migrate/migrate/v4 v4.15.1 // indirect
+	github.com/google/uuid v1.3.0
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/labstack/echo/v4 v4.6.3
 	github.com/leodido/go-urn v1.2.1 // indirect

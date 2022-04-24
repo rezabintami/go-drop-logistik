@@ -11,6 +11,7 @@ type Domain struct {
 	Type         string
 	LicensePlate string
 	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type Usecase interface {
