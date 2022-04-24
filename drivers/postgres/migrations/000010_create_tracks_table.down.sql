@@ -1,1 +1,1 @@
-DROP Table tracks;
+DROP TABLE IF EXISTS tracks;

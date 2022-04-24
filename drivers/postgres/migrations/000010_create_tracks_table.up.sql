@@ -1,4 +1,4 @@
-CREATE Table tracks (
+CREATE TABLE IF NOT EXISTS tracks (
   id bigserial PRIMARY KEY,
   start_agent_id integer NOT NULL,
   current_agent_id integer NOT NULL,

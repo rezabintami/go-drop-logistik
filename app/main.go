@@ -67,15 +67,6 @@ import (
 
 func main() {
 	configApp := _config.GetConfig()
-	postgresConfigDB := _dbPostgresDriver.ConfigDB{
-		DB_Username: configApp.Postgres.User,
-		DB_Password: configApp.Postgres.Pass,
-		DB_Host:     configApp.Postgres.Host,
-		DB_Port:     configApp.Postgres.Port,
-		DB_Database: configApp.Postgres.Name,
-		DB_SSL:      configApp.Postgres.SSL,
-		Env:         configApp.App.Env,
-	}
 
 	fmt.Println("Server is running on port :" + configApp.Server.Address)
 
@@ -91,7 +82,7 @@ func main() {
 	// 	DB_Database: configApp.MONGO_DB_NAME,
 	// }
 
-	postgres_db := postgresConfigDB.InitialPostgresDB()
+	postgres_db := _dbPostgresDriver.InitialPostgresDB()
 
 	// Init Seeding
 	err := seeder.Seeder(postgres_db)

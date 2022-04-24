@@ -1,1 +1,1 @@
-DROP Table phone_agent;
+DROP TABLE IF EXISTS phone_agent;

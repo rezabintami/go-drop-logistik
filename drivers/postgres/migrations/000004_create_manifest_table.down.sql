@@ -1,1 +1,1 @@
-DROP Table manifest;
+DROP TABLE IF EXISTS manifest;

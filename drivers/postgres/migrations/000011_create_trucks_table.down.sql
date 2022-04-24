@@ -1,1 +1,1 @@
-DROP Table trucks;
+DROP TABLE IF EXISTS trucks;

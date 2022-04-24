@@ -1,1 +1,1 @@
-DROP Table manifest_receipt;
+DROP TABLE IF EXISTS manifest_receipt;

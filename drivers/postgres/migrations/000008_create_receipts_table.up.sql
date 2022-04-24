@@ -1,4 +1,4 @@
-CREATE Table receipts (
+CREATE TABLE IF NOT EXISTS receipts (
   id serial NOT NULL,
   code varchar(255) NOT NULL,
   receiver varchar(255) NOT NULL,

@@ -1,1 +1,1 @@
-DROP Table phones;
+DROP TABLE IF EXISTS phones;

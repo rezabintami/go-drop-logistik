@@ -1,1 +1,1 @@
-DROP Table receipts;
+DROP TABLE IF EXISTS receipts;

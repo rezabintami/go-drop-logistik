@@ -1,1 +1,1 @@
-DROP Table drivers;
+DROP TABLE IF EXISTS drivers;

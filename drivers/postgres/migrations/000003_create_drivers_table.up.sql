@@ -1,4 +1,4 @@
-CREATE Table drivers (
+CREATE TABLE IF NOT EXISTS drivers (
   id serial PRIMARY KEY,
   name varchar(255) NOT NULL,
   phone varchar(255) NOT NULL,

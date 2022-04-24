@@ -1,1 +1,1 @@
-DROP Table agents;
+DROP TABLE IF EXISTS agents;

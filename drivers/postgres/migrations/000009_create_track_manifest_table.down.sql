@@ -1,1 +1,1 @@
-DROP Table track_manifest;
+DROP TABLE IF EXISTS track_manifest;

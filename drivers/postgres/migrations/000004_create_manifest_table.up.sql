@@ -1,4 +1,4 @@
-CREATE Table manifest (
+CREATE TABLE IF NOT EXISTS manifest (
   id bigserial PRIMARY KEY,
   code varchar(255) NOT NULL,
   status varchar(255) NOT NULL,

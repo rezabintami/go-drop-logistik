@@ -1,4 +1,4 @@
-CREATE Table trucks (
+CREATE TABLE IF NOT EXISTS trucks (
   id bigserial PRIMARY KEY,
   name varchar(255) NOT NULL,
   type varchar(255) NOT NULL,
