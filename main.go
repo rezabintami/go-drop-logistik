@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	_config "go-drop-logistik/app/config"
 	_dbPostgresDriver "go-drop-logistik/drivers/postgres"
 	"go-drop-logistik/helper/logging"
 	"go-drop-logistik/helper/validation"
@@ -67,76 +68,37 @@ import (
 )
 
 func main() {
-	
+	configApp := _config.GetConfig()
+
+	fmt.Println("Server is running on port :" + configApp.Server.Address)
+
+	fmt.Println("User :", configApp.Postgres.User)
+	fmt.Println("Host :", configApp.Postgres.Host)
+	fmt.Println("Port :", configApp.Postgres.Port)
+	fmt.Println("Name :", configApp.Postgres.Name)
 
 	postgres_db := _dbPostgresDriver.InitialPostgresDB()
 
 	// Init Seeding
 	err := seeder.Seeder(postgres_db)
+	log.Println(err)
 
 	// Init Validation
 	validation.Init()
 
-	log.Println(err)
-
-	// configJWT := _middleware.ConfigJWT{
-	// 	SecretJWT:       configApp.JWT.Secret,
-	// 	ExpiresDuration: configApp.JWT.Expired,
-	// }
-
-	// timeoutContext := time.Duration(configApp.JWT.Expired) * time.Second
-
 	e := echo.New()
-
 	logger := logging.NewLogger()
-
 	middlewareLog := _middleware.NewMiddleware(logger)
 
-	plugins := _plugins.ConfigurationPlugins(postgres_db,logger,middlewareLog)
+	plugins := _plugins.ConfigurationPlugins{
+		ConfigApp:     configApp,
+		Postgres_DB:   postgres_db,
+		Logger:        logger,
+		MiddlewareLog: middlewareLog,
+	}
 
-	route := plugins.RoutePlugins()	
+	route := plugins.RoutePlugins()
 	route.RouteRegister(e)
-		
-	// //! REPO
-	// userRepo := _userRepo.NewMySQLUserRepository(postgres_db)
-	// phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(postgres_db)
-	// phoneRepo := _phoneRepo.NewMySQLPhoneRepository(postgres_db)
-	// agentRepo := _agentRepo.NewMySQLAgentRepository(postgres_db)
-	// adminRepo := _adminRepo.NewMySQLAdminRepository(postgres_db)
-	// receiptRepo := _receiptRepo.NewMySQLReceiptRepository(postgres_db)
-	// manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(postgres_db)
-	// manifestRepo := _manifestRepo.NewMySQLManifestRepository(postgres_db)
-	// truckRepo := _truckRepo.NewMySQLTruckRepository(postgres_db)
-	// driverRepo := _driverRepo.NewMySQLDriverRepository(postgres_db)
-	// trackRepo := _trackRepo.NewMySQLTrackRepository(postgres_db)
-	// trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(postgres_db)
-
-	// //! USECASE
-	// userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
-	// phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, &configJWT, timeoutContext)
-	// agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext)
-	// adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
-	// receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
-	// manifestReceiptUsecase := _manifestReceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
-	// manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
-	// truckUsecase := _truckUsecase.NewTrucksUsecase(truckRepo, &configJWT, timeoutContext)
-	// driverUsecase := _driverUsecase.NewDriverUsecase(driverRepo, &configJWT, timeoutContext)
-	// phoneAgentUsecase := _phoneAgentUsecase.NewPhoneAgentUsecase(phoneAgentRepo, &configJWT, timeoutContext)
-	// trackUsecase := _trackUsecase.NewTrackUsecase(trackRepo, &configJWT, timeoutContext)
-	// trackManifestUsecase := _trackManifestUsecase.NewTrackManifestUsecase(trackManifestRepo, &configJWT, timeoutContext)
-
-	// //! CONTROLLER
-	// userCtrl := _userController.NewUserController(userUsecase)
-	// phoneCtrl := _phoneController.NewPhonesController(phoneUsecase, phoneAgentUsecase)
-	// agentCtrl := _agentController.NewAgentController(agentUsecase, phoneAgentUsecase, phoneUsecase)
-	// adminCtrl := _adminController.NewAdminController(adminUsecase, agentUsecase)
-	// receiptCtrl := _receiptController.NewReceiptController(receiptUsecase, manifestReceiptUsecase, trackManifestUsecase)
-	// manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase, trackManifestUsecase)
-	// truckCtrl := _truckController.NewTrucksController(truckUsecase)
-	// driverCtrl := _driverController.NewDriversController(driverUsecase)
-	// trackCtrl := _trackController.NewTracksController(trackUsecase, trackManifestUsecase)
-
-	
 
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	now := time.Now().In(loc)
@@ -146,6 +108,10 @@ func main() {
 	if port == "" {
 		port = "8000"
 	}
+
+	log.Println("App :", configApp.App.Env)
+	log.Println("Debug :", configApp.App.Debug)
+	log.Println("App Version :", configApp.App.Version)
 
 	logger.LogServer("Server is running").Info("Server started at port ", port)
 	log.Println("listening on PORT : ", port)

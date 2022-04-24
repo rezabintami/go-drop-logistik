@@ -1,11 +1,9 @@
 package app_plugins
 
 import (
-	"fmt"
 	_config "go-drop-logistik/app/config"
 	_middleware "go-drop-logistik/app/middleware"
 	_routes "go-drop-logistik/app/routes"
-	"log"
 
 	"time"
 
@@ -60,52 +58,44 @@ import (
 )
 
 type ConfigurationPlugins struct {
-	postgres_db   *gorm.DB
-	logger        logging.Logger
-	middlewareLog _middleware.ConfigMiddleware
+	ConfigApp     _config.Config
+	Postgres_DB   *gorm.DB
+	Logger        logging.Logger
+	MiddlewareLog _middleware.ConfigMiddleware
 }
 
 func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
-	configApp := _config.GetConfig()
 
-	fmt.Println("Server is running on port :" + configApp.Server.Address)
 
-	fmt.Println("User :", configApp.Postgres.User)
-	fmt.Println("Host :", configApp.Postgres.Host)
-	fmt.Println("Port :", configApp.Postgres.Port)
-	fmt.Println("Name :", configApp.Postgres.Name)
-
-	log.Println("App :", configApp.App.Env)
-	log.Println("Debug :", configApp.App.Debug)
-	log.Println("App Version :", configApp.App.Version)
+	
 
 	configJWT := _middleware.ConfigJWT{
-		SecretJWT:       configApp.JWT.Secret,
-		ExpiresDuration: configApp.JWT.Expired,
+		SecretJWT:       route.ConfigApp.JWT.Secret,
+		ExpiresDuration: route.ConfigApp.JWT.Expired,
 	}
 
-	timeoutContext := time.Duration(configApp.JWT.Expired) * time.Second
+	timeoutContext := time.Duration(route.ConfigApp.JWT.Expired) * time.Second
 
 	//! REPO
-	userRepo := _userRepo.NewMySQLUserRepository(route.postgres_db)
-	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(route.postgres_db)
-	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(route.postgres_db)
-	agentRepo := _agentRepo.NewMySQLAgentRepository(route.postgres_db)
-	adminRepo := _adminRepo.NewMySQLAdminRepository(route.postgres_db)
-	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(route.postgres_db)
-	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(route.postgres_db)
-	manifestRepo := _manifestRepo.NewMySQLManifestRepository(route.postgres_db)
-	truckRepo := _truckRepo.NewMySQLTruckRepository(route.postgres_db)
-	driverRepo := _driverRepo.NewMySQLDriverRepository(route.postgres_db)
-	trackRepo := _trackRepo.NewMySQLTrackRepository(route.postgres_db)
-	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(route.postgres_db)
+	userRepo := _userRepo.NewMySQLUserRepository(route.Postgres_DB)
+	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(route.Postgres_DB)
+	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(route.Postgres_DB)
+	agentRepo := _agentRepo.NewMySQLAgentRepository(route.Postgres_DB)
+	adminRepo := _adminRepo.NewMySQLAdminRepository(route.Postgres_DB)
+	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(route.Postgres_DB)
+	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(route.Postgres_DB)
+	manifestRepo := _manifestRepo.NewMySQLManifestRepository(route.Postgres_DB)
+	truckRepo := _truckRepo.NewMySQLTruckRepository(route.Postgres_DB)
+	driverRepo := _driverRepo.NewMySQLDriverRepository(route.Postgres_DB)
+	trackRepo := _trackRepo.NewMySQLTrackRepository(route.Postgres_DB)
+	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(route.Postgres_DB)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
 	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, &configJWT, timeoutContext)
 	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext)
-	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, route.logger)
-	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, route.logger)
+	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, route.Logger)
+	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, route.Logger)
 	manifestReceiptUsecase := _manifestReceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
 	manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
 	truckUsecase := _truckUsecase.NewTrucksUsecase(truckRepo, &configJWT, timeoutContext)
@@ -126,7 +116,7 @@ func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 	trackCtrl := _trackController.NewTracksController(trackUsecase, trackManifestUsecase)
 
 	return _routes.ControllerList{
-		MiddlewareLog:      route.middlewareLog,
+		MiddlewareLog:      route.MiddlewareLog,
 		JWTMiddleware:      configJWT.Init(),
 		UserController:     *userCtrl,
 		AgentController:    *agentCtrl,
@@ -137,6 +127,6 @@ func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 		TruckController:    *truckCtrl,
 		DriverController:   *driverCtrl,
 		TrackController:    *trackCtrl,
-		ConfigApp:          configApp,
+		ConfigApp:          route.ConfigApp,
 	}
 }
