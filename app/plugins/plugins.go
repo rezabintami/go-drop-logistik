@@ -66,9 +66,6 @@ type ConfigurationPlugins struct {
 
 func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 
-
-	
-
 	configJWT := _middleware.ConfigJWT{
 		SecretJWT:       route.ConfigApp.JWT.Secret,
 		ExpiresDuration: route.ConfigApp.JWT.Expired,
@@ -76,7 +73,7 @@ func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 
 	timeoutContext := time.Duration(route.ConfigApp.JWT.Expired) * time.Second
 
-	//! REPO
+	//! REPOSITORY
 	userRepo := _userRepo.NewMySQLUserRepository(route.Postgres_DB)
 	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(route.Postgres_DB)
 	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(route.Postgres_DB)

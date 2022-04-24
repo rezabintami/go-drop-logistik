@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS drivers (
-  id serial PRIMARY KEY,
+  id bigserial PRIMARY KEY,
   name varchar(255) NOT NULL,
   phone varchar(255) NOT NULL,
   address text NOT NULL,

@@ -16,9 +16,9 @@ type (
 		Password  string  `json:"password,omitempty" validate:"required"`
 		Email     string  `json:"email" validate:"required"`
 		Address   string  `json:"address" validate:"required"`
-		Balance   float64 `json:"balance" validate:"required"`
-		Latitude  float64 `json:"latitude" validate:"required"`
-		Longitude float64 `json:"longitude" validate:"required"`
+		Balance   float64 `json:"balance"`
+		Latitude  float64 `json:"latitude"`
+		Longitude float64 `json:"longitude"`
 	}
 )
 

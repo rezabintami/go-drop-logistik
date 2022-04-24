@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS receipts (
-  id serial NOT NULL,
+  id bigserial PRIMARY KEY,
   code varchar(255) NOT NULL,
   receiver varchar(255) NOT NULL,
   phone_receiver varchar(255) NOT NULL,
