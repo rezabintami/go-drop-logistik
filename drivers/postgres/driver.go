@@ -33,20 +33,5 @@ func InitialPostgresDB() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	// db.AutoMigrate(
-	// 	&users.Users{},
-	// 	&agents.Agents{},
-	// 	&admins.Admins{},
-	// 	&receipts.Receipts{},
-	// 	&phones.Phones{},
-	// 	&phoneagent.PhoneAgent{},
-	// 	&manifest.Manifest{},
-	// 	&manifestreceipt.ManifestReceipt{},
-	// 	&tracks.Tracks{},
-	// 	&trackmanifest.TrackManifest{},
-	// 	&trucks.Trucks{},
-	// 	&drivers.Drivers{},
-	// )
-
 	return db
 }

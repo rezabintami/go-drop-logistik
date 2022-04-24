@@ -1,16 +1,15 @@
-package main
+package app_plugins
 
 import (
 	"fmt"
-	"os"
-
 	_config "go-drop-logistik/app/config"
-	_dbPostgresDriver "go-drop-logistik/drivers/postgres"
-	"go-drop-logistik/helper/logging"
-	"go-drop-logistik/helper/validation"
-
 	_middleware "go-drop-logistik/app/middleware"
 	_routes "go-drop-logistik/app/routes"
+	"log"
+
+	"time"
+
+	"go-drop-logistik/helper/logging"
 
 	_userUsecase "go-drop-logistik/business/users"
 	_userController "go-drop-logistik/controllers/users"
@@ -57,15 +56,16 @@ import (
 	_driverController "go-drop-logistik/controllers/drivers"
 	_driverRepo "go-drop-logistik/drivers/databases/drivers"
 
-	"log"
-	"time"
-
-	"go-drop-logistik/cli/seeder"
-
-	echo "github.com/labstack/echo/v4"
+	"github.com/jinzhu/gorm"
 )
 
-func main() {
+type ConfigurationPlugins struct {
+	postgres_db   *gorm.DB
+	logger        logging.Logger
+	middlewareLog _middleware.ConfigMiddleware
+}
+
+func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 	configApp := _config.GetConfig()
 
 	fmt.Println("Server is running on port :" + configApp.Server.Address)
@@ -75,22 +75,9 @@ func main() {
 	fmt.Println("Port :", configApp.Postgres.Port)
 	fmt.Println("Name :", configApp.Postgres.Name)
 
-	// mongoConfigDB := _dbMongoDriver.ConfigDB{
-	// 	DB_Username: configApp.MONGO_DB_USER,
-	// 	DB_Host:     configApp.MONGO_DB_HOST,
-	// 	DB_Port:     configApp.MONGO_DB_PORT,
-	// 	DB_Database: configApp.MONGO_DB_NAME,
-	// }
-
-	postgres_db := _dbPostgresDriver.InitialPostgresDB()
-
-	// Init Seeding
-	err := seeder.Seeder(postgres_db)
-
-	// Init Validation
-	validation.Init()
-
-	log.Println(err)
+	log.Println("App :", configApp.App.Env)
+	log.Println("Debug :", configApp.App.Debug)
+	log.Println("App Version :", configApp.App.Version)
 
 	configJWT := _middleware.ConfigJWT{
 		SecretJWT:       configApp.JWT.Secret,
@@ -99,32 +86,26 @@ func main() {
 
 	timeoutContext := time.Duration(configApp.JWT.Expired) * time.Second
 
-	e := echo.New()
-
-	logger := logging.NewLogger()
-
-	middlewareLog := _middleware.NewMiddleware(logger)
-
 	//! REPO
-	userRepo := _userRepo.NewMySQLUserRepository(postgres_db)
-	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(postgres_db)
-	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(postgres_db)
-	agentRepo := _agentRepo.NewMySQLAgentRepository(postgres_db)
-	adminRepo := _adminRepo.NewMySQLAdminRepository(postgres_db)
-	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(postgres_db)
-	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(postgres_db)
-	manifestRepo := _manifestRepo.NewMySQLManifestRepository(postgres_db)
-	truckRepo := _truckRepo.NewMySQLTruckRepository(postgres_db)
-	driverRepo := _driverRepo.NewMySQLDriverRepository(postgres_db)
-	trackRepo := _trackRepo.NewMySQLTrackRepository(postgres_db)
-	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(postgres_db)
+	userRepo := _userRepo.NewMySQLUserRepository(route.postgres_db)
+	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(route.postgres_db)
+	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(route.postgres_db)
+	agentRepo := _agentRepo.NewMySQLAgentRepository(route.postgres_db)
+	adminRepo := _adminRepo.NewMySQLAdminRepository(route.postgres_db)
+	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(route.postgres_db)
+	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(route.postgres_db)
+	manifestRepo := _manifestRepo.NewMySQLManifestRepository(route.postgres_db)
+	truckRepo := _truckRepo.NewMySQLTruckRepository(route.postgres_db)
+	driverRepo := _driverRepo.NewMySQLDriverRepository(route.postgres_db)
+	trackRepo := _trackRepo.NewMySQLTrackRepository(route.postgres_db)
+	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(route.postgres_db)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
 	phoneUsecase := _phoneUsecase.NewPhoneUsecase(phoneRepo, &configJWT, timeoutContext)
 	agentUsecase := _agentUsecase.NewAgentUsecase(agentRepo, &configJWT, timeoutContext)
-	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, logger)
-	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, logger)
+	adminUsecase := _adminUsecase.NewAdminUsecase(adminRepo, &configJWT, timeoutContext, route.logger)
+	receiptUsecase := _receiptUsecase.NewReceiptUsecase(receiptRepo, &configJWT, timeoutContext, route.logger)
 	manifestReceiptUsecase := _manifestReceiptUsecase.NewManifestReceiptUsecase(manifestReceiptRepo, receiptRepo, &configJWT, timeoutContext)
 	manifestUsecase := _manifestUsecase.NewManifestUsecase(manifestRepo, &configJWT, timeoutContext)
 	truckUsecase := _truckUsecase.NewTrucksUsecase(truckRepo, &configJWT, timeoutContext)
@@ -144,8 +125,8 @@ func main() {
 	driverCtrl := _driverController.NewDriversController(driverUsecase)
 	trackCtrl := _trackController.NewTracksController(trackUsecase, trackManifestUsecase)
 
-	routesInit := _routes.ControllerList{
-		MiddlewareLog:      middlewareLog,
+	return _routes.ControllerList{
+		MiddlewareLog:      route.middlewareLog,
 		JWTMiddleware:      configJWT.Init(),
 		UserController:     *userCtrl,
 		AgentController:    *agentCtrl,
@@ -158,23 +139,4 @@ func main() {
 		TrackController:    *trackCtrl,
 		ConfigApp:          configApp,
 	}
-	routesInit.RouteRegister(e)
-
-	loc, _ := time.LoadLocation("Asia/Jakarta")
-	now := time.Now().In(loc)
-	fmt.Println("Location :", loc, " Time :", now.Format(time.RFC3339))
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8000"
-	}
-
-	log.Println("App :", configApp.App.Env)
-	log.Println("Debug :", configApp.App.Debug)
-	log.Println("App Version :", configApp.App.Version)
-
-	logger.LogServer("Server is running").Info("Server started at port ", port)
-	log.Println("listening on PORT : ", port)
-	log.Fatal(e.Start(":" + port))
-
 }
