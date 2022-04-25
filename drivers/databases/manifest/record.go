@@ -14,7 +14,7 @@ type Manifest struct {
 	Driver    *drivers.Drivers `gorm:"foreignkey:DriverID;references:ID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time `gorm:"column:deletedAt"`
+	DeletedAt *time.Time 
 }
 
 func (rec *Manifest) ToDomain() (res *manifest.Domain) {

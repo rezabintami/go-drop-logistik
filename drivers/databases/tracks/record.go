@@ -16,7 +16,7 @@ type Tracks struct {
 	DestinationAgent   *agents.Agents `gorm:"foreignkey:DestinationAgentID;references:ID"`
 	Message            string
 	CreatedAt          time.Time
-	DeletedAt          *time.Time `gorm:"column:deletedAt"`
+	DeletedAt          *time.Time 
 }
 
 func (rec *Tracks) ToDomain() (res *tracks.Domain) {

@@ -3,6 +3,7 @@ package manifest
 import (
 	"context"
 	"go-drop-logistik/business/manifest"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -71,9 +72,9 @@ func (repository *mysqlManifestRepository) Delete(ctx context.Context, id int) e
 }
 
 func (repository *mysqlManifestRepository) Update(ctx context.Context, manifestDomain *manifest.Domain, id int) error {
-	manifestUpdate := fromDomain(*manifestDomain)
-
-	result := repository.Conn.Where("id = ?", id).Updates(&manifestUpdate)
+	result := repository.Conn.Exec(
+		"UPDATE manifests SET status = ?, driver_id = ?, updated_at = ? WHERE id = ?",
+		manifestDomain.Status, manifestDomain.DriverID, time.Now(), id)
 	if result.Error != nil {
 		return result.Error
 	}

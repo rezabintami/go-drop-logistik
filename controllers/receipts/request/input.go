@@ -22,7 +22,7 @@ type Receipts struct {
 }
 
 type TrackingReceipts struct {
-	Code string `json:"code"`
+	Code string `json:"receipt_code"`
 }
 
 func (req *Receipts) ToDomain() *receipts.Domain {

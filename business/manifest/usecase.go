@@ -2,6 +2,7 @@ package manifest
 
 import (
 	"context"
+	"errors"
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/helper/code"
 	"go-drop-logistik/helper/enum"
@@ -70,6 +71,17 @@ func (usecase *ManifestUsecase) Delete(ctx context.Context, id int) error {
 }
 
 func (usecase *ManifestUsecase) Update(ctx context.Context, manifestDomain *Domain, id int) error {
+	switch manifestDomain.Status {
+		case enum.PROCESS:
+			manifestDomain.Status = enum.PROCESS
+		case enum.SUCCESS:
+			manifestDomain.Status = enum.SUCCESS
+		case enum.SHIPPING:
+			manifestDomain.Status = enum.SHIPPING
+		default:
+			return errors.New("message not found")
+	}
+	
 	err := usecase.manifestRepository.Update(ctx, manifestDomain, id)
 	if err != nil {
 		return err

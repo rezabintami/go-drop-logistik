@@ -24,14 +24,17 @@ func NewTrackUsecase(repo Repository, jwtauth *middleware.ConfigJWT, timeout tim
 }
 
 func (usecase *TrackUsecase) StoreTrack(ctx context.Context, trackDomain *Domain, agentName string) (int, error) {
-	if trackDomain.Message == fmt.Sprintf("%s %s", enum.TRACKING_PROCESS_MESSAGE, agentName) {
-		trackDomain.Message = fmt.Sprintf("%s %s", enum.TRACKING_PROCESS_MESSAGE, agentName)
-	} else if trackDomain.Message == enum.TRACKING_SHIPPING_MESSAGE {
-		trackDomain.Message = enum.TRACKING_SHIPPING_MESSAGE
-	} else if trackDomain.Message == enum.TRACKING_SUCCESS_MESSAGE {
-		trackDomain.Message = enum.TRACKING_SUCCESS_MESSAGE
-	} else {
-		return 0, errors.New("message not found")
+	fmt.Println("message : ", trackDomain.Message)
+	fmt.Printf("%s %s", enum.TRACKING_PROCESS_MESSAGE, agentName)
+	switch trackDomain.Message {
+		case enum.TRACKING_PROCESS_MESSAGE:
+			trackDomain.Message = fmt.Sprintf("%s %s", enum.TRACKING_PROCESS_MESSAGE, agentName)
+		case enum.TRACKING_SHIPPING_MESSAGE:
+			trackDomain.Message = enum.TRACKING_SHIPPING_MESSAGE
+		case enum.TRACKING_SUCCESS_MESSAGE:
+			trackDomain.Message = enum.TRACKING_SUCCESS_MESSAGE
+		default:
+			return 0, errors.New("message not found")
 	}
 
 	id, err := usecase.trackRepository.StoreTrack(ctx, trackDomain)

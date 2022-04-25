@@ -4117,7 +4117,7 @@ type Manifest struct {
         Driver    *drivers.Drivers `gorm:"foreignkey:DriverID;references:ID"`
         CreatedAt time.Time
         UpdatedAt time.Time
-        DeletedAt *time.Time `gorm:"column:deletedAt"`
+        DeletedAt *time.Time 
 }
 
 func (rec *Manifest) ToDomain() (res *manifest.Domain) <span class="cov0" title="0">{
@@ -4466,7 +4466,7 @@ type Phones struct {
         Phone     string
         CreatedAt time.Time
         UpdatedAt time.Time
-        DeletedAt *time.Time `gorm:"column:deletedAt"`
+        DeletedAt *time.Time 
 }
 
 func fromDomain(phoneDomain phones.Domain) *Phones <span class="cov0" title="0">{
@@ -4611,7 +4611,7 @@ type Receipts struct {
         PickupAt        time.Time
         CreatedAt       time.Time
         UpdatedAt       time.Time
-        DeletedAt       *time.Time `gorm:"column:deletedAt"`
+        DeletedAt       *time.Time 
 }
 
 func (rec *Receipts) ToDomain() *receipts.Domain <span class="cov0" title="0">{
@@ -4831,7 +4831,7 @@ type Tracks struct {
         DestinationAgent   *agents.Agents `gorm:"foreignkey:DestinationAgentID;references:ID"`
         Message            string
         CreatedAt          time.Time
-        DeletedAt          *time.Time `gorm:"column:deletedAt"`
+        DeletedAt          *time.Time 
 }
 
 func (rec *Tracks) ToDomain() (res *tracks.Domain) <span class="cov0" title="0">{

@@ -10,7 +10,7 @@ type Phones struct {
 	Phone     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt *time.Time `gorm:"column:deletedAt"`
+	DeletedAt *time.Time 
 }
 
 func fromDomain(phoneDomain phones.Domain) *Phones {

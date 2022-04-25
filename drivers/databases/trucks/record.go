@@ -12,7 +12,7 @@ type Trucks struct {
 	LicensePlate string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	DeletedAt    *time.Time `gorm:"column:deletedAt"`
+	DeletedAt    *time.Time
 }
 
 func fromDomain(truckDomain trucks.Domain) *Trucks {
