@@ -21,7 +21,7 @@ type Admins struct {
 }
 
 func Seeder(Conn *gorm.DB) error {
-	log.Println("Init seeder")
+	log.Println("Initializing Seeder...")
 
 	// Admins
 	admin := Admins{}

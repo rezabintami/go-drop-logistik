@@ -74,18 +74,18 @@ func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 	timeoutContext := time.Duration(route.ConfigApp.JWT.Expired) * time.Second
 
 	//! REPOSITORY
-	userRepo := _userRepo.NewMySQLUserRepository(route.Postgres_DB)
-	phoneAgentRepo := _phoneAgentRepo.NewMySQLPhoneAgentRepository(route.Postgres_DB)
-	phoneRepo := _phoneRepo.NewMySQLPhoneRepository(route.Postgres_DB)
-	agentRepo := _agentRepo.NewMySQLAgentRepository(route.Postgres_DB)
-	adminRepo := _adminRepo.NewMySQLAdminRepository(route.Postgres_DB)
-	receiptRepo := _receiptRepo.NewMySQLReceiptRepository(route.Postgres_DB)
-	manifestReceiptRepo := _manifestReceiptRepo.NewMySQLManifestReceiptRepository(route.Postgres_DB)
-	manifestRepo := _manifestRepo.NewMySQLManifestRepository(route.Postgres_DB)
-	truckRepo := _truckRepo.NewMySQLTruckRepository(route.Postgres_DB)
-	driverRepo := _driverRepo.NewMySQLDriverRepository(route.Postgres_DB)
-	trackRepo := _trackRepo.NewMySQLTrackRepository(route.Postgres_DB)
-	trackManifestRepo := _trackManifestRepo.NewMySQLTrackManifestRepository(route.Postgres_DB)
+	userRepo := _userRepo.NewPostgreUsersRepository(route.Postgres_DB)
+	phoneAgentRepo := _phoneAgentRepo.NewPostgrePhoneAgentRepository(route.Postgres_DB)
+	phoneRepo := _phoneRepo.NewpostgrePhoneRepository(route.Postgres_DB)
+	agentRepo := _agentRepo.NewPostgreAgentRepository(route.Postgres_DB)
+	adminRepo := _adminRepo.NewPostgreAdminRepository(route.Postgres_DB)
+	receiptRepo := _receiptRepo.NewPostgreReceiptRepository(route.Postgres_DB)
+	manifestReceiptRepo := _manifestReceiptRepo.NewPostgreManifestReceiptRepository(route.Postgres_DB)
+	manifestRepo := _manifestRepo.NewPostgreManifestRepository(route.Postgres_DB)
+	truckRepo := _truckRepo.NewPostgreTruckRepository(route.Postgres_DB)
+	driverRepo := _driverRepo.NewPostgreDriverRepository(route.Postgres_DB)
+	trackRepo := _trackRepo.NewPostgreTrackRepository(route.Postgres_DB)
+	trackManifestRepo := _trackManifestRepo.NewPostgreTrackManifestRepository(route.Postgres_DB)
 
 	//! USECASE
 	userUsecase := _userUsecase.NewUserUsecase(userRepo, &configJWT, timeoutContext)
