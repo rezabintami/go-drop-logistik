@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"go-drop-logistik/app/config"
+
 	ut "github.com/go-playground/universal-translator"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -40,8 +42,8 @@ func formatMessage(err validator.FieldError, trans ut.Translator) string {
 	message := ""
 
 	switch err.Tag() {
-	case "phone_number":
-		message = "nomor handphone tidak sesuai (081234567890)"
+	case "phone":
+		message = config.Message("validateMessage.phoneNumber", nil)
 	default:
 		message = err.Translate(trans)
 	}

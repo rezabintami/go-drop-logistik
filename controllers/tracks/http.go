@@ -6,7 +6,7 @@ import (
 
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/controllers/tracks/request"
-	base_response "go-drop-logistik/helpers"
+	helpers "go-drop-logistik/helpers"
 	"go-drop-logistik/modules/trackmanifest"
 	"go-drop-logistik/modules/tracks"
 
@@ -33,18 +33,18 @@ func (controller *TracksController) CreateTrack(c echo.Context) error {
 
 	req := request.Track{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	trackId, err := controller.trackUsecase.StoreTrack(ctx, req.ToDomain(), name)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.trackManifestUsecase.Store(ctx, manifestId, trackId)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessInsertResponse(c, "Successfully inserted")
 }

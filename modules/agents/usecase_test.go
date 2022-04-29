@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/business"
 	"go-drop-logistik/helpers"
 	"go-drop-logistik/modules/agents"
 	agentMock "go-drop-logistik/modules/agents/mocks"
@@ -63,7 +62,7 @@ func TestLoginAgent(t *testing.T) {
 		agentRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(agentDomain, nil).Once()
 
 		_, err := agentUsecase.Login(context.Background(), "agent@gmail.com", "123123", false)
-		assert.Equal(t, err, business.ErrEmailPasswordNotFound)
+		assert.Equal(t, err, helpers.ErrEmailPasswordNotFound)
 
 	})
 
@@ -115,7 +114,7 @@ func TestRegisterAgent(t *testing.T) {
 
 		err := agentUsecase.Register(context.Background(), &domain, false)
 
-		assert.Equal(t, err, business.ErrDuplicateData)
+		assert.Equal(t, err, helpers.ErrDuplicateData)
 	})
 
 	t.Run("test case 3, data has exist", func(t *testing.T) {
@@ -137,7 +136,7 @@ func TestRegisterAgent(t *testing.T) {
 
 		err := agentUsecase.Register(context.Background(), &domain, false)
 
-		assert.Equal(t, err, business.ErrDuplicateData)
+		assert.Equal(t, err, helpers.ErrDuplicateData)
 	})
 
 	t.Run("test case 4, register failed", func(t *testing.T) {

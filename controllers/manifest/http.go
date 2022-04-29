@@ -7,7 +7,7 @@ import (
 	"go-drop-logistik/constants"
 	"go-drop-logistik/controllers/manifest/request"
 	"go-drop-logistik/controllers/manifest/response"
-	base_response "go-drop-logistik/helpers"
+	helpers "go-drop-logistik/helpers"
 	"go-drop-logistik/modules/manifest"
 	"go-drop-logistik/modules/manifestreceipt"
 	"go-drop-logistik/modules/trackmanifest"
@@ -34,14 +34,14 @@ func (controller *ManifestController) CreateManifest(c echo.Context) error {
 
 	req := request.Manifest{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err := controller.manifestUsecase.StoreManifest(ctx, req.ToDomain())
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessInsertResponse(c, "Successfully inserted")
 }
 
 func (controller *ManifestController) GetByID(c echo.Context) error {
@@ -51,12 +51,12 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 
 	manifest, err := controller.manifestUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	receipt, err := controller.manifestreceiptUsecase.GetAllByManifestID(ctx, manifest.ID)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	for _, value := range receipt {
@@ -65,14 +65,14 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 
 	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	for _, value := range tracks {
 		manifest.Tracks = append(manifest.Tracks, *value.Track)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(&manifest))
+	return helpers.SuccessResponse(c, response.FromDomain(&manifest))
 }
 
 func (controller *ManifestController) Fetch(c echo.Context) error {
@@ -83,10 +83,10 @@ func (controller *ManifestController) Fetch(c echo.Context) error {
 
 	manifest, count, err := controller.manifestUsecase.Fetch(ctx, page, perpage)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromListDomain(manifest, count))
+	return helpers.SuccessResponse(c, response.FromListDomain(manifest, count))
 }
 
 func (controller *ManifestController) Delete(c echo.Context) error {
@@ -96,20 +96,20 @@ func (controller *ManifestController) Delete(c echo.Context) error {
 
 	err := controller.manifestUsecase.Delete(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.manifestreceiptUsecase.DeleteByManifest(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.trackManifestUsecase.DeleteByManifest(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, "Delete Successfully")
 }
 
 func (controller *ManifestController) Update(c echo.Context) error {
@@ -119,15 +119,15 @@ func (controller *ManifestController) Update(c echo.Context) error {
 
 	req := request.ManifestUpdate{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err := controller.manifestUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, "Update Successfully")
 }
 
 func (controller *ManifestController) UpdateStatus(c echo.Context) error {
@@ -137,13 +137,13 @@ func (controller *ManifestController) UpdateStatus(c echo.Context) error {
 
 	err := controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: constants.SUCCESS}, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, "Update Successfully")
 }

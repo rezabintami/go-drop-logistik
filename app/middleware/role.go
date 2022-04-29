@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"errors"
-	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/helpers"
 	"net/http"
 
 	echo "github.com/labstack/echo/v4"
@@ -18,7 +18,7 @@ func RoleValidation(roles ...string) echo.MiddlewareFunc {
 					return hf(c)
 				}
 			}
-			return base_response.NewErrorResponse(c, http.StatusForbidden, errors.New("forbidden roles"))
+			return helpers.ErrorResponse(c, http.StatusForbidden, errors.New("forbidden roles"))
 		}
 	}
 }

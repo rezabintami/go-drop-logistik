@@ -7,7 +7,7 @@ import (
 
 	"go-drop-logistik/controllers/receipts/request"
 	"go-drop-logistik/controllers/receipts/response"
-	base_response "go-drop-logistik/helpers"
+	helpers "go-drop-logistik/helpers"
 	"go-drop-logistik/modules/manifestreceipt"
 	"go-drop-logistik/modules/receipts"
 	"go-drop-logistik/modules/trackmanifest"
@@ -34,20 +34,20 @@ func (controller *ReceiptController) CreateReceipt(c echo.Context) error {
 
 	req := request.Receipts{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	receiptId, err := controller.receiptUsecase.StoreReceipt(ctx, req.ToDomain())
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.manifestreceiptUsecase.Store(ctx, req.ManifestID, receiptId)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessInsertResponse(c, "Successfully inserted")
 }
 
 func (controller *ReceiptController) GetByID(c echo.Context) error {
@@ -57,10 +57,10 @@ func (controller *ReceiptController) GetByID(c echo.Context) error {
 
 	receipt, err := controller.receiptUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(receipt))
+	return helpers.SuccessResponse(c, response.FromDomain(receipt))
 }
 
 func (controller *ReceiptController) GetByCode(c echo.Context) error {
@@ -68,22 +68,22 @@ func (controller *ReceiptController) GetByCode(c echo.Context) error {
 
 	req := request.TrackingReceipts{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	receipt, err := controller.receiptUsecase.GetByCode(ctx, req.Code)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	manifestId, err := controller.manifestreceiptUsecase.GetByReceiptID(ctx, receipt.ID)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, manifestId)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	wg := &sync.WaitGroup{}
@@ -97,7 +97,7 @@ func (controller *ReceiptController) GetByCode(c echo.Context) error {
 	}()
 	wg.Wait()
 
-	return base_response.NewSuccessResponse(c, response.TrackFromDomain(receipt))
+	return helpers.SuccessResponse(c, response.TrackFromDomain(receipt))
 }
 
 func (controller *ReceiptController) Fetch(c echo.Context) error {
@@ -108,10 +108,10 @@ func (controller *ReceiptController) Fetch(c echo.Context) error {
 
 	receipts, count, err := controller.receiptUsecase.Fetch(ctx, page, perpage)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromListDomain(receipts, count))
+	return helpers.SuccessResponse(c, response.FromListDomain(receipts, count))
 }
 
 func (controller *ReceiptController) Delete(c echo.Context) error {
@@ -121,15 +121,15 @@ func (controller *ReceiptController) Delete(c echo.Context) error {
 
 	err := controller.receiptUsecase.Delete(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.manifestreceiptUsecase.DeleteByReceipt(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, "Delete Successfully")
 }
 
 func (controller *ReceiptController) Update(c echo.Context) error {
@@ -139,13 +139,13 @@ func (controller *ReceiptController) Update(c echo.Context) error {
 
 	req := request.Receipts{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err := controller.receiptUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, "Update Successfully")
 }

@@ -6,7 +6,7 @@ import (
 
 	"go-drop-logistik/controllers/trucks/request"
 	"go-drop-logistik/controllers/trucks/response"
-	base_response "go-drop-logistik/helpers"
+	helpers "go-drop-logistik/helpers"
 	"go-drop-logistik/modules/trucks"
 
 	echo "github.com/labstack/echo/v4"
@@ -27,14 +27,14 @@ func (controller *TrucksController) StoreTruck(c echo.Context) error {
 
 	req := request.Trucks{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err := controller.trucksUsecase.StoreTruck(ctx, req.ToDomain())
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessInsertResponse(c, "Successfully inserted")
 }
 
 func (controller *TrucksController) GetByID(c echo.Context) error {
@@ -44,10 +44,10 @@ func (controller *TrucksController) GetByID(c echo.Context) error {
 
 	phone, err := controller.trucksUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, phone)
+	return helpers.SuccessResponse(c, phone)
 }
 
 func (controller *TrucksController) DeleteTruck(c echo.Context) error {
@@ -56,10 +56,10 @@ func (controller *TrucksController) DeleteTruck(c echo.Context) error {
 
 	err := controller.trucksUsecase.Delete(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, "Delete Successfully")
 }
 
 func (controller *TrucksController) UpdateTruck(c echo.Context) error {
@@ -68,14 +68,14 @@ func (controller *TrucksController) UpdateTruck(c echo.Context) error {
 
 	req := request.Trucks{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 	err := controller.trucksUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, "Update Successfully")
 }
 
 func (controller *TrucksController) Fetch(c echo.Context) error {
@@ -86,8 +86,8 @@ func (controller *TrucksController) Fetch(c echo.Context) error {
 
 	agents, count, err := controller.trucksUsecase.Fetch(ctx, page, perpage)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromListDomain(agents, count))
+	return helpers.SuccessResponse(c, response.FromListDomain(agents, count))
 }

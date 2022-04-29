@@ -14,7 +14,7 @@ type BaseResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func NewSuccessResponse(c echo.Context, param interface{}) error {
+func SuccessResponse(c echo.Context, param interface{}) error {
 	response := BaseResponse{}
 	response.Meta.Message = "Success"
 	response.Data = param
@@ -22,7 +22,7 @@ func NewSuccessResponse(c echo.Context, param interface{}) error {
 	return c.JSON(http.StatusOK, response)
 }
 
-func NewSuccessInsertResponse(c echo.Context, param interface{}) error {
+func SuccessInsertResponse(c echo.Context, param interface{}) error {
 	response := BaseResponse{}
 	response.Meta.Message = "Success Insert"
 	response.Data = param
@@ -30,7 +30,7 @@ func NewSuccessInsertResponse(c echo.Context, param interface{}) error {
 	return c.JSON(http.StatusCreated, response)
 }
 
-func NewErrorResponse(c echo.Context, status int, err error) error {
+func ErrorResponse(c echo.Context, status int, err error) error {
 	response := BaseResponse{}
 	response.Meta.Message = "Something wrong"
 	response.Meta.Errors = []string{err.Error()}
@@ -38,7 +38,7 @@ func NewErrorResponse(c echo.Context, status int, err error) error {
 	return c.JSON(status, response)
 }
 
-func NewErrorValidateResponse(c echo.Context, status int, err error, param interface{}) error {
+func ErrorValidateResponse(c echo.Context, status int, err error, param interface{}) error {
 	response := BaseResponse{}
 	response.Meta.Message = "Something wrong"
 	response.Data = param

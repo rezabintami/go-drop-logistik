@@ -1,28 +1,29 @@
 app:
   env: "DEV"
-  debug: true
-  version: 1.0.0
+  debug: 'true'
+  version: '1.0.0'
 server:
-  address: 8000
-  timeout: 2
+  port: '8000'
+  timeout: '2'
 mysql:
   host: "localhost"
-  port: ""
-  user: ""
+  port: "3307"
+  user: "root"
   pass: ""
-  name: ""
+  name: "go-drop-logistik"
 mongo:
   host: "localhost"
-  port: ""
-  user: ""
+  port: "27017"
+  user: "mongodb"
   pass: ""
-  name: ""
+  name: "go-drop-logistik"
 postgres:
   host: "localhost"
   port: "5432"
   user: "postgres"
   pass: "admin"
   name: "go-drop-logistik"
+  ssl: disable
 jwt:
   secret: "supersecret12345!@#$%"
-  expired: 1
+  expired: '1'

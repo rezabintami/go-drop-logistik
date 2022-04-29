@@ -6,7 +6,7 @@ import (
 
 	"go-drop-logistik/controllers/drivers/request"
 	"go-drop-logistik/controllers/drivers/response"
-	base_response "go-drop-logistik/helpers"
+	helpers "go-drop-logistik/helpers"
 	"go-drop-logistik/modules/drivers"
 
 	echo "github.com/labstack/echo/v4"
@@ -27,14 +27,14 @@ func (controller *DriversController) Store(c echo.Context) error {
 
 	req := request.Drivers{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err := controller.driversUsecase.Store(ctx, req.ToDomain())
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessInsertResponse(c, "Successfully inserted")
 }
 
 func (controller *DriversController) GetByID(c echo.Context) error {
@@ -44,10 +44,10 @@ func (controller *DriversController) GetByID(c echo.Context) error {
 
 	driver, err := controller.driversUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(&driver))
+	return helpers.SuccessResponse(c, response.FromDomain(&driver))
 }
 
 func (controller *DriversController) Delete(c echo.Context) error {
@@ -56,10 +56,10 @@ func (controller *DriversController) Delete(c echo.Context) error {
 
 	err := controller.driversUsecase.Delete(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, "Delete Successfully")
 }
 
 func (controller *DriversController) Update(c echo.Context) error {
@@ -68,12 +68,12 @@ func (controller *DriversController) Update(c echo.Context) error {
 
 	req := request.Drivers{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 	err := controller.driversUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, "Update Successfully")
 }

@@ -6,7 +6,7 @@ import (
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/controllers/users/request"
 	"go-drop-logistik/controllers/users/response"
-	base_response "go-drop-logistik/helpers"
+	helpers "go-drop-logistik/helpers"
 	"go-drop-logistik/modules/users"
 
 	echo "github.com/labstack/echo/v4"
@@ -27,14 +27,14 @@ func (controller *UserController) Register(c echo.Context) error {
 
 	req := request.Users{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err := controller.userUsecase.Register(ctx, req.ToDomain(), false)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessInsertResponse(c, "Successfully inserted")
 }
 
 func (controller *UserController) Login(c echo.Context) error {
@@ -42,19 +42,19 @@ func (controller *UserController) Login(c echo.Context) error {
 
 	var userLogin request.Users
 	if err := c.Bind(&userLogin); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	token, err := controller.userUsecase.Login(ctx, userLogin.Email, userLogin.Password, false)
 
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 	result := struct {
 		Token string `json:"token"`
 	}{Token: token}
 
-	return base_response.NewSuccessResponse(c, result)
+	return helpers.SuccessResponse(c, result)
 }
 
 func (controller *UserController) GetByID(c echo.Context) error {
@@ -64,8 +64,8 @@ func (controller *UserController) GetByID(c echo.Context) error {
 	
 	user, err := controller.userUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(user))
+	return helpers.SuccessResponse(c, response.FromDomain(user))
 }
