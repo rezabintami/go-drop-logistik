@@ -2,7 +2,7 @@ package manifest
 
 import (
 	"context"
-	"go-drop-logistik/business/manifest"
+	"go-drop-logistik/modules/manifest"
 	"log"
 	"time"
 

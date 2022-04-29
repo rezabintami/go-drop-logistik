@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-drop-logistik/business/trucks"
 	"go-drop-logistik/controllers/trucks/request"
 	"go-drop-logistik/controllers/trucks/response"
-	base_response "go-drop-logistik/helper/response"
+	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/trucks"
 
 	echo "github.com/labstack/echo/v4"
 )

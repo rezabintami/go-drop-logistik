@@ -5,12 +5,11 @@ import (
 	"strconv"
 
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/business/admins"
-	"go-drop-logistik/business/agents"
 	"go-drop-logistik/controllers/admins/request"
 	"go-drop-logistik/controllers/admins/response"
-	base_response "go-drop-logistik/helper/response"
-	"go-drop-logistik/helper/validation"
+	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/admins"
+	"go-drop-logistik/modules/agents"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -96,13 +95,13 @@ func (controller *AdminController) AgentRegister(c echo.Context) error {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	validateMessage, validate, err := validation.Validate(&req)
+	// validateMessage, validate, err := helpers.Validate(&req)
 
-	if validate {
-		return base_response.NewErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
-	}
+	// if validate {
+	// 	return base_response.NewErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	// }
 
-	err = controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
+	err := controller.agentUsecase.Register(ctx, req.AgentToDomain(), false)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}

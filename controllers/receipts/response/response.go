@@ -1,8 +1,8 @@
 package response
 
 import (
-	"go-drop-logistik/business/receipts"
 	trackResp "go-drop-logistik/controllers/tracks/response"
+	"go-drop-logistik/modules/receipts"
 	"time"
 )
 

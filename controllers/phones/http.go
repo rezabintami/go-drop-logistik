@@ -5,11 +5,11 @@ import (
 	"strconv"
 
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/business/phoneagent"
-	"go-drop-logistik/business/phones"
 	"go-drop-logistik/controllers/phones/request"
 	"go-drop-logistik/controllers/phones/response"
-	base_response "go-drop-logistik/helper/response"
+	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/phoneagent"
+	"go-drop-logistik/modules/phones"
 
 	echo "github.com/labstack/echo/v4"
 )

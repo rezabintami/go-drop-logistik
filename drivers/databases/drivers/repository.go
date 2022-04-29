@@ -2,7 +2,7 @@ package drivers
 
 import (
 	"context"
-	"go-drop-logistik/business/drivers"
+	"go-drop-logistik/modules/drivers"
 	"log"
 
 	"github.com/jinzhu/gorm"

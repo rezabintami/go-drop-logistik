@@ -1,7 +1,7 @@
 package phones
 
 import (
-	"go-drop-logistik/business/phones"
+	"go-drop-logistik/modules/phones"
 	"time"
 )
 

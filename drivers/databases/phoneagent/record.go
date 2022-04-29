@@ -1,9 +1,9 @@
 package phoneagent
 
 import (
-	"go-drop-logistik/business/phoneagent"
 	"go-drop-logistik/drivers/databases/agents"
 	"go-drop-logistik/drivers/databases/phones"
+	"go-drop-logistik/modules/phoneagent"
 )
 
 type PhoneAgent struct {

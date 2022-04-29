@@ -1,6 +1,6 @@
 package request
 
-import "go-drop-logistik/business/trucks"
+import "go-drop-logistik/modules/trucks"
 
 type Trucks struct {
 	Name         string `json:"name"`

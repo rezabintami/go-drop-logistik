@@ -2,7 +2,7 @@ package admins
 
 import (
 	"context"
-	"go-drop-logistik/business/admins"
+	"go-drop-logistik/modules/admins"
 	"log"
 
 	"github.com/jinzhu/gorm"

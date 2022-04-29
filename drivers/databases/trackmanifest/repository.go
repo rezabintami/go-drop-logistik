@@ -2,7 +2,7 @@ package trackmanifest
 
 import (
 	"context"
-	"go-drop-logistik/business/trackmanifest"
+	"go-drop-logistik/modules/trackmanifest"
 	"log"
 
 	"github.com/jinzhu/gorm"

@@ -1,6 +1,6 @@
 package request
 
-import "go-drop-logistik/business/phones"
+import "go-drop-logistik/modules/phones"
 
 type Phone struct {
 	Phone string `json:"phone"`

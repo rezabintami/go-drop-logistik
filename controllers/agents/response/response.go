@@ -1,7 +1,7 @@
 package response
 
 import (
-	"go-drop-logistik/business/agents"
+	"go-drop-logistik/modules/agents"
 )
 
 type Agents struct {

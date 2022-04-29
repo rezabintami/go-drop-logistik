@@ -5,12 +5,12 @@ import (
 	"strconv"
 	"sync"
 
-	"go-drop-logistik/business/manifestreceipt"
-	"go-drop-logistik/business/receipts"
-	"go-drop-logistik/business/trackmanifest"
 	"go-drop-logistik/controllers/receipts/request"
 	"go-drop-logistik/controllers/receipts/response"
-	base_response "go-drop-logistik/helper/response"
+	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/manifestreceipt"
+	"go-drop-logistik/modules/receipts"
+	"go-drop-logistik/modules/trackmanifest"
 
 	echo "github.com/labstack/echo/v4"
 )

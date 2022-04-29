@@ -2,7 +2,7 @@ package phoneagent
 
 import (
 	"context"
-	"go-drop-logistik/business/phoneagent"
+	"go-drop-logistik/modules/phoneagent"
 	"log"
 
 	"github.com/jinzhu/gorm"

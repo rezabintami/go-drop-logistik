@@ -2,7 +2,7 @@ package users
 
 import (
 	"context"
-	"go-drop-logistik/business/users"
+	"go-drop-logistik/modules/users"
 	"log"
 
 	"github.com/jinzhu/gorm"

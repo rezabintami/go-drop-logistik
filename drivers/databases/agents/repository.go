@@ -2,7 +2,7 @@ package agents
 
 import (
 	"context"
-	"go-drop-logistik/business/agents"
+	"go-drop-logistik/modules/agents"
 	"log"
 
 	"github.com/jinzhu/gorm"

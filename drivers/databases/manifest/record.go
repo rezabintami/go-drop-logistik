@@ -1,8 +1,8 @@
 package manifest
 
 import (
-	"go-drop-logistik/business/manifest"
 	"go-drop-logistik/drivers/databases/drivers"
+	"go-drop-logistik/modules/manifest"
 	"time"
 )
 

@@ -1,85 +1,33 @@
 package config
 
 import (
-	"fmt"
+	"log"
 	"os"
-	"strconv"
+	"sync"
 
 	"github.com/spf13/viper"
 )
 
-type Config struct {
+var (
+	onceConfig sync.Once
+)
 
-	//! APP
-	App struct {
-		Env     string `mapstructure:"env"`
-		Debug   bool   `mapstructure:"debug"`
-		Version string `mapstructure:"version"`
-	} `mapstructure:"app"`
+func GetConfiguration(code string) string {
+	onceConfig.Do(func() {
+		viper.SetConfigName("config.dev")
+		viper.SetConfigType("yaml")
+		viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
 
-	//! Server
-	Server struct {
-		Address string `mapstructure:"address"`
-		Timeout int    `mapstructure:"timeout"`
-	} `mapstructure:"server"`
+		err := viper.ReadInConfig()
+		if err != nil {
+			log.Fatalf("err GetConfiguration: %s, code: %s", err.Error(), code)
+		}
+	})
 
-	//! MYSQL
-	Mysql struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-	} `mapstructure:"mysql"`
-
-	//! MONGO DB
-	Mongo struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-	} `mapstructure:"mongo"`
-
-	//! Postgres DB
-	Postgres struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-		SSL  string `mapstructure:"ssl"`
-	} `mapstructure:"postgres"`
-
-	//! JWT
-	JWT struct {
-		Secret  string `mapstructure:"secret"`
-		Expired int    `mapstructure:"expired"`
-	} `mapstructure:"jwt"`
-}
-
-func GetConfig() Config {
-	var conf Config
-
-	viper.SetConfigName("config.dev")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Println("error: ", err)
-		conf.Mysql.Host = os.Getenv("MYSQL_DB_HOST")
-		conf.Mysql.Port = os.Getenv("MYSQL_DB_PORT")
-		conf.Mysql.User = os.Getenv("MYSQL_DB_USER")
-		conf.Mysql.Pass = os.Getenv("MYSQL_DB_PASS")
-		conf.Mysql.Name = os.Getenv("MYSQL_DB_NAME")
-
-		conf.JWT.Secret = os.Getenv("JWT_SECRET")
-		conf.JWT.Expired, _ = strconv.Atoi(os.Getenv("JWT_EXPIRED"))
+	value := viper.GetString(code)
+	if value == "" && !viper.InConfig(code) {
+		log.Fatalf("err GetConfiguration: not found, code: %s \n", code)
 	}
 
-	if err := viper.Unmarshal(&conf); err != nil {
-		panic(err)
-	}
-	return conf
+	return value
 }

@@ -2,7 +2,7 @@ package trucks
 
 import (
 	"context"
-	"go-drop-logistik/business/trucks"
+	"go-drop-logistik/modules/trucks"
 	"log"
 
 	"github.com/jinzhu/gorm"

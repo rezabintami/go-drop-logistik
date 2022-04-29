@@ -2,7 +2,7 @@ package tracks
 
 import (
 	"context"
-	"go-drop-logistik/business/tracks"
+	"go-drop-logistik/modules/tracks"
 	"log"
 
 	"github.com/jinzhu/gorm"

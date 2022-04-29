@@ -4,12 +4,12 @@ import (
 	"net/http"
 
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/business/agents"
-	"go-drop-logistik/business/phoneagent"
-	"go-drop-logistik/business/phones"
 	"go-drop-logistik/controllers/agents/request"
 	"go-drop-logistik/controllers/agents/response"
-	base_response "go-drop-logistik/helper/response"
+	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/agents"
+	"go-drop-logistik/modules/phoneagent"
+	"go-drop-logistik/modules/phones"
 
 	echo "github.com/labstack/echo/v4"
 )

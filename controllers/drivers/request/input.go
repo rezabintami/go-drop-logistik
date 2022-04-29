@@ -1,6 +1,6 @@
 package request
 
-import "go-drop-logistik/business/drivers"
+import "go-drop-logistik/modules/drivers"
 
 type Drivers struct {
 	Name    string `json:"name"`

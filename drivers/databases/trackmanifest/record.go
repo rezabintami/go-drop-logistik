@@ -1,9 +1,9 @@
 package trackmanifest
 
 import (
-	"go-drop-logistik/business/trackmanifest"
 	"go-drop-logistik/drivers/databases/manifest"
 	"go-drop-logistik/drivers/databases/tracks"
+	"go-drop-logistik/modules/trackmanifest"
 )
 
 type TrackManifest struct {

@@ -1,8 +1,8 @@
 package drivers
 
 import (
-	"go-drop-logistik/business/drivers"
 	"go-drop-logistik/drivers/databases/trucks"
+	"go-drop-logistik/modules/drivers"
 	"time"
 )
 

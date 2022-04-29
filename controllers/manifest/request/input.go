@@ -1,6 +1,6 @@
 package request
 
-import "go-drop-logistik/business/manifest"
+import "go-drop-logistik/modules/manifest"
 
 type Manifest struct {
 	DriverID int `json:"driver_id"`

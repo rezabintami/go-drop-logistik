@@ -1,7 +1,7 @@
 package receipts
 
 import (
-	"go-drop-logistik/business/receipts"
+	"go-drop-logistik/modules/receipts"
 	"time"
 )
 

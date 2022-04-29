@@ -18,12 +18,12 @@ var (
 
 func GetConnection() string {
 	return fmt.Sprintf("user=%s host=%s dbname=%s sslmode=%s password=%s port=%s",
-		_config.GetConfig().Postgres.User,
-		_config.GetConfig().Postgres.Host,
-		_config.GetConfig().Postgres.Name,
-		_config.GetConfig().Postgres.SSL,
-		_config.GetConfig().Postgres.Pass,
-		_config.GetConfig().Postgres.Port)
+		_config.GetConfiguration("postgres.user"),
+		_config.GetConfiguration("postgres.host"),
+		_config.GetConfiguration("postgres.name"),
+		_config.GetConfiguration("postgres.ssl"),
+		_config.GetConfiguration("postgres.pass"),
+		_config.GetConfiguration("postgres.port"))
 }
 
 func InitialPostgresDB() *gorm.DB {

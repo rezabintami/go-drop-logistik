@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-drop-logistik/business/manifest"
-	"go-drop-logistik/business/manifestreceipt"
-	"go-drop-logistik/business/trackmanifest"
+	"go-drop-logistik/constants"
 	"go-drop-logistik/controllers/manifest/request"
 	"go-drop-logistik/controllers/manifest/response"
-	"go-drop-logistik/helper/enum"
-	base_response "go-drop-logistik/helper/response"
+	base_response "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/manifest"
+	"go-drop-logistik/modules/manifestreceipt"
+	"go-drop-logistik/modules/trackmanifest"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -135,7 +135,7 @@ func (controller *ManifestController) UpdateStatus(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: enum.SUCCESS}, id)
+	err := controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: constants.SUCCESS}, id)
 	if err != nil {
 		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
 	}

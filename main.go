@@ -8,25 +8,22 @@ import (
 	_middleware "go-drop-logistik/app/middleware"
 	_plugins "go-drop-logistik/app/plugins"
 	_dbPostgresDriver "go-drop-logistik/drivers/postgres"
+	"go-drop-logistik/helpers"
 
 	echo "github.com/labstack/echo/v4"
 
 	"go-drop-logistik/cmd/seeder"
-	"go-drop-logistik/helper/logging"
-	"go-drop-logistik/helper/validation"
 )
 
 func main() {
-	configApp := _config.GetConfig()
+	log.Println("Starting application version :", _config.GetConfiguration("app.version"))
+	log.Println("Environment :", _config.GetConfiguration("app.env"))
+	log.Println("Server is running on port : " + _config.GetConfiguration("server.port"))
 
-	log.Println("Starting application version :", configApp.App.Version)
-	log.Println("Environment :", configApp.App.Env)
-	log.Println("Server is running on port : " + configApp.Server.Address)
-
-	log.Println("User :", configApp.Postgres.User)
-	log.Println("Host :", configApp.Postgres.Host)
-	log.Println("Port :", configApp.Postgres.Port)
-	log.Println("Name :", configApp.Postgres.Name)
+	log.Println("User :", _config.GetConfiguration("postgres.user"))
+	log.Println("Host :", _config.GetConfiguration("postgres.host"))
+	log.Println("Port :", _config.GetConfiguration("postgres.port"))
+	log.Println("Name :", _config.GetConfiguration("postgres.name"))
 
 	postgres_db := _dbPostgresDriver.InitialPostgresDB()
 
@@ -35,14 +32,13 @@ func main() {
 	log.Println(err)
 
 	// Init Validation
-	validation.Init()
+	helpers.InitValidation()
 
 	e := echo.New()
-	logger := logging.NewLogger()
+	logger := helpers.NewLogger()
 	middlewareLog := _middleware.NewMiddleware(logger)
 
 	plugins := _plugins.ConfigurationPlugins{
-		ConfigApp:     configApp,
 		Postgres_DB:   postgres_db,
 		Logger:        logger,
 		MiddlewareLog: middlewareLog,

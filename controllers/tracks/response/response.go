@@ -1,8 +1,8 @@
 package response
 
 import (
-	"go-drop-logistik/business/tracks"
 	agentResp "go-drop-logistik/controllers/agents/response"
+	"go-drop-logistik/modules/tracks"
 )
 
 type Track struct {

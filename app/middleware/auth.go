@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-drop-logistik/helper/logging"
+	"go-drop-logistik/helpers"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -22,10 +22,10 @@ type ConfigJWT struct {
 }
 
 type ConfigMiddleware struct {
-	logger logging.Logger
+	logger helpers.Logger
 }
 
-func NewMiddleware(logger logging.Logger) ConfigMiddleware {
+func NewMiddleware(logger helpers.Logger) ConfigMiddleware {
 	return ConfigMiddleware{
 		logger: logger,
 	}

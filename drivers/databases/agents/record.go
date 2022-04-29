@@ -1,7 +1,7 @@
 package agents
 
 import (
-	"go-drop-logistik/business/agents"
+	"go-drop-logistik/modules/agents"
 	"time"
 )
 

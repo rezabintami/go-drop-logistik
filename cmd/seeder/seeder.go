@@ -3,7 +3,7 @@ package seeder
 import (
 	"errors"
 	"fmt"
-	"go-drop-logistik/helper/encrypt"
+	"go-drop-logistik/helpers"
 	"log"
 	"time"
 
@@ -31,7 +31,7 @@ func Seeder(Conn *gorm.DB) error {
 	}
 
 	admin.Name = "Admin"
-	admin.Password, _ = encrypt.Hash("admin")
+	admin.Password, _ = helpers.Hash("admin")
 	admin.Email = "admin@gmail.com"
 	admin.Roles = "ADMIN"
 

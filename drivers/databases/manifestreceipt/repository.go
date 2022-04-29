@@ -2,7 +2,7 @@ package manifestreceipt
 
 import (
 	"context"
-	"go-drop-logistik/business/manifestreceipt"
+	"go-drop-logistik/modules/manifestreceipt"
 	"log"
 
 	"github.com/jinzhu/gorm"

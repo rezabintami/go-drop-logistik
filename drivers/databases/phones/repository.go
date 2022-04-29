@@ -2,7 +2,7 @@ package phones
 
 import (
 	"context"
-	"go-drop-logistik/business/phones"
+	"go-drop-logistik/modules/phones"
 	"log"
 
 	"github.com/jinzhu/gorm"

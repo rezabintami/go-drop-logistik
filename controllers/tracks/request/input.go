@@ -1,6 +1,6 @@
 package request
 
-import "go-drop-logistik/business/tracks"
+import "go-drop-logistik/modules/tracks"
 
 type Track struct {
 	StartAgentID       int    `json:"start_agent_id"`

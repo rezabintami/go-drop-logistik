@@ -1,10 +1,10 @@
 package response
 
 import (
-	"go-drop-logistik/business/manifest"
 	driverResp "go-drop-logistik/controllers/drivers/response"
 	receiptResp "go-drop-logistik/controllers/receipts/response"
 	trackResp "go-drop-logistik/controllers/tracks/response"
+	"go-drop-logistik/modules/manifest"
 )
 
 type Manifest struct {

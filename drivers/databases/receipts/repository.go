@@ -2,7 +2,7 @@ package receipts
 
 import (
 	"context"
-	"go-drop-logistik/business/receipts"
+	"go-drop-logistik/modules/receipts"
 	"log"
 
 	"github.com/jinzhu/gorm"

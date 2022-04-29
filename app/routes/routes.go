@@ -31,14 +31,13 @@ type ControllerList struct {
 	TruckController    trucks.TrucksController
 	DriverController   drivers.DriversController
 	TrackController    tracks.TracksController
-	ConfigApp          _config.Config
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.Use(cl.MiddlewareLog.MiddlewareLogging)
 
 	// showing swagger files
-	if cl.ConfigApp.App.Env != "PROD" {
+	if _config.GetConfiguration("app.env") != "PROD" {
 		e.Static("/files", "files")
 		url := echoSwagger.URL("/files/swagger.yaml")
 		e.GET("/swagger/*", echoSwagger.EchoWrapHandler(url))

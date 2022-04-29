@@ -1,7 +1,7 @@
 package trucks
 
 import (
-	"go-drop-logistik/business/trucks"
+	"go-drop-logistik/modules/trucks"
 	"time"
 )
 
