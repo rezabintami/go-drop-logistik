@@ -74,6 +74,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	manifestTrack := manifest.Group("/:id/track")
 	manifestTrack.POST("/add", cl.TrackController.CreateTrack)
+	manifestTrack.DELETE("/:id", cl.TrackController.DeleteTrack)
 
 	agentPhone := agent.Group("/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)

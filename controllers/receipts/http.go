@@ -37,6 +37,12 @@ func (controller *ReceiptController) CreateReceipt(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
 	receiptId, err := controller.receiptUsecase.StoreReceipt(ctx, req.ToDomain())
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
@@ -141,6 +147,12 @@ func (controller *ReceiptController) Update(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
+
+	// validateMessage, validate, err := helpers.Validate(&req)
+
+	// if validate {
+	// 	return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	// }
 
 	err := controller.receiptUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {

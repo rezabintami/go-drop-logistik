@@ -34,7 +34,13 @@ func (controller *AdminController) Register(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err := controller.adminUsecase.Register(ctx, req.ToDomain(), false)
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	err = controller.adminUsecase.Register(ctx, req.ToDomain(), false)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
@@ -133,6 +139,12 @@ func (controller *AdminController) AgentUpdateByID(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
+
+	// validateMessage, validate, err := helpers.Validate(&req)
+
+	// if validate {
+	// 	return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	// }
 
 	err := controller.agentUsecase.Update(ctx, req.AgentToDomain(), idInt)
 	if err != nil {

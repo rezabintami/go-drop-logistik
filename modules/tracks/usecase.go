@@ -44,3 +44,20 @@ func (usecase *TrackUsecase) StoreTrack(ctx context.Context, trackDomain *Domain
 
 	return id, nil
 }
+
+func (usecase *TrackUsecase) Delete(ctx context.Context, trackId, agentId int) error {
+	err := usecase.trackRepository.Delete(ctx, trackId, agentId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (usecase *TrackUsecase) Update(ctx context.Context, trackId, agentId int, trackDomain *Domain) error {
+	err := usecase.trackRepository.Update(ctx, trackId, agentId, trackDomain)
+	if err != nil {
+		return err
+	}
+	return nil
+}

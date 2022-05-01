@@ -6,19 +6,19 @@ import (
 )
 
 type Receipts struct {
-	ManifestID      int       `json:"manifest_id"`
-	Receiver        string    `json:"receiver"`
-	PhoneReceiver   string    `json:"phone_receiver"`
-	AddressReceiver string    `json:"address_receiver"`
-	Sender          string    `json:"sender"`
-	PhoneSender     string    `json:"phone_sender"`
-	AddressSender   string    `json:"address_sender"`
-	Weight          float64   `json:"weight"`
-	Unit            string    `json:"unit"`
-	Price           float64   `json:"price"`
-	Amount          float64   `json:"amount"`
-	Status          string    `json:"status"`
-	PickupAt        time.Time `json:"pickup_at"`
+	ManifestID      int       `json:"manifest_id" validate:"required" validName:"manifest_id"`
+	Receiver        string    `json:"receiver" validate:"required" validName:"receiver"`
+	PhoneReceiver   string    `json:"phone_receiver"  validate:"required,phone,min=10,max=16" validName:"phoneNumber"`
+	AddressReceiver string    `json:"address_receiver" validate:"required" validName:"address_receiver"`
+	Sender          string    `json:"sender" validate:"required" validName:"sender"`
+	PhoneSender     string    `json:"phone_sender"  validate:"required,phone,min=10,max=16" validName:"phoneNumber"`
+	AddressSender   string    `json:"address_sender" validate:"required" validName:"address_sender"`
+	Weight          float64   `json:"weight" validate:"required" validName:"weight"`
+	Unit            string    `json:"unit" validate:"required" validName:"unit"`
+	Price           float64   `json:"price" validate:"required" validName:"price"`
+	Amount          float64   `json:"amount" validate:"required" validName:"amount"`
+	Status          string    `json:"status" validate:"required" validName:"status"`
+	PickupAt        time.Time `json:"pickup_at" validate:"required" validName:"pickup_at"`
 }
 
 type TrackingReceipts struct {

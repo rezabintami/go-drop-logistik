@@ -30,7 +30,13 @@ func (controller *TrucksController) StoreTruck(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err := controller.trucksUsecase.StoreTruck(ctx, req.ToDomain())
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	err = controller.trucksUsecase.StoreTruck(ctx, req.ToDomain())
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
@@ -70,6 +76,13 @@ func (controller *TrucksController) UpdateTruck(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
+
+	// validateMessage, validate, err := helpers.Validate(&req)
+
+	// if validate {
+	// 	return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	// }
+	
 	err := controller.trucksUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)

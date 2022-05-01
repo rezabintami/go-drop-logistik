@@ -3,7 +3,7 @@ package request
 import "go-drop-logistik/modules/manifest"
 
 type Manifest struct {
-	DriverID int `json:"driver_id"`
+	DriverID int `json:"driver_id" validate:"required" validName:"driver_id"`
 }
 
 func (req *Manifest) ToDomain() *manifest.Domain {

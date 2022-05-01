@@ -30,7 +30,13 @@ func (controller *UserController) Register(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err := controller.userUsecase.Register(ctx, req.ToDomain(), false)
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	err = controller.userUsecase.Register(ctx, req.ToDomain(), false)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}

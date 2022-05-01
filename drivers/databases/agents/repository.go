@@ -34,7 +34,7 @@ func (repository *postgreAgentRepository) GetByEmail(ctx context.Context, email 
 
 	err := repository.tx.Where("agents.email = ?", email).First(&rec).Error
 	if err != nil {
-		log.Println("[error] agents.repository.GetByEmail : failed to execute get data agent query", err)
+		log.Println("[error] agents.repository.GetByEmail : email ", email, "failed to execute get data agent query", err)
 		return agents.ExistingDomain{}, err
 	}
 

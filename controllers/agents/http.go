@@ -31,12 +31,19 @@ func NewAgentController(ag agents.Usecase, pa phoneagent.Usecase, ph phones.Usec
 func (controller *AgentController) Login(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	var userLogin request.Agents
-	if err := c.Bind(&userLogin); err != nil {
+	req := request.Agents{}
+
+	if err := c.Bind(&req); err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	token, err := controller.agentUsecase.Login(ctx, userLogin.Email, userLogin.Password, false)
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	token, err := controller.agentUsecase.Login(ctx, req.Email, req.Password, false)
 
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)

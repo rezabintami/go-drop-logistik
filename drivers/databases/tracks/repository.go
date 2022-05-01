@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/modules/tracks"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -27,4 +28,25 @@ func (repository *postgreTrackRepository) StoreTrack(ctx context.Context, trackD
 		return 0, result.Error
 	}
 	return rec.ID, nil
+}
+
+func (repository *postgreTrackRepository) Delete(ctx context.Context, trackId, agentId int) error {
+	result := repository.tx.Preload("Agent").Where("track_id = ?", trackId).Where("agent_id = ?", agentId).Delete(Tracks{})
+	if result.Error != nil {
+		log.Println("[error] tracks.repository.Delete : failed to execute delete track query", result.Error)
+		return result.Error
+	}
+	return nil
+}
+
+func (repository *postgreTrackRepository) Update(ctx context.Context, trackId, agentId int, trackDomain *tracks.Domain) error {
+	result := repository.tx.Exec(
+		"UPDATE tracks SET message = ?, destination_agent_id = ?, current_agent_id = ?, update_at = ? WHERE track_id = ? AND agent_id = ?",
+		trackDomain.Message, trackDomain.DestinationAgentID, trackDomain.CurrentAgentID, time.Now(), trackId, agentId,
+	)
+	if result.Error != nil {
+		log.Println("[error] tracks.repository.Update : failed to execute update manifest query", result.Error)
+		return result.Error
+	}
+	return nil
 }

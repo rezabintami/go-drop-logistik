@@ -36,6 +36,13 @@ func (controller *PhonesController) StorePhone(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+
 	phoneId, err := controller.phonesUsecase.StorePhone(ctx, req.ToDomain(), id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
@@ -108,7 +115,14 @@ func (controller *PhonesController) UpdatePhone(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	err := controller.phonesUsecase.Update(ctx, req.ToDomain(), phoneId)
+
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	err = controller.phonesUsecase.Update(ctx, req.ToDomain(), phoneId)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
