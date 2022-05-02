@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/modules/agents"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -77,10 +78,11 @@ func (repository *postgreAgentRepository) Fetch(ctx context.Context, page, perpa
 	return result, int(totalData), nil
 }
 
-func (repository *postgreAgentRepository) Update(ctx context.Context, userDomain *agents.Domain, id int) error {
-	agentUpdate := fromDomain(*userDomain)
-
-	result := repository.tx.Where("users.id = ?", id).Updates(&agentUpdate)
+func (repository *postgreAgentRepository) Update(ctx context.Context, agentDomain *agents.Domain, id int) error {
+	agentUpdate := fromDomain(*agentDomain)
+	agentUpdate.UpdatedAt = time.Now()
+	
+	result := repository.tx.Table("agents").Where("agents.id = ?", id).Updates(&agentUpdate)
 	if result.Error != nil {
 		log.Println("[error] agents.repository.Update : failed to execute update agent query", result.Error)
 		return result.Error

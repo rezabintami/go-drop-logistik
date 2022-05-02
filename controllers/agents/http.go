@@ -37,12 +37,6 @@ func (controller *AgentController) Login(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	validateMessage, validate, err := helpers.Validate(&req)
-
-	if validate {
-		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
-	}
-
 	token, err := controller.agentUsecase.Login(ctx, req.Email, req.Password, false)
 
 	if err != nil {

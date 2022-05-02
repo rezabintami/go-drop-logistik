@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/modules/trucks"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -43,8 +44,9 @@ func (repository *postgreTruckRepository) GetByID(ctx context.Context, id int) (
 
 func (repository *postgreTruckRepository) Update(ctx context.Context, truckDomain *trucks.Domain, id int) error {
 	truckUpdate := fromDomain(*truckDomain)
+	truckUpdate.UpdatedAt = time.Now()
 
-	result := repository.tx.Where("id = ?", id).Updates(&truckUpdate)
+	result := repository.tx.Table("trucks").Where("id = ?", id).Updates(&truckUpdate)
 	if result.Error != nil {
 		log.Println("[error] trucks.repository.Update : failed to execute update truck query", result.Error)
 		return result.Error

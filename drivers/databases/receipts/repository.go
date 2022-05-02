@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/modules/receipts"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -89,8 +90,9 @@ func (repository *postgreReceiptRepository) Delete(ctx context.Context, id int) 
 
 func (repository *postgreReceiptRepository) Update(ctx context.Context, receiptDomain *receipts.Domain, id int) error {
 	receiptUpdate := fromDomain(*receiptDomain)
-
-	result := repository.tx.Where("id = ?", id).Updates(&receiptUpdate)
+	receiptUpdate.UpdatedAt = time.Now()
+	
+	result := repository.tx.Table("receipts").Where("id = ?", id).Updates(&receiptUpdate)
 	if result.Error != nil {
 		log.Println("[error] receipts.repository.Update : failed to execute update receipt query", result.Error)
 		return result.Error

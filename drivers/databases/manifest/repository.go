@@ -4,7 +4,6 @@ import (
 	"context"
 	"go-drop-logistik/modules/manifest"
 	"log"
-	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -80,8 +79,8 @@ func (repository *postgreManifestRepository) Delete(ctx context.Context, id int)
 
 func (repository *postgreManifestRepository) Update(ctx context.Context, manifestDomain *manifest.Domain, id int) error {
 	result := repository.tx.Exec(
-		"UPDATE manifests SET status = ?, driver_id = ?, updated_at = ? WHERE id = ?",
-		manifestDomain.Status, manifestDomain.DriverID, time.Now(), id)
+		"UPDATE manifests SET status = ?, driver_id = ?, updated_at = NOW( WHERE id = ?",
+		manifestDomain.Status, manifestDomain.DriverID, id)
 	if result.Error != nil {
 		log.Println("[error] manifests.repository.Update : failed to execute update manifest query", result.Error)
 		return result.Error

@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-drop-logistik/modules/phones"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -58,8 +59,9 @@ func (repository *postgrePhoneRepository) GetAll(ctx context.Context) ([]phones.
 
 func (repository *postgrePhoneRepository) Update(ctx context.Context, phoneDomain *phones.Domain, id int) error {
 	phoneUpdate := fromDomain(*phoneDomain)
+	phoneUpdate.UpdatedAt = time.Now()
 
-	result := repository.tx.Where("id = ?", id).Updates(&phoneUpdate)
+	result := repository.tx.Table("phones").Where("id = ?", id).Updates(&phoneUpdate)
 	if result.Error != nil {
 		log.Println("[error] phones.repository.Update : failed to execute update phone query", result.Error)
 		return result.Error

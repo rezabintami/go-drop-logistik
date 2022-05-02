@@ -92,6 +92,9 @@ func (usecase *AgentUsecase) Fetch(ctx context.Context, page, perpage int) ([]Do
 }
 
 func (usecase *AgentUsecase) Update(ctx context.Context, userDomain *Domain, id int) error {
+	if userDomain.Password != "" {
+		userDomain.Password, _ = helpers.Hash(userDomain.Password)
+	}
 	err := usecase.agentRepository.Update(ctx, userDomain, id)
 	if err != nil {
 		return err

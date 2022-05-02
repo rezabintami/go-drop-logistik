@@ -2,8 +2,10 @@ package drivers
 
 import (
 	"context"
+	"errors"
 	"go-drop-logistik/modules/drivers"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -31,31 +33,39 @@ func (repository *postgreDriverRepository) Store(ctx context.Context, driverDoma
 }
 
 func (repository *postgreDriverRepository) GetByID(ctx context.Context, id int) (drivers.Domain, error) {
-	phone := Drivers{}
-	result := repository.tx.Preload("Truck").Where("id = ?", id).First(&phone)
+	driver := Drivers{}
+	result := repository.tx.Preload("Truck").Where("id = ?", id).First(&driver)
 	if result.Error != nil {
 		log.Println("[error] drivers.repository.GetByID : failed to execute get data driver query", result.Error)
 		return drivers.Domain{}, result.Error
 	}
 
-	return *phone.ToDomain(), nil
+	return *driver.ToDomain(), nil
 }
 
-func (repository *postgreDriverRepository) Update(ctx context.Context, phoneDomain *drivers.Domain, id int) error {
-	phoneUpdate := fromDomain(*phoneDomain)
 
-	result := repository.tx.Preload("Truck").Where("id = ?", id).Updates(&phoneUpdate)
-	if result.Error != nil {
+// This Gorm same as sql query in below comment
+// "UPDATE drivers SET name = 'Dana' , phone = '083123246347' , address = 'Jalan Mangga Manis No 134', truck_id = 2 
+// WHERE EXISTS(SELECT * FROM drivers left join trucks on trucks.id = 1 WHERE trucks.id = 1 AND trucks.deleted_at is null) AND drivers.id = 2"
+func (repository *postgreDriverRepository) Update(ctx context.Context, driverDomain *drivers.Domain, id int) error {
+	driverUpdate := fromDomain(*driverDomain)
+	driverUpdate.UpdatedAt = time.Now()
+	
+	subQuery := repository.tx.Table("drivers").Joins("left join trucks on trucks.id = ?",
+		driverDomain.TruckID).Where("trucks.id = ? AND trucks.deleted_at is null AND drivers.id = ?",
+		driverDomain.TruckID, id).QueryExpr()
+	result := repository.tx.Table("drivers").Where("EXISTS(?) AND drivers.id = ?", subQuery, id).Updates(&driverUpdate)
+	if result.RowsAffected == 0 {
 		log.Println("[error] drivers.repository.Update : failed to execute update driver query", result.Error)
-		return result.Error
+		return errors.New("failed to execute update driver query")
 	}
 
 	return nil
 }
 
 func (repository *postgreDriverRepository) Delete(ctx context.Context, id int) error {
-	phoneDelete := Drivers{}
-	result := repository.tx.Preload("Truck").Where("id = ?", id).Delete(&phoneDelete)
+	driverDelete := Drivers{}
+	result := repository.tx.Preload("Truck").Where("id = ?", id).Delete(&driverDelete)
 	if result.Error != nil {
 		log.Println("[error] drivers.repository.Delete : failed to execute delete driver query", result.Error)
 		return result.Error

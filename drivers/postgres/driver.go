@@ -28,10 +28,10 @@ func GetConnection() string {
 
 func InitialPostgresDB() *gorm.DB {
 	db, err = gorm.Open("postgres", GetConnection())
-
 	if err != nil {
 		log.Fatal(err)
 	}
+	db.LogMode(true)
 
 	return db
 }
