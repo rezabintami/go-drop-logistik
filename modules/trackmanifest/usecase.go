@@ -55,3 +55,13 @@ func (usecase *TrackManifestUsecase) DeleteByManifest(ctx context.Context, manif
 
 	return nil
 }
+
+func (usecase *TrackManifestUsecase) Delete(ctx context.Context, manifestId, trackId int) error {
+	err := usecase.trackManifestRepository.Delete(ctx, manifestId, trackId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+

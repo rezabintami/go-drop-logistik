@@ -7,6 +7,7 @@ import (
 )
 
 type Domain struct {
+	ID         int
 	TrackID    int
 	Track      *tracks.Domain
 	ManifestID int
@@ -15,14 +16,16 @@ type Domain struct {
 
 type Usecase interface {
 	Store(ctx context.Context, manifestId, trackId int) error
-	GetByManifestID(ctx context.Context, id int) (Domain, error)
-	GetAllByManifestID(ctx context.Context, id int) ([]Domain, error)
+	GetByManifestID(ctx context.Context, manifestId int) (Domain, error)
+	GetAllByManifestID(ctx context.Context, manifestId int) ([]Domain, error)
 	DeleteByManifest(ctx context.Context, manifestId int) error
+	Delete(ctx context.Context, manifestId, trackId int) error
 }
 
 type Repository interface {
 	Store(ctx context.Context, manifestId, trackId int) error
-	GetByManifestID(ctx context.Context, id int) (Domain, error)
-	GetAllByManifestID(ctx context.Context, id int) ([]Domain, error)
+	GetByManifestID(ctx context.Context, manifestId int) (Domain, error)
+	GetAllByManifestID(ctx context.Context, manifestId int) ([]Domain, error)
 	DeleteByManifest(ctx context.Context, manifestId int) error
+	Delete(ctx context.Context, manifestId, trackId int) error
 }

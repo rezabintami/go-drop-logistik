@@ -9,7 +9,7 @@ type Track struct {
 	StartAgent       *agentResp.TrackAgentResponse `json:"start_agent"`
 	CurrentAgent     *agentResp.TrackAgentResponse `json:"current_agent"`
 	DestinationAgent *agentResp.TrackAgentResponse `json:"destination_agent"`
-	Message          string            `json:"message"`
+	Message          string                        `json:"message"`
 }
 
 func FromDomain(trackDomain tracks.Domain) Track {

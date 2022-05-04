@@ -25,11 +25,12 @@ func NewTracksController(uc tracks.Usecase, tr trackmanifest.Usecase) *TracksCon
 	}
 }
 
+//! NEED GOROUTINES WHEN STORE TRACK IS CALLED AND CHANGES STATUS RECEIPTS TO SHIPPING
 func (controller *TracksController) CreateTrack(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	name := middleware.GetUser(c).Name
-	manifestId, _ := strconv.Atoi(c.Param("id"))
+	manifestId, _ := strconv.Atoi(c.Param("manifestId"))
 
 	req := request.Track{}
 	if err := c.Bind(&req); err != nil {
@@ -58,10 +59,15 @@ func (controller *TracksController) CreateTrack(c echo.Context) error {
 func (controller *TracksController) DeleteTrack(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	agentId := middleware.GetUser(c).ID
-	trackId, _ := strconv.Atoi(c.Param("id"))
+	manifestId, _ := strconv.Atoi(c.Param("manifestId"))
+	trackId, _ := strconv.Atoi(c.Param("trackId"))
 
-	err := controller.trackUsecase.Delete(ctx, trackId, agentId)
+	err := controller.trackManifestUsecase.Delete(ctx, manifestId, trackId)
+	if err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	err = controller.trackUsecase.Delete(ctx, trackId)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
@@ -72,8 +78,8 @@ func (controller *TracksController) DeleteTrack(c echo.Context) error {
 func (controller *TracksController) UpdateTrack(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	agentId := middleware.GetUser(c).ID
-	trackId, _ := strconv.Atoi(c.Param("id"))
+	agentName := middleware.GetUser(c).Name
+	trackId, _ := strconv.Atoi(c.Param("trackId"))
 
 	req := request.Track{}
 	if err := c.Bind(&req); err != nil {
@@ -86,7 +92,7 @@ func (controller *TracksController) UpdateTrack(c echo.Context) error {
 	// 	return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
 	// }
 
-	err := controller.trackUsecase.Update(ctx, trackId, agentId, req.ToDomain())
+	err := controller.trackUsecase.Update(ctx, trackId, agentName, req.ToDomain())
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}

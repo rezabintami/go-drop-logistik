@@ -69,12 +69,13 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	manifest.GET("", cl.ManifestController.Fetch)
 	manifest.GET("/:id", cl.ManifestController.GetByID)
 	manifest.PUT("/:id", cl.ManifestController.Update)
-	manifest.PUT("/:id/finish", cl.ManifestController.UpdateStatus)
+	manifest.PUT("/:id/finished", cl.ManifestController.UpdateStatus)
 	manifest.DELETE("/:id/decline", cl.ManifestController.Delete)
 
-	manifestTrack := manifest.Group("/:id/track")
+	manifestTrack := manifest.Group("/:manifestId/track")
 	manifestTrack.POST("/add", cl.TrackController.CreateTrack)
-	manifestTrack.DELETE("/:id", cl.TrackController.DeleteTrack)
+	manifestTrack.PUT("/:trackId", cl.TrackController.UpdateTrack)
+	manifestTrack.DELETE("/:trackId", cl.TrackController.DeleteTrack)
 
 	agentPhone := agent.Group("/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)

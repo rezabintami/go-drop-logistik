@@ -2,9 +2,12 @@ package manifestreceipt
 
 import (
 	"context"
+	"errors"
 	"go-drop-logistik/app/middleware"
 	"go-drop-logistik/constants"
 	"go-drop-logistik/modules/receipts"
+	"log"
+	"sync"
 	"time"
 )
 
@@ -82,11 +85,26 @@ func (usecase *ManifestReceiptUsecase) UpdateStatusByManifest(ctx context.Contex
 		return err
 	}
 
-	for _, value := range res {
-		err := usecase.receiptRepository.Update(ctx, &receipts.Domain{Status: constants.SUCCESS}, value.ReceiptID)
-		if err != nil {
-			return err
+	message := make(chan error, len(res))
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		for _, value := range res {
+			err := usecase.receiptRepository.Update(ctx, &receipts.Domain{Status: constants.SUCCESS}, value.ReceiptID)
+			if err != nil {
+				log.Println("[error] manifestreceipts.usecase.UpdateStatusByManifest : failed to execute update all status manifest", err)
+				message <- err
+				break
+			}
 		}
+		wg.Done()
+	}()
+	wg.Wait()
+
+	select {
+	case check := <-message:
+		return errors.New("update all status manifest failed : " + check.Error())
+	default:
+		return nil
 	}
-	return nil
 }

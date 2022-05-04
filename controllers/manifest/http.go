@@ -53,9 +53,9 @@ func (controller *ManifestController) CreateManifest(c echo.Context) error {
 func (controller *ManifestController) GetByID(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	id, _ := strconv.Atoi(c.Param("id"))
+	manifestId, _ := strconv.Atoi(c.Param("id"))
 
-	manifest, err := controller.manifestUsecase.GetByID(ctx, id)
+	manifest, err := controller.manifestUsecase.GetByID(ctx, manifestId)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
@@ -69,7 +69,7 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 		manifest.Receipt = append(manifest.Receipt, *value.Receipt)
 	}
 
-	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, id)
+	tracks, err := controller.trackManifestUsecase.GetAllByManifestID(ctx, manifestId)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
@@ -147,12 +147,13 @@ func (controller *ManifestController) UpdateStatus(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: constants.SUCCESS}, id)
+
+	err := controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err = controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, id)
+	err = controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: constants.SUCCESS}, id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}

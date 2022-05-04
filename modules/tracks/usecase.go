@@ -27,14 +27,14 @@ func (usecase *TrackUsecase) StoreTrack(ctx context.Context, trackDomain *Domain
 	fmt.Println("message : ", trackDomain.Message)
 	fmt.Printf("%s %s", constants.TRACKING_PROCESS_MESSAGE, agentName)
 	switch trackDomain.Message {
-		case constants.TRACKING_PROCESS_MESSAGE:
-			trackDomain.Message = fmt.Sprintf("%s %s", constants.TRACKING_PROCESS_MESSAGE, agentName)
-		case constants.TRACKING_SHIPPING_MESSAGE:
-			trackDomain.Message = constants.TRACKING_SHIPPING_MESSAGE
-		case constants.TRACKING_SUCCESS_MESSAGE:
-			trackDomain.Message = constants.TRACKING_SUCCESS_MESSAGE
-		default:
-			return 0, errors.New("message not found")
+	case constants.TRACKING_PROCESS_MESSAGE:
+		trackDomain.Message = fmt.Sprintf("%s %s", constants.TRACKING_PROCESS_MESSAGE, agentName)
+	case constants.TRACKING_SHIPPING_MESSAGE:
+		trackDomain.Message = constants.TRACKING_SHIPPING_MESSAGE
+	case constants.TRACKING_SUCCESS_MESSAGE:
+		trackDomain.Message = constants.TRACKING_SUCCESS_MESSAGE
+	default:
+		return 0, errors.New("message not found")
 	}
 
 	id, err := usecase.trackRepository.StoreTrack(ctx, trackDomain)
@@ -45,8 +45,8 @@ func (usecase *TrackUsecase) StoreTrack(ctx context.Context, trackDomain *Domain
 	return id, nil
 }
 
-func (usecase *TrackUsecase) Delete(ctx context.Context, trackId, agentId int) error {
-	err := usecase.trackRepository.Delete(ctx, trackId, agentId)
+func (usecase *TrackUsecase) Delete(ctx context.Context, trackId int) error {
+	err := usecase.trackRepository.Delete(ctx, trackId)
 	if err != nil {
 		return err
 	}
@@ -54,8 +54,21 @@ func (usecase *TrackUsecase) Delete(ctx context.Context, trackId, agentId int) e
 	return nil
 }
 
-func (usecase *TrackUsecase) Update(ctx context.Context, trackId, agentId int, trackDomain *Domain) error {
-	err := usecase.trackRepository.Update(ctx, trackId, agentId, trackDomain)
+func (usecase *TrackUsecase) Update(ctx context.Context, trackId int, agentName string, trackDomain *Domain) error {
+	fmt.Println("message : ", trackDomain.Message)
+	fmt.Printf("%s %s", constants.TRACKING_PROCESS_MESSAGE, agentName)
+	switch trackDomain.Message {
+	case constants.TRACKING_PROCESS_MESSAGE:
+		trackDomain.Message = fmt.Sprintf("%s %s", constants.TRACKING_PROCESS_MESSAGE, agentName)
+	case constants.TRACKING_SHIPPING_MESSAGE:
+		trackDomain.Message = constants.TRACKING_SHIPPING_MESSAGE
+	case constants.TRACKING_SUCCESS_MESSAGE:
+		trackDomain.Message = constants.TRACKING_SUCCESS_MESSAGE
+	default:
+		return errors.New("message not found")
+	}
+
+	err := usecase.trackRepository.Update(ctx, trackId, trackDomain)
 	if err != nil {
 		return err
 	}

@@ -62,11 +62,23 @@ func (repository *postgreTrackManifestRepository) GetAllByManifestID(ctx context
 
 	return allTrackManifestDomain, nil
 }
+
 func (repository *postgreTrackManifestRepository) DeleteByManifest(ctx context.Context, manifestId int) error {
 	trackManifest := TrackManifest{}
 	result := repository.tx.Preload("Track").Preload("Manifest").Where("manifest_id = ?", manifestId).Delete(&trackManifest)
 	if result.Error != nil {
 		log.Println("[error] trackmanifests.repository.DeleteByManifest : failed to execute delete trackmanifest query", result.Error)
+		return result.Error
+	}
+
+	return nil
+}
+
+func (repository *postgreTrackManifestRepository) Delete(ctx context.Context, manifestId, trackId int) error {
+	trackManifest := TrackManifest{}
+	result := repository.tx.Preload("Track").Preload("Manifest").Where("manifest_id = ? AND track_id = ?", manifestId, trackId).Delete(&trackManifest)
+	if result.Error != nil {
+		log.Println("[error] trackmanifests.repository.Delete : failed to execute delete trackmanifest query", result.Error)
 		return result.Error
 	}
 
