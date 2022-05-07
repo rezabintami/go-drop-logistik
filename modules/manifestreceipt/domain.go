@@ -20,7 +20,7 @@ type Usecase interface {
 	GetByReceiptID(ctx context.Context, id int) (int, error)
 	DeleteByReceipt(ctx context.Context, ReceiptId int) error
 	DeleteByManifest(ctx context.Context, manifestId int) error
-	UpdateStatusByManifest(ctx context.Context, manifestId int) error
+	UpdateStatusByManifest(ctx context.Context, status string, manifestId int) error
 }
 
 type Repository interface {

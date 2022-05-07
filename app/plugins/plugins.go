@@ -107,7 +107,7 @@ func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 	manifestCtrl := _manifestController.NewManifestController(manifestUsecase, manifestReceiptUsecase, trackManifestUsecase)
 	truckCtrl := _truckController.NewTrucksController(truckUsecase)
 	driverCtrl := _driverController.NewDriversController(driverUsecase)
-	trackCtrl := _trackController.NewTracksController(trackUsecase, trackManifestUsecase)
+	trackCtrl := _trackController.NewTracksController(trackUsecase, trackManifestUsecase, manifestReceiptUsecase, manifestUsecase)
 
 	return _routes.ControllerList{
 		MiddlewareLog:      route.MiddlewareLog,

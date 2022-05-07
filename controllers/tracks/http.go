@@ -5,8 +5,11 @@ import (
 	"strconv"
 
 	"go-drop-logistik/app/middleware"
+	"go-drop-logistik/constants"
 	"go-drop-logistik/controllers/tracks/request"
 	helpers "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/manifest"
+	"go-drop-logistik/modules/manifestreceipt"
 	"go-drop-logistik/modules/trackmanifest"
 	"go-drop-logistik/modules/tracks"
 
@@ -14,14 +17,18 @@ import (
 )
 
 type TracksController struct {
-	trackUsecase         tracks.Usecase
-	trackManifestUsecase trackmanifest.Usecase
+	trackUsecase           tracks.Usecase
+	trackManifestUsecase   trackmanifest.Usecase
+	manifestreceiptUsecase manifestreceipt.Usecase
+	manifestUsecase        manifest.Usecase
 }
 
-func NewTracksController(uc tracks.Usecase, tr trackmanifest.Usecase) *TracksController {
+func NewTracksController(uc tracks.Usecase, tr trackmanifest.Usecase, mr manifestreceipt.Usecase, ma manifest.Usecase) *TracksController {
 	return &TracksController{
-		trackUsecase:         uc,
-		trackManifestUsecase: tr,
+		trackUsecase:           uc,
+		trackManifestUsecase:   tr,
+		manifestreceiptUsecase: mr,
+		manifestUsecase:        ma,
 	}
 }
 
@@ -51,6 +58,18 @@ func (controller *TracksController) CreateTrack(c echo.Context) error {
 	err = controller.trackManifestUsecase.Store(ctx, manifestId, trackId)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	if req.Message != constants.TRACKING_SHIPPING_MESSAGE {
+		err = controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, constants.SHIPPING, manifestId)
+		if err != nil {
+			return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+		}
+
+		err = controller.manifestUsecase.Update(ctx, &manifest.Domain{Status: constants.SHIPPING}, manifestId)
+		if err != nil {
+			return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+		}
 	}
 
 	return helpers.SuccessInsertResponse(c, "Successfully inserted")

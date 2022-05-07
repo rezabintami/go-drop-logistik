@@ -35,6 +35,7 @@ type ControllerList struct {
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.Use(cl.MiddlewareLog.MiddlewareLogging)
+	e.HTTPErrorHandler = _middleware.CustomHTTPErrorHandler
 
 	// showing swagger files
 	if _config.GetConfiguration("app.env") != "PROD" {
@@ -51,7 +52,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	auth := apiV1.Group("/auth")
 	auth.POST("/register", cl.UserController.Register)
 	auth.POST("/login", cl.UserController.Login)
-
+	// auth.POST("/logout", cl.UserController.Logout)
+	// auth.POST("/refresh", cl.UserController.Refresh)
+	
 	//! AGENTS
 	agent := apiV1.Group("/agent")
 	agent.POST("/login", cl.AgentController.Login)
@@ -69,7 +72,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	manifest.GET("", cl.ManifestController.Fetch)
 	manifest.GET("/:id", cl.ManifestController.GetByID)
 	manifest.PUT("/:id", cl.ManifestController.Update)
-	manifest.PUT("/:id/finished", cl.ManifestController.UpdateStatus)
+	manifest.PUT("/:id/finished", cl.ManifestController.FinishManifest)
 	manifest.DELETE("/:id/decline", cl.ManifestController.Delete)
 
 	manifestTrack := manifest.Group("/:manifestId/track")

@@ -127,7 +127,7 @@ func (controller *ManifestController) Update(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	
+
 	// validateMessage, validate, err := helpers.Validate(&req)
 
 	// if validate {
@@ -142,13 +142,12 @@ func (controller *ManifestController) Update(c echo.Context) error {
 	return helpers.SuccessResponse(c, "Update Successfully")
 }
 
-func (controller *ManifestController) UpdateStatus(c echo.Context) error {
+func (controller *ManifestController) FinishManifest(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
-
-	err := controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, id)
+	err := controller.manifestreceiptUsecase.UpdateStatusByManifest(ctx, constants.SUCCESS, id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}

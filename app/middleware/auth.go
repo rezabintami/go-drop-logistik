@@ -1,7 +1,9 @@
 package middleware
 
 import (
+	"fmt"
 	"go-drop-logistik/helpers"
+	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -35,6 +37,14 @@ func (jwtConf *ConfigJWT) Init() middleware.JWTConfig {
 	return middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(jwtConf.SecretJWT),
+	}
+}
+
+func CustomHTTPErrorHandler(err error, c echo.Context) {
+	if result, ok := err.(*echo.HTTPError); ok {
+		helpers.ErrorResponse(c, result.Code, fmt.Errorf("%v", result.Message))
+	} else {
+		helpers.ErrorResponse(c, http.StatusInternalServerError, err)
 	}
 }
 
