@@ -2,6 +2,7 @@ package phones
 
 import (
 	"context"
+	"errors"
 	"go-drop-logistik/modules/phones"
 	"log"
 	"time"
@@ -62,9 +63,9 @@ func (repository *postgrePhoneRepository) Update(ctx context.Context, phoneDomai
 	phoneUpdate.UpdatedAt = time.Now()
 
 	result := repository.tx.Table("phones").Where("id = ?", id).Updates(&phoneUpdate)
-	if result.Error != nil {
+	if result.RowsAffected == 0  {
 		log.Println("[error] phones.repository.Update : failed to execute update phone query", result.Error)
-		return result.Error
+		return errors.New("phone id not found")
 	}
 
 	return nil
@@ -72,10 +73,11 @@ func (repository *postgrePhoneRepository) Update(ctx context.Context, phoneDomai
 
 func (repository *postgrePhoneRepository) Delete(ctx context.Context, id int) error {
 	phoneDelete := Phones{}
+	log.Println("[info] phones.repository.Delete : delete phone with id", id)
 	result := repository.tx.Where("id = ?", id).Delete(&phoneDelete)
-	if result.Error != nil {
+	if result.RowsAffected == 0 {
 		log.Println("[error] phones.repository.Delete : failed to execute delete phone query", result.Error)
-		return result.Error
+		return errors.New("phone id not found")
 	}
 
 	return nil

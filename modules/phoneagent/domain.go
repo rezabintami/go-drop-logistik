@@ -7,10 +7,11 @@ import (
 )
 
 type Domain struct {
+	ID      int
 	PhoneID int
 	Phone   *phones.Domain
 	AgentID int
-	Agent	*agents.Domain
+	Agent   *agents.Domain
 }
 
 type Usecase interface {
