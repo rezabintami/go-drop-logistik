@@ -44,7 +44,7 @@ func (controller *AdminController) Register(c echo.Context) error {
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *AdminController) Login(c echo.Context) error {
@@ -64,7 +64,7 @@ func (controller *AdminController) Login(c echo.Context) error {
 		Token string `json:"token"`
 	}{Token: token}
 
-	return helpers.SuccessResponse(c, result)
+	return helpers.SuccessResponse(c, http.StatusOK, result)
 }
 
 func (controller *AdminController) GetByID(c echo.Context) error {
@@ -77,7 +77,7 @@ func (controller *AdminController) GetByID(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromDomain(user))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(user))
 }
 
 func (controller *AdminController) AgentGetByID(c echo.Context) error {
@@ -90,7 +90,7 @@ func (controller *AdminController) AgentGetByID(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.AgentFromDomain(user))
+	return helpers.SuccessResponse(c, http.StatusOK, response.AgentFromDomain(user))
 }
 
 func (controller *AdminController) AgentRegister(c echo.Context) error {
@@ -112,7 +112,7 @@ func (controller *AdminController) AgentRegister(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *AdminController) AgentFetch(c echo.Context) error {
@@ -126,7 +126,7 @@ func (controller *AdminController) AgentFetch(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.AgentFromListDomain(agents, count))
+	return helpers.SuccessResponse(c, http.StatusOK, response.AgentFromListDomain(agents, count))
 }
 
 func (controller *AdminController) AgentUpdateByID(c echo.Context) error {
@@ -154,5 +154,6 @@ func (controller *AdminController) AgentUpdateByID(c echo.Context) error {
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return helpers.SuccessResponse(c, response.AgentFromDomain(user))
+
+	return helpers.SuccessResponse(c, http.StatusOK, response.AgentFromDomain(user))
 }

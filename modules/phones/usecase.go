@@ -40,7 +40,12 @@ func (usecase *PhoneUsecase) GetByID(ctx context.Context, id int) (Domain, error
 }
 
 func (usecase *PhoneUsecase) Delete(ctx context.Context, phoneId int) error {
-	err := usecase.phoneRepository.Delete(ctx, phoneId)
+	err := usecase.phoneRepository.CheckByID(ctx, phoneId)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.phoneRepository.Delete(ctx, phoneId)
 	if err != nil {
 		return err
 	}
@@ -48,8 +53,13 @@ func (usecase *PhoneUsecase) Delete(ctx context.Context, phoneId int) error {
 	return nil
 }
 
-func (usecase *PhoneUsecase) Update(ctx context.Context, phoneDomain *Domain, id int) error {
-	err := usecase.phoneRepository.Update(ctx, phoneDomain, id)
+func (usecase *PhoneUsecase) Update(ctx context.Context, phoneDomain *Domain, phoneId int) error {
+	err := usecase.phoneRepository.CheckByID(ctx, phoneId)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.phoneRepository.Update(ctx, phoneDomain, phoneId)
 	if err != nil {
 		return err
 	}

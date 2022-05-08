@@ -46,7 +46,7 @@ func (controller *AgentController) Login(c echo.Context) error {
 		Token string `json:"token"`
 	}{Token: token}
 
-	return helpers.SuccessResponse(c, result)
+	return helpers.SuccessResponse(c, http.StatusOK, result)
 }
 
 func (controller *AgentController) GetByID(c echo.Context) error {
@@ -66,5 +66,5 @@ func (controller *AgentController) GetByID(c echo.Context) error {
 		user.Phone = append(user.Phone, number.Phone)
 	}
 
-	return helpers.SuccessResponse(c, response.FromDomain(&user))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(&user))
 }

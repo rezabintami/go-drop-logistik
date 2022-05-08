@@ -53,7 +53,7 @@ func (controller *ReceiptController) CreateReceipt(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *ReceiptController) GetByID(c echo.Context) error {
@@ -66,7 +66,7 @@ func (controller *ReceiptController) GetByID(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromDomain(receipt))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(receipt))
 }
 
 func (controller *ReceiptController) GetByCode(c echo.Context) error {
@@ -93,7 +93,7 @@ func (controller *ReceiptController) GetByCode(c echo.Context) error {
 	}
 
 	wg := &sync.WaitGroup{}
-	
+
 	wg.Add(len(tracks))
 	go func() {
 		for _, value := range tracks {
@@ -103,7 +103,7 @@ func (controller *ReceiptController) GetByCode(c echo.Context) error {
 	}()
 	wg.Wait()
 
-	return helpers.SuccessResponse(c, response.TrackFromDomain(receipt))
+	return helpers.SuccessResponse(c, http.StatusOK, response.TrackFromDomain(receipt))
 }
 
 func (controller *ReceiptController) Fetch(c echo.Context) error {
@@ -117,7 +117,7 @@ func (controller *ReceiptController) Fetch(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromListDomain(receipts, count))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromListDomain(receipts, count))
 }
 
 func (controller *ReceiptController) Delete(c echo.Context) error {
@@ -135,7 +135,7 @@ func (controller *ReceiptController) Delete(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *ReceiptController) Update(c echo.Context) error {
@@ -159,5 +159,5 @@ func (controller *ReceiptController) Update(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }

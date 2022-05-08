@@ -72,7 +72,7 @@ func (controller *TracksController) CreateTrack(c echo.Context) error {
 		}
 	}
 
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *TracksController) DeleteTrack(c echo.Context) error {
@@ -91,7 +91,7 @@ func (controller *TracksController) DeleteTrack(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Successfully deleted")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *TracksController) UpdateTrack(c echo.Context) error {
@@ -116,5 +116,5 @@ func (controller *TracksController) UpdateTrack(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Successfully updated")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }

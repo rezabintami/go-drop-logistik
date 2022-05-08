@@ -40,7 +40,7 @@ func (controller *UserController) Register(c echo.Context) error {
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *UserController) Login(c echo.Context) error {
@@ -60,18 +60,18 @@ func (controller *UserController) Login(c echo.Context) error {
 		Token string `json:"token"`
 	}{Token: token}
 
-	return helpers.SuccessResponse(c, result)
+	return helpers.SuccessResponse(c, http.StatusOK, result)
 }
 
 func (controller *UserController) GetByID(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	id := middleware.GetUser(c).ID
-	
+
 	user, err := controller.userUsecase.GetByID(ctx, id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromDomain(user))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(user))
 }

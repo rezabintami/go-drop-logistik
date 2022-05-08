@@ -2,7 +2,6 @@ package phones
 
 import (
 	"context"
-	"errors"
 	"go-drop-logistik/modules/phones"
 	"log"
 	"time"
@@ -58,14 +57,25 @@ func (repository *postgrePhoneRepository) GetAll(ctx context.Context) ([]phones.
 	return phoneDomain, nil
 }
 
+func (repository *postgrePhoneRepository) CheckByID(ctx context.Context, id int) error {
+	phone := Phones{}
+	result := repository.tx.Where("id = ?", id).First(&phone)
+	if result.Error != nil {
+		log.Println("[error] phones.repository.CheckByID : failed to execute check data phone query", result.Error)
+		return result.Error
+	}
+
+	return nil
+}
+
 func (repository *postgrePhoneRepository) Update(ctx context.Context, phoneDomain *phones.Domain, id int) error {
 	phoneUpdate := fromDomain(*phoneDomain)
 	phoneUpdate.UpdatedAt = time.Now()
 
 	result := repository.tx.Table("phones").Where("id = ?", id).Updates(&phoneUpdate)
-	if result.RowsAffected == 0  {
+	if result.RowsAffected == 0 {
 		log.Println("[error] phones.repository.Update : failed to execute update phone query", result.Error)
-		return errors.New("phone id not found")
+		return result.Error
 	}
 
 	return nil
@@ -77,7 +87,7 @@ func (repository *postgrePhoneRepository) Delete(ctx context.Context, id int) er
 	result := repository.tx.Where("id = ?", id).Delete(&phoneDelete)
 	if result.RowsAffected == 0 {
 		log.Println("[error] phones.repository.Delete : failed to execute delete phone query", result.Error)
-		return errors.New("phone id not found")
+		return result.Error
 	}
 
 	return nil

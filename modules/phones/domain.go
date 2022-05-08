@@ -21,6 +21,7 @@ type Usecase interface {
 
 type Repository interface {
 	StorePhone(ctx context.Context, data *Domain) (int, error)
+	CheckByID(ctx context.Context, id int)  error
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error
 	Delete(ctx context.Context, id int) error

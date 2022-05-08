@@ -40,7 +40,7 @@ func (controller *TrucksController) StoreTruck(c echo.Context) error {
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *TrucksController) GetByID(c echo.Context) error {
@@ -53,7 +53,7 @@ func (controller *TrucksController) GetByID(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, phone)
+	return helpers.SuccessResponse(c, http.StatusOK, phone)
 }
 
 func (controller *TrucksController) DeleteTruck(c echo.Context) error {
@@ -65,7 +65,7 @@ func (controller *TrucksController) DeleteTruck(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *TrucksController) UpdateTruck(c echo.Context) error {
@@ -82,13 +82,13 @@ func (controller *TrucksController) UpdateTruck(c echo.Context) error {
 	// if validate {
 	// 	return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
 	// }
-	
+
 	err := controller.trucksUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *TrucksController) Fetch(c echo.Context) error {
@@ -102,5 +102,5 @@ func (controller *TrucksController) Fetch(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromListDomain(agents, count))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromListDomain(agents, count))
 }

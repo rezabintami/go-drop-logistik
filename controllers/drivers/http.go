@@ -40,7 +40,7 @@ func (controller *DriversController) Store(c echo.Context) error {
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *DriversController) GetByID(c echo.Context) error {
@@ -53,7 +53,7 @@ func (controller *DriversController) GetByID(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromDomain(&driver))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(&driver))
 }
 
 func (controller *DriversController) Delete(c echo.Context) error {
@@ -65,7 +65,7 @@ func (controller *DriversController) Delete(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *DriversController) Update(c echo.Context) error {
@@ -88,5 +88,5 @@ func (controller *DriversController) Update(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }

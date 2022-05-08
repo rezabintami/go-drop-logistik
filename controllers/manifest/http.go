@@ -47,7 +47,7 @@ func (controller *ManifestController) CreateManifest(c echo.Context) error {
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return helpers.SuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *ManifestController) GetByID(c echo.Context) error {
@@ -78,7 +78,7 @@ func (controller *ManifestController) GetByID(c echo.Context) error {
 		manifest.Tracks = append(manifest.Tracks, *value.Track)
 	}
 
-	return helpers.SuccessResponse(c, response.FromDomain(&manifest))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(&manifest))
 }
 
 func (controller *ManifestController) Fetch(c echo.Context) error {
@@ -92,7 +92,7 @@ func (controller *ManifestController) Fetch(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, response.FromListDomain(manifest, count))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromListDomain(manifest, count))
 }
 
 func (controller *ManifestController) Delete(c echo.Context) error {
@@ -115,7 +115,7 @@ func (controller *ManifestController) Delete(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *ManifestController) Update(c echo.Context) error {
@@ -139,7 +139,7 @@ func (controller *ManifestController) Update(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *ManifestController) FinishManifest(c echo.Context) error {
@@ -157,5 +157,5 @@ func (controller *ManifestController) FinishManifest(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, "Update Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
