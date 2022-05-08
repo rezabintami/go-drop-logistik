@@ -288,3 +288,13 @@ func TestGetByIdAgent(t *testing.T) {
 		assert.Equal(t, err, errRepository)
 	})
 }
+
+func TestDeleteAgent(t *testing.T) {
+	t.Run("test case 1, valid test", func(t *testing.T) {
+		agentRepository.On("Delete", mock.Anything, mock.AnythingOfType("int")).Return(nil).Once()
+
+		err := agentUsecase.Delete(context.Background(), 1)
+
+		assert.Nil(t, err)
+	})
+}

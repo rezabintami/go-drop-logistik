@@ -17,6 +17,7 @@ type Agents struct {
 	Longitude float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 func (rec *Agents) ToExistingDomain() *agents.ExistingDomain {

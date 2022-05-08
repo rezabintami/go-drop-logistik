@@ -43,6 +43,16 @@ func (repository *postgreDriverRepository) GetByID(ctx context.Context, id int) 
 	return *driver.ToDomain(), nil
 }
 
+func (repository *postgreDriverRepository) CheckByID(ctx context.Context, id int) error {
+	driverCheck := Drivers{}
+	result := repository.tx.Where("id = ?", id).First(&driverCheck)
+	if result.Error != nil {
+		log.Println("[error] drivers.repository.CheckByID : failed to execute check data driver query", result.Error)
+		return result.Error
+	}
+
+	return nil
+}
 
 // This Gorm same as sql query in below comment
 // "UPDATE drivers SET name = 'Dana' , phone = '083123246347' , address = 'Jalan Mangga Manis No 134', truck_id = 2 
@@ -57,7 +67,7 @@ func (repository *postgreDriverRepository) Update(ctx context.Context, driverDom
 	result := repository.tx.Table("drivers").Where("EXISTS(?) AND drivers.id = ?", subQuery, id).Updates(&driverUpdate)
 	if result.RowsAffected == 0 {
 		log.Println("[error] drivers.repository.Update : failed to execute update driver query", result.Error)
-		return errors.New("failed to execute update driver query")
+		return errors.New("truck not found")
 	}
 
 	return nil

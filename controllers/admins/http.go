@@ -157,3 +157,17 @@ func (controller *AdminController) AgentUpdateByID(c echo.Context) error {
 
 	return helpers.SuccessResponse(c, http.StatusOK, response.AgentFromDomain(user))
 }
+
+func (controller *AdminController) AgentDeleteByID(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	id := c.Param("id")
+	idInt, _ := strconv.Atoi(id)
+
+	err := controller.agentUsecase.Delete(ctx, idInt)
+	if err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
+}

@@ -14,6 +14,34 @@ type Repository struct {
 	mock.Mock
 }
 
+// CheckByID provides a mock function with given fields: ctx, id
+func (_m *Repository) CheckByID(ctx context.Context, id int) error {
+	ret := _m.Called(ctx, id)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, int) error); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Delete provides a mock function with given fields: ctx, id
+func (_m *Repository) Delete(ctx context.Context, id int) error {
+	ret := _m.Called(ctx, id)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, int) error); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Fetch provides a mock function with given fields: ctx, start, last
 func (_m *Repository) Fetch(ctx context.Context, start int, last int) ([]agents.Domain, int, error) {
 	ret := _m.Called(ctx, start, last)

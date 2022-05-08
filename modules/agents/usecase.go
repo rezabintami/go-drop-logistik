@@ -59,6 +59,7 @@ func (usecase *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, 
 			return err
 		}
 	}
+	
 	if existedUser != (ExistingDomain{}) {
 		return helpers.ErrDuplicateData
 	}
@@ -79,6 +80,7 @@ func (usecase *AgentUsecase) Fetch(ctx context.Context, page, perpage int) ([]Do
 	if page <= 0 {
 		page = 1
 	}
+
 	if perpage <= 0 {
 		perpage = 25
 	}
@@ -92,12 +94,39 @@ func (usecase *AgentUsecase) Fetch(ctx context.Context, page, perpage int) ([]Do
 }
 
 func (usecase *AgentUsecase) Update(ctx context.Context, userDomain *Domain, id int) error {
-	if userDomain.Password != "" {
-		userDomain.Password, _ = helpers.Hash(userDomain.Password)
-	}
-	err := usecase.agentRepository.Update(ctx, userDomain, id)
+	ctx, cancel := context.WithTimeout(ctx, usecase.contextTimeout)
+	defer cancel()
+
+	err := usecase.agentRepository.CheckByID(ctx, id)
 	if err != nil {
 		return err
 	}
+
+	if userDomain.Password != "" {
+		userDomain.Password, _ = helpers.Hash(userDomain.Password)
+	}
+
+	err = usecase.agentRepository.Update(ctx, userDomain, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (usecase *AgentUsecase) Delete(ctx context.Context, id int) error {
+	ctx, cancel := context.WithTimeout(ctx, usecase.contextTimeout)
+	defer cancel()
+
+	err := usecase.agentRepository.CheckByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.agentRepository.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

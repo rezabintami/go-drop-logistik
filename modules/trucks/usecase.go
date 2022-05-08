@@ -39,9 +39,13 @@ func (usecase *TrucksUsecase) GetByID(ctx context.Context, id int) (Domain, erro
 	return phone, nil
 }
 
-func (usecase *TrucksUsecase) Delete(ctx context.Context, Id int) error {
+func (usecase *TrucksUsecase) Delete(ctx context.Context, id int) error {
+	err := usecase.truckRepository.CheckByID(ctx, id)
+	if err != nil {
+		return err
+	}
 
-	err := usecase.truckRepository.Delete(ctx, Id)
+	err = usecase.truckRepository.Delete(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -50,7 +54,12 @@ func (usecase *TrucksUsecase) Delete(ctx context.Context, Id int) error {
 }
 
 func (usecase *TrucksUsecase) Update(ctx context.Context, truckDomain *Domain, id int) error {
-	err := usecase.truckRepository.Update(ctx, truckDomain, id)
+	err := usecase.truckRepository.CheckByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	
+	err = usecase.truckRepository.Update(ctx, truckDomain, id)
 	if err != nil {
 		return err
 	}

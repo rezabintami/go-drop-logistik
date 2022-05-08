@@ -40,7 +40,12 @@ func (usecase *DriversUsecase) GetByID(ctx context.Context, id int) (Domain, err
 }
 
 func (usecase *DriversUsecase) Delete(ctx context.Context, id int) error {
-	err := usecase.driversRepository.Delete(ctx, id)
+	err := usecase.driversRepository.CheckByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.driversRepository.Delete(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -49,7 +54,12 @@ func (usecase *DriversUsecase) Delete(ctx context.Context, id int) error {
 }
 
 func (usecase *DriversUsecase) Update(ctx context.Context, phoneDomain *Domain, id int) error {
-	err := usecase.driversRepository.Update(ctx, phoneDomain, id)
+	err := usecase.driversRepository.CheckByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.driversRepository.Update(ctx, phoneDomain, id)
 	if err != nil {
 		return err
 	}

@@ -25,6 +25,7 @@ type Usecase interface {
 type Repository interface {
 	StoreTruck(ctx context.Context, data *Domain) error
 	GetByID(ctx context.Context, id int) (Domain, error)
+	CheckByID(ctx context.Context, id int) error
 	Update(ctx context.Context, data *Domain, id int) error
 	Delete(ctx context.Context, id int) error
 	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)

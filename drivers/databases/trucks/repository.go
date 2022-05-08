@@ -90,3 +90,14 @@ func (repository *postgreTruckRepository) Fetch(ctx context.Context, page, perpa
 
 	return result, int(totalData), nil
 }
+
+func (repository *postgreTruckRepository) CheckByID(ctx context.Context, id int) error {
+	truck := Trucks{}
+	result := repository.tx.Where("id = ?", id).First(&truck)
+	if result.Error != nil {
+		log.Println("[error] trucks.repository.CheckByID : failed to execute check truck query", result.Error)
+		return result.Error
+	}
+
+	return nil
+}

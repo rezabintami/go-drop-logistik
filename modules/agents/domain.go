@@ -35,13 +35,16 @@ type Usecase interface {
 	Register(ctx context.Context, data *Domain, sso bool) error
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error
+	Delete(ctx context.Context, id int) error
 	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)
 }
 
 type Repository interface {
 	GetByID(ctx context.Context, id int) (Domain, error)
 	GetByEmail(ctx context.Context, email string) (ExistingDomain, error)
+	CheckByID(ctx context.Context, id int) error
 	Register(ctx context.Context, data *Domain) error
 	Update(ctx context.Context, data *Domain, id int) error
 	Fetch(ctx context.Context, start, last int) ([]Domain, int, error)
+	Delete(ctx context.Context, id int) error
 }

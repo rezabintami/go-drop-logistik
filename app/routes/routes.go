@@ -109,6 +109,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	adminAgent.GET("/:id", cl.AdminController.AgentGetByID)
 	adminAgent.POST("/add", cl.AdminController.AgentRegister)
 	adminAgent.PUT("/:id", cl.AdminController.AgentUpdateByID)
+	adminAgent.DELETE("/:id", cl.AdminController.AgentDeleteByID)
 
 	//! USERS
 	user := apiV1.Group("/user")

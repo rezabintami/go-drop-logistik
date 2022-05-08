@@ -15,6 +15,7 @@ type Drivers struct {
 	Truck   *trucks.Trucks `gorm:"foreignkey:TruckID;references:ID"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 func fromDomain(driverDomain drivers.Domain) *Drivers {

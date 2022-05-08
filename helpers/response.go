@@ -12,7 +12,7 @@ type BaseResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func SuccessResponse(c echo.Context,status int, param interface{}) error {
+func SuccessResponse(c echo.Context, status int, param interface{}) error {
 	response := BaseResponse{}
 	response.Meta.Message = "success"
 	response.Data = param

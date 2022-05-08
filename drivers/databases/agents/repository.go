@@ -90,3 +90,25 @@ func (repository *postgreAgentRepository) Update(ctx context.Context, agentDomai
 
 	return nil
 }
+
+func (repository *postgreAgentRepository) Delete(ctx context.Context, id int) error {
+	agentDelete := Agents{}
+	result := repository.tx.Where("agents.id = ?", id).Delete(&agentDelete)
+	if result.Error != nil {
+		log.Println("[error] agents.repository.Delete : failed to execute delete agent query", result.Error)
+		return result.Error
+	}
+
+	return nil
+}
+
+func (repository *postgreAgentRepository) CheckByID(ctx context.Context, id int) error {
+	agentById := Agents{}
+	result := repository.tx.Where("agents.id = ?", id).First(&agentById)
+	if result.Error != nil {
+		log.Println("[error] agents.repository.CheckByID : failed to execute get data agent query", result.Error)
+		return result.Error
+	}
+
+	return nil
+}
