@@ -54,10 +54,16 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	auth.POST("/login", cl.UserController.Login)
 	// auth.POST("/logout", cl.UserController.Logout)
 	// auth.POST("/refresh", cl.UserController.Refresh)
+
+	//! USERS
+	user := apiV1.Group("/user")
+	user.GET("/", cl.UserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware))
 	
 	//! AGENTS
 	agent := apiV1.Group("/agent")
 	agent.POST("/login", cl.AgentController.Login)
+	// agent.POST("/refresh", cl.AgentController.Refresh)
+	// agent.POST("/logout", cl.AgentController.Logout)
 	agent.GET("/profile", cl.AgentController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT", "ADMIN"))
 
 	resi := agent.Group("/resi", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
@@ -102,6 +108,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	admin := apiV1.Group("/admin")
 	admin.POST("/register", cl.AdminController.Register)
 	admin.POST("/login", cl.AdminController.Login)
+	// admin.POST("/refresh", cl.AdminController.Refresh)
+	// admin.POST("/logout", cl.AdminController.Logout)
 	admin.GET("/profile", cl.AdminController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
 
 	adminAgent := admin.Group("/agent") //, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
@@ -110,8 +118,4 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	adminAgent.POST("/add", cl.AdminController.AgentRegister)
 	adminAgent.PUT("/:id", cl.AdminController.AgentUpdateByID)
 	adminAgent.DELETE("/:id", cl.AdminController.AgentDeleteByID)
-
-	//! USERS
-	user := apiV1.Group("/user")
-	user.GET("/", cl.UserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware))
 }

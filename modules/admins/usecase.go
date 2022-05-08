@@ -24,7 +24,7 @@ func NewAdminUsecase(ur Repository, jwtauth *middleware.ConfigJWT, timeout time.
 	}
 }
 
-func (usecase *AdminUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
+func (usecase *AdminUsecase) Login(ctx context.Context, email, password string, sso bool) (string, string, error) {
 	request := map[string]interface{}{
 		"email": email,
 		"sso":   sso,
@@ -37,19 +37,17 @@ func (usecase *AdminUsecase) Login(ctx context.Context, email, password string, 
 			"error":        err.Error(),
 		}
 		usecase.logger.LogEntry(request, result).Error(err.Error())
-		return "", err
+		return "", "", err
 	}
 
 	if !helpers.ValidateHash(password, existedUser.Password) && !sso {
-		return "", helpers.ErrEmailPasswordNotFound
+		return "", "", helpers.ErrEmailPasswordNotFound
 	}
 
-	token := usecase.jwtAuth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
-	result := map[string]interface{}{
-		"susecasecess": "true",
-	}
-	usecase.logger.LogEntry(request, result).Info("incoming request")
-	return token, nil
+	accessToken := usecase.jwtAuth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
+	refreshToken := usecase.jwtAuth.GenerateRefreshToken(existedUser.ID)
+
+	return accessToken, refreshToken, nil
 }
 
 func (usecase *AdminUsecase) GetByID(ctx context.Context, id int) (Domain, error) {

@@ -31,7 +31,7 @@ type ExistingDomain struct {
 }
 
 type Usecase interface {
-	Login(ctx context.Context, email, password string, sso bool) (string, error)
+	Login(ctx context.Context, email, password string, sso bool) (string, string, error)
 	Register(ctx context.Context, data *Domain, sso bool) error
 	GetByID(ctx context.Context, id int) (Domain, error)
 	Update(ctx context.Context, data *Domain, id int) error

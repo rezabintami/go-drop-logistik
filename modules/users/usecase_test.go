@@ -25,7 +25,6 @@ func setup() {
 	userUsecase = users.NewUserUsecase(&userRepository, jwtAuth, 2)
 }
 
-
 func TestMain(m *testing.M) {
 	setup()
 	os.Exit(m.Run())
@@ -45,9 +44,10 @@ func TestLoginUsers(t *testing.T) {
 
 		userRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(usersDomain, nil).Once()
 
-		token, err := userUsecase.Login(context.Background(), email, "123123", sso)
+		accessToken, refreshToken, err := userUsecase.Login(context.Background(), email, "123123", sso)
 		assert.Nil(t, err)
-		assert.NotEmpty(t, token)
+		assert.NotEmpty(t, accessToken)
+		assert.NotEmpty(t, refreshToken)
 	})
 	t.Run("test case 2, password error", func(t *testing.T) {
 		pass, _ := helpers.Hash("1231231")
@@ -60,7 +60,7 @@ func TestLoginUsers(t *testing.T) {
 
 		userRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(usersDomain, nil).Once()
 
-		_, err := userUsecase.Login(context.Background(), "users@gmail.com", "123123", false)
+		_, _, err := userUsecase.Login(context.Background(), "users@gmail.com", "123123", false)
 		assert.Equal(t, err, helpers.ErrEmailPasswordNotFound)
 
 	})
@@ -70,10 +70,11 @@ func TestLoginUsers(t *testing.T) {
 		errRepository := errors.New("error record")
 		userRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(users.Domain{}, errRepository).Once()
 
-		result, err := userUsecase.Login(context.Background(), "logistik@gmail.com", "123123", false)
+		accessToken, refreshToken, err := userUsecase.Login(context.Background(), "logistik@gmail.com", "123123", false)
 
 		assert.Equal(t, err, errRepository)
-		assert.Equal(t, "", result)
+		assert.Equal(t, "", accessToken)
+		assert.Equal(t, "", refreshToken)
 	})
 }
 
@@ -117,7 +118,6 @@ func TestRegisterUsers(t *testing.T) {
 			Email:    "users@gmail.com",
 		}
 
-
 		userRepository.On("GetByEmail", mock.Anything, mock.Anything).Return(domain, nil).Once()
 
 		err := userUsecase.Register(context.Background(), &domain, false)
@@ -140,7 +140,6 @@ func TestRegisterUsers(t *testing.T) {
 		assert.Equal(t, err, errRepository)
 	})
 }
-
 
 func TestGetByIdUsers(t *testing.T) {
 	t.Run("test case 1, valid test", func(t *testing.T) {

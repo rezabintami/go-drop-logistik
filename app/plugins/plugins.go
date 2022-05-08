@@ -64,8 +64,9 @@ type ConfigurationPlugins struct {
 func (route *ConfigurationPlugins) RoutePlugins() _routes.ControllerList {
 
 	configJWT := _middleware.ConfigJWT{
-		SecretJWT:       _config.GetConfiguration("jwt.secret"),
-		ExpiresDuration: _helpers.ConvertStringtoInt(_config.GetConfiguration("jwt.expired")),
+		SecretJWT:        _config.GetConfiguration("jwt.access_token"),
+		RefreshSecretJWT: _config.GetConfiguration("jwt.refresh_token"),
+		ExpiresDuration:  _helpers.ConvertStringtoInt(_config.GetConfiguration("jwt.expired")),
 	}
 
 	timeoutContext := time.Duration(_helpers.ConvertStringtoInt(_config.GetConfiguration("server.timeout"))) * time.Second

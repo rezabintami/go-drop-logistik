@@ -19,8 +19,14 @@ type JwtCustomClaims struct {
 }
 
 type ConfigJWT struct {
-	SecretJWT       string
-	ExpiresDuration int
+	SecretJWT        string
+	RefreshSecretJWT string
+	ExpiresDuration  int
+}
+
+type JwtRefreshToken struct {
+	ID int `json:"id"`
+	jwt.StandardClaims
 }
 
 type ConfigMiddleware struct {
@@ -62,6 +68,22 @@ func (jwtConf *ConfigJWT) GenerateToken(userID int, name, role string) string {
 	// Create token with claims
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, _ := t.SignedString([]byte(jwtConf.SecretJWT))
+
+	return token
+}
+
+// GenerateToken jwt ...
+func (jwtConf *ConfigJWT) GenerateRefreshToken(userID int) string {
+	claims := JwtRefreshToken{
+		userID,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(int64(jwtConf.ExpiresDuration))).Unix(),
+		},
+	}
+
+	// Create token with claims
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, _ := t.SignedString([]byte(jwtConf.RefreshSecretJWT))
 
 	return token
 }

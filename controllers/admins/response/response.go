@@ -11,6 +11,11 @@ type Admins struct {
 	Email string `json:"email"`
 }
 
+type Token struct {
+	AccessToken string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 type Agents struct {
 	ID        int     `json:"id"`
 	Name      string  `json:"name"`
@@ -24,6 +29,13 @@ type Agents struct {
 type AgentsPageResponse struct {
 	Users *[]Agents `json:"agents"`
 	Total int       `json:"total"`
+}
+
+func TokenFromDomain(accessToken, refreshToken string) Token {
+	return Token{
+		AccessToken: accessToken,
+		RefreshToken: refreshToken,
+	}
 }
 
 func FromDomain(adminDomain admins.Domain) Admins {

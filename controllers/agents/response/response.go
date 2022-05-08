@@ -15,12 +15,24 @@ type Agents struct {
 	Longitude float64  `json:"longitude"`
 }
 
+type Token struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 type TrackAgentResponse struct {
-	ID        int      `json:"id"`
-	Name      string   `json:"name"`
-	Address   string   `json:"address"`
-	Latitude  float64  `json:"latitude"`
-	Longitude float64  `json:"longitude"`
+	ID        int     `json:"id"`
+	Name      string  `json:"name"`
+	Address   string  `json:"address"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}
+
+func TokenFromDomain(accessToken, refreshToken string) Token {
+	return Token{
+		AccessToken: accessToken,
+		RefreshToken: refreshToken,
+	}
 }
 
 func FromDomain(userDomain *agents.Domain) (res *Agents) {

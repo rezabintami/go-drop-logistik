@@ -11,30 +11,31 @@ import (
 type AgentUsecase struct {
 	agentRepository Repository
 	contextTimeout  time.Duration
-	jwtusecaseth    *middleware.ConfigJWT
+	jwtAuth    *middleware.ConfigJWT
 }
 
-func NewAgentUsecase(ur Repository, jwtusecaseth *middleware.ConfigJWT, timeout time.Duration) Usecase {
+func NewAgentUsecase(ur Repository, jwtAuth *middleware.ConfigJWT, timeout time.Duration) Usecase {
 	return &AgentUsecase{
 		agentRepository: ur,
-		jwtusecaseth:    jwtusecaseth,
+		jwtAuth:    jwtAuth,
 		contextTimeout:  timeout,
 	}
 }
 
-func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, sso bool) (string, error) {
+func (usecase *AgentUsecase) Login(ctx context.Context, email, password string, sso bool) (string, string, error) {
 	existedUser, err := usecase.agentRepository.GetByEmail(ctx, email)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	if !helpers.ValidateHash(password, existedUser.Password) && !sso {
-		return "", helpers.ErrEmailPasswordNotFound
+		return "", "", helpers.ErrEmailPasswordNotFound
 	}
 
-	token := usecase.jwtusecaseth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
+	accessToken := usecase.jwtAuth.GenerateToken(existedUser.ID, existedUser.Name, existedUser.Roles)
+	refreshToken := usecase.jwtAuth.GenerateRefreshToken(existedUser.ID)
 
-	return token, nil
+	return accessToken, refreshToken, nil
 }
 
 func (usecase *AgentUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
@@ -59,7 +60,7 @@ func (usecase *AgentUsecase) Register(ctx context.Context, agentDomain *Domain, 
 			return err
 		}
 	}
-	
+
 	if existedUser != (ExistingDomain{}) {
 		return helpers.ErrDuplicateData
 	}

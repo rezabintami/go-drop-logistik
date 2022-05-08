@@ -37,16 +37,13 @@ func (controller *AgentController) Login(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	token, err := controller.agentUsecase.Login(ctx, req.Email, req.Password, false)
+	accessToken, refreshToken, err := controller.agentUsecase.Login(ctx, req.Email, req.Password, false)
 
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	result := struct {
-		Token string `json:"token"`
-	}{Token: token}
 
-	return helpers.SuccessResponse(c, http.StatusOK, result)
+	return helpers.SuccessResponse(c, http.StatusOK, response.TokenFromDomain(accessToken, refreshToken))
 }
 
 func (controller *AgentController) GetByID(c echo.Context) error {

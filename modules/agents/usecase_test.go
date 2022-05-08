@@ -45,9 +45,10 @@ func TestLoginAgent(t *testing.T) {
 
 		agentRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(agentDomain, nil).Once()
 
-		token, err := agentUsecase.Login(context.Background(), email, "123123", sso)
+		accessToken, refreshToken, err := agentUsecase.Login(context.Background(), email, "123123", sso)
 		assert.Nil(t, err)
-		assert.NotEmpty(t, token)
+		assert.NotEmpty(t, accessToken)
+		assert.NotEmpty(t, refreshToken)
 	})
 	t.Run("test case 2, password error", func(t *testing.T) {
 		pass, _ := helpers.Hash("1231231")
@@ -61,7 +62,7 @@ func TestLoginAgent(t *testing.T) {
 
 		agentRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(agentDomain, nil).Once()
 
-		_, err := agentUsecase.Login(context.Background(), "agent@gmail.com", "123123", false)
+		_, _, err := agentUsecase.Login(context.Background(), "agent@gmail.com", "123123", false)
 		assert.Equal(t, err, helpers.ErrEmailPasswordNotFound)
 
 	})
@@ -71,10 +72,11 @@ func TestLoginAgent(t *testing.T) {
 		errRepository := errors.New("error record")
 		agentRepository.On("GetByEmail", mock.Anything, mock.AnythingOfType("string")).Return(agents.ExistingDomain{}, errRepository).Once()
 
-		result, err := agentUsecase.Login(context.Background(), "logistik@gmail.com", "123123", false)
+		accessToken, refreshToken, err := agentUsecase.Login(context.Background(), "logistik@gmail.com", "123123", false)
 
 		assert.Equal(t, err, errRepository)
-		assert.Equal(t, "", result)
+		assert.Equal(t, "", accessToken)
+		assert.Equal(t, "", refreshToken)
 	})
 }
 

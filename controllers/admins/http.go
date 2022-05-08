@@ -55,16 +55,13 @@ func (controller *AdminController) Login(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	token, err := controller.adminUsecase.Login(ctx, userLogin.Email, userLogin.Password, false)
+	accessToken, refreshToken, err := controller.adminUsecase.Login(ctx, userLogin.Email, userLogin.Password, false)
 
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	result := struct {
-		Token string `json:"token"`
-	}{Token: token}
 
-	return helpers.SuccessResponse(c, http.StatusOK, result)
+	return helpers.SuccessResponse(c, http.StatusOK, response.TokenFromDomain(accessToken, refreshToken))
 }
 
 func (controller *AdminController) GetByID(c echo.Context) error {
