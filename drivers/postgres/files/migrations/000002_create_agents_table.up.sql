@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS agents (
   latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp NULL
-  deleted_at timestamp NULL 
+  updated_at timestamp NULL,
+  deleted_at timestamp NULL
 );
