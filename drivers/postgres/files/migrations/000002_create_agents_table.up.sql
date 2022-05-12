@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS agents (
   balance INTEGER NOT NULL,
   latitude FLOAT NOT NULL,
   longitude FLOAT NOT NULL,
-  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp NULL,
-  deleted_at timestamp NULL
+  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamptz NULL,
+  deleted_at timestamptz NULL
 );

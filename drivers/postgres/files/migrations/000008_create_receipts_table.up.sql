@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS receipts (
   price float NOT NULL,
   amount float NOT NULL,
   status varchar(255) NOT NULL,
-  pickup_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp NULL,
-  deleted_at timestamp NULL
+  pickup_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamptz NULL,
+  deleted_at timestamptz NULL
 );

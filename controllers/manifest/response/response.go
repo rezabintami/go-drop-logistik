@@ -8,19 +8,19 @@ import (
 )
 
 type Manifest struct {
-	ID        int                     `json:"id"`
-	Code      string                  `json:"code"`
-	Status    string                  `json:"status"`
-	Receipt   *[]receiptResp.Receipts `json:"receipts"`
-	Driver    *driverResp.Drivers     `json:"driver"`
-	Tracks    *[]trackResp.Track      `json:"track"`
+	ID      int                     `json:"id"`
+	Code    string                  `json:"code"`
+	Status  string                  `json:"status"`
+	Receipt *[]receiptResp.Receipts `json:"receipts"`
+	Driver  *driverResp.Drivers     `json:"driver"`
+	Tracks  *[]trackResp.Track      `json:"track"`
 }
 
 type ManifestResponse struct {
-	ID        int                 `json:"id"`
-	Code      string              `json:"code"`
-	Status    string              `json:"status"`
-	Driver    *driverResp.Drivers `json:"driver"`
+	ID     int                 `json:"id"`
+	Code   string              `json:"code"`
+	Status string              `json:"status"`
+	Driver *driverResp.Drivers `json:"driver"`
 }
 
 type ManifestPageResponse struct {
@@ -31,12 +31,12 @@ type ManifestPageResponse struct {
 func FromDomain(manifestDomain *manifest.Domain) (res *Manifest) {
 	if manifestDomain != nil {
 		res = &Manifest{
-			ID:        manifestDomain.ID,
-			Code:      manifestDomain.Code,
-			Status:    manifestDomain.Status,
-			Receipt:   receiptResp.FromManifestListDomain(&manifestDomain.Receipt),
-			Driver:    driverResp.FromDomain(manifestDomain.Driver),
-			Tracks:    trackResp.FromListDomain(&manifestDomain.Tracks),
+			ID:      manifestDomain.ID,
+			Code:    manifestDomain.Code,
+			Status:  manifestDomain.Status,
+			Receipt: receiptResp.FromManifestListDomain(&manifestDomain.Receipt),
+			Driver:  driverResp.FromDomain(manifestDomain.Driver),
+			Tracks:  trackResp.FromListDomain(&manifestDomain.Tracks),
 		}
 	}
 	return res
@@ -46,10 +46,10 @@ func FromListDomain(manifestDomain []manifest.Domain, Count int) *ManifestPageRe
 	allManifest := []ManifestResponse{}
 	for _, value := range manifestDomain {
 		manifest := ManifestResponse{
-			ID:        value.ID,
-			Code:      value.Code,
-			Status:    value.Status,
-			Driver:    driverResp.FromDomain(value.Driver),
+			ID:     value.ID,
+			Code:   value.Code,
+			Status: value.Status,
+			Driver: driverResp.FromDomain(value.Driver),
 		}
 		allManifest = append(allManifest, manifest)
 	}

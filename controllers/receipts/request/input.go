@@ -6,7 +6,7 @@ import (
 )
 
 type Receipts struct {
-	ManifestID      int       `json:"manifest_id" validate:"required" validName:"manifest_id"`
+	ManifestID      int       `json:"manifest_id"`
 	Receiver        string    `json:"receiver" validate:"required" validName:"receiver"`
 	PhoneReceiver   string    `json:"phone_receiver"  validate:"required,phone,min=10,max=16" validName:"phoneNumber"`
 	AddressReceiver string    `json:"address_receiver" validate:"required" validName:"address_receiver"`

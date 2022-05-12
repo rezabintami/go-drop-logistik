@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS tracks (
   current_agent_id integer NOT NULL,
   destination_agent_id integer NOT NULL,
   message text NOT NULL,
-  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp NULL,
-  deleted_at timestamp NULL
+  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamptz NULL,
+  deleted_at timestamptz NULL
 );

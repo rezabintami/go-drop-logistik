@@ -48,9 +48,11 @@ func (controller *ReceiptController) CreateReceipt(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err = controller.manifestreceiptUsecase.Store(ctx, req.ManifestID, receiptId)
-	if err != nil {
-		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	if req.ManifestID != 0 {
+		err = controller.manifestreceiptUsecase.Store(ctx, req.ManifestID, receiptId)
+		if err != nil {
+			return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+		}
 	}
 
 	return helpers.SuccessResponse(c, http.StatusCreated, nil)
@@ -66,7 +68,12 @@ func (controller *ReceiptController) GetByID(c echo.Context) error {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(receipt))
+	manifestId, _ := controller.manifestreceiptUsecase.GetByReceiptID(ctx, receipt.ID)
+	if err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomainManifest(receipt, manifestId))
 }
 
 func (controller *ReceiptController) GetByCode(c echo.Context) error {
@@ -157,6 +164,13 @@ func (controller *ReceiptController) Update(c echo.Context) error {
 	err := controller.receiptUsecase.Update(ctx, req.ToDomain(), id)
 	if err != nil {
 		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	if req.ManifestID != 0 {
+		err = controller.manifestreceiptUsecase.Store(ctx, req.ManifestID, id)
+		if err != nil {
+			return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+		}
 	}
 
 	return helpers.SuccessResponse(c, http.StatusOK, nil)

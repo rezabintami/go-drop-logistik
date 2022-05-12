@@ -8,172 +8,17 @@ definitions:
       memberplCode:
         type: string
     required:
-    - memberplCode
+      - memberplCode
     type: object
-  customers.ReqDataRecentFinancing:
+  general.Tracking:
     properties:
-      memberplCode:
-        type: string
-    required:
-    - memberplCode
-    type: object
-  customers.ReqFinanceIdentifier:
-    properties:
-      identifier:
-        items:
-          type: string
-        type: array
-    required:
-    - identifier
-    type: object
-  customers.ReqHistoryFinancing:
-    properties:
-      data:
-        $ref: '#/definitions/customers.ReqDataHistoryFinancing'
-      requestUuid:
-        type: string
-      signature:
-        type: string
-    required:
-    - requestUuid
-    - signature
-    type: object
-  customers.ReqOfOrder:
-    properties:
-      customer_identifier:
-        items:
-          $ref: '#/definitions/customers.ReqOfOrderArray'
-        type: array
-    type: object
-  customers.ReqOfOrderArray:
-    properties:
-      customer_identifier:
-        type: string
-    type: object
-  customers.ReqRecentFinancing:
-    properties:
-      data:
-        $ref: '#/definitions/customers.ReqDataRecentFinancing'
-    type: object
-  finances.DataCustomerInfo:
-    properties:
-      accountChannelId:
-        type: string
-      channel:
-        type: string
-      creditLimit:
-        type: number
-      identificationNumber:
-        type: string
-      identifier:
-        type: string
-      name:
-        type: string
-      phoneNumber:
-        type: string
-      productFinancing:
-        type: string
-      state:
-        type: string
-      vaNumber:
+      receipt_code:
         type: string
     type: object
   finances.ReqAutoApprove:
     properties:
       autoApprove:
         type: string
-    type: object
-  finances.ReqCreateLoan:
-    properties:
-      beneficiaryAccountName:
-        type: string
-      beneficiaryAccountNumber:
-        type: string
-      beneficiaryAddress:
-        type: string
-      beneficiaryBankCode:
-        type: string
-      beneficiaryBankName:
-        type: string
-      beneficiaryBusinessName:
-        type: string
-      beneficiaryEmail:
-        type: string
-      beneficiaryPhoneNumber:
-        type: string
-      memberplCode:
-        type: string
-      orderAmount:
-        type: string
-      transId:
-        type: string
-    required:
-    - beneficiaryAccountName
-    - beneficiaryAccountNumber
-    - beneficiaryBankCode
-    - memberplCode
-    - orderAmount
-    - transId
-    type: object
-  finances.ReqLoanOrdersList:
-    properties:
-      by:
-        type: string
-      from:
-        type: string
-      keyword:
-        type: string
-      limit:
-        type: string
-      memberStatus:
-        type: string
-      page:
-        type: string
-      sort:
-        type: string
-      status:
-        type: string
-      to:
-        type: string
-    type: object
-  finances.ReqUpdateLoan:
-    properties:
-      identifier:
-        type: string
-      reasonCancel:
-        type: string
-      reasonReject:
-        type: string
-      state:
-        type: string
-    required:
-    - identifier
-    - state
-    type: object
-  finances.ReqUpdateLoanBulk:
-    properties:
-      identifier:
-        type: string
-      message:
-        type: string
-      reasonCancel:
-        type: string
-      reasonReject:
-        type: string
-      state:
-        type: string
-    required:
-    - identifier
-    - state
-    type: object
-  finances.ReqVaNumber:
-    properties:
-      identifierChannel:
-        type: string
-      transId:
-        type: string
-    required:
-    - transId
     type: object
   helpers.JSONResponse:
     properties:
@@ -204,7 +49,7 @@ definitions:
       data:
         type: object
       pagination:
-        $ref: '#/definitions/helpers.Pagination'
+        $ref: "#/definitions/helpers.Pagination"
       responseTimestamp:
         type: string
       stat_code:
@@ -226,574 +71,64 @@ definitions:
         type: integer
     type: object
 paths:
+  /tracking:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/finances.ReqAutoApprove"
+      produces:
+        - application/json
+      parameters:
+        - description: Body
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/general.Tracking"
   /auto-approve:
     patch:
       consumes:
-      - application/json
-      description: 'Setting foe active and deactive auto approve (Validation: Need
-        testing)'
+        - application/json
+      description:
+        "Setting foe active and deactive auto approve (Validation: Need
+        testing)"
       parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/finances.ReqAutoApprove'
+        - description: Body
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/finances.ReqAutoApprove"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
       security:
-      - ApiKeyAuth: []
+        - ApiKeyAuth: []
       summary: Set auto approve loan
       tags:
-      - API Financing
-  /check-late-payment:
-    post:
-      consumes:
-      - application/json
-      description: 'POST  check late payment (Validation: Need testing)'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request  for check late payment
-      tags:
-      - API Users
-  /customer:
-    post:
-      consumes:
-      - application/json
-      description: Get total transaction and of order customer from db
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/customers.ReqOfOrder'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request get of order
-      tags:
-      - API Customers
-  /financing/history:
-    post:
-      consumes:
-      - application/json
-      description: 'Get  get recent loan transaction customer from db (Validation:
-        Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/customers.ReqHistoryFinancing'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request  get recent loan transaction customer
-      tags:
-      - API Customers
-  /financing/identifier:
-    post:
-      consumes:
-      - application/json
-      description: 'Get List Finance Product  (Validation: Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/customers.ReqFinanceIdentifier'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request for get list finance product
-      tags:
-      - API Customers
-  /financing/recent:
-    post:
-      consumes:
-      - application/json
-      description: 'Get  get recent loan transaction customer from db (Validation:
-        Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/customers.ReqRecentFinancing'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request  get recent loan transaction customer
-      tags:
-      - API Customers
-  /loan:
-    patch:
-      consumes:
-      - application/json
-      description: 'Update status loan  (Validation: Need testing)'
-      parameters:
-      - description: user value
-        in: header
-        name: User
-        required: true
-        type: string
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/finances.ReqUpdateLoan'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-      security:
-      - ApiKeyAuth: []
-      summary: Endpoint for update status loan
-      tags:
-      - API Financing
-    post:
-      consumes:
-      - application/json
-      description: 'Create Cutomer Loan  (Validation: Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/finances.ReqCreateLoan'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request for create loan
-      tags:
-      - API Financing
-  /loan-order/detail:
-    get:
-      consumes:
-      - application/json
-      description: 'Get loan order from db and amfp-customer (Validation: Need testing)'
-      parameters:
-      - description: Loan Identifier
-        in: query
-        name: identifier
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-      security:
-      - ApiKeyAuth: []
-      summary: Request get loan order detail
-      tags:
-      - API Financing
-  /loan-orders:
-    post:
-      consumes:
-      - application/json
-      description: 'Get get loan orders list from db (Validation: Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/finances.ReqLoanOrdersList'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-      security:
-      - ApiKeyAuth: []
-      summary: Request get get loan orders list
-      tags:
-      - API Financing
-  /loan-orders/export:
-    post:
-      consumes:
-      - application/json
-      description: 'Get get loan orders list from db (Validation: Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/finances.ReqLoanOrdersList'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseLoanOrdersList'
-      security:
-      - ApiKeyAuth: []
-      summary: Request get get loan orders list
-      tags:
-      - API Financing
-  /loan/bulk:
-    patch:
-      consumes:
-      - application/json
-      description: 'Update status loan bulk  (Validation: Need testing)'
-      parameters:
-      - description: user value
-        in: header
-        name: User
-        required: true
-        type: string
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/finances.ReqUpdateLoanBulk'
-          type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponseAdmin'
-      security:
-      - ApiKeyAuth: []
-      summary: Endpoint for update status loan bulk
-      tags:
-      - API Financing
-  /loan/charge:
-    get:
-      consumes:
-      - application/json
-      description: 'Create Cutomer Loan  (Validation: Need testing)'
-      parameters:
-      - description: channel name
-        in: query
-        name: channel
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Request for create loan
-      tags:
-      - API Financing
-  /va-number:
-    post:
-      consumes:
-      - application/json
-      description: 'get data va number (Validation: Need testing)'
-      parameters:
-      - description: Body
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/finances.ReqVaNumber'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/helpers.JSONResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/finances.DataCustomerInfo'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/helpers.JSONResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: get data va number
-      tags:
-      - API Financing
+        - API Financing
 securityDefinitions:
   ApiKeyAuth:
     in: header

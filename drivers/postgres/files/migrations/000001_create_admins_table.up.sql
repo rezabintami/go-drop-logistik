@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS admins (
   email varchar(255) NOT NULL,
   roles varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
-  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp NULL
+  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamptz NULL
 );
