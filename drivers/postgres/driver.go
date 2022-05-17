@@ -31,6 +31,7 @@ func InitialPostgresDB() *gorm.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+	
 	if _config.GetConfiguration("app.env") == "DEV" {
 		db.LogMode(true)
 	}

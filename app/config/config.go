@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -17,22 +18,28 @@ var (
 )
 
 func GetConfiguration(code string) string {
-	onceConfig.Do(func() {
-		config = viper.New()
-		config.SetConfigName("config")
-		config.SetConfigType("yaml")
-		config.AddConfigPath("./")
+	if os.Getenv("app.env") == "" {
+		onceConfig.Do(func() {
+			config = viper.New()
+			config.SetConfigName("config.dev")
+			config.SetConfigType("yaml")
+			config.AddConfigPath("./")
 
-		err := config.ReadInConfig()
-		if err != nil {
-			log.Fatalf("err GetConfiguration: %s, code: %s", err.Error(), code)
+			err := config.ReadInConfig()
+			if err != nil {
+				log.Fatalf("err GetConfiguration: %s, code: %s", err.Error(), code)
+			}
+		})
+
+		value := config.GetString(code)
+		if value == "" && !config.InConfig(code) {
+			log.Fatalf("err GetConfiguration: not found, code: %s \n", code)
 		}
-	})
+		return value
 
-	value := config.GetString(code)
-	if value == "" && !config.InConfig(code) {
-		log.Fatalf("err GetConfiguration: not found, code: %s \n", code)
 	}
+
+	value := os.Getenv(code)
 
 	return value
 }
