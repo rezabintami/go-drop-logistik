@@ -4,12 +4,12 @@ import (
 	"net/http"
 
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/business/agents"
-	"go-drop-logistik/business/phoneagent"
-	"go-drop-logistik/business/phones"
 	"go-drop-logistik/controllers/agents/request"
 	"go-drop-logistik/controllers/agents/response"
-	base_response "go-drop-logistik/helper/response"
+	"go-drop-logistik/helpers"
+	"go-drop-logistik/modules/agents"
+	"go-drop-logistik/modules/phoneagent"
+	"go-drop-logistik/modules/phones"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -31,21 +31,19 @@ func NewAgentController(ag agents.Usecase, pa phoneagent.Usecase, ph phones.Usec
 func (controller *AgentController) Login(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	var userLogin request.Agents
-	if err := c.Bind(&userLogin); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	req := request.Agents{}
+
+	if err := c.Bind(&req); err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	token, err := controller.agentUsecase.Login(ctx, userLogin.Email, userLogin.Password, false)
+	accessToken, refreshToken, err := controller.agentUsecase.Login(ctx, req.Email, req.Password, false)
 
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
-	result := struct {
-		Token string `json:"token"`
-	}{Token: token}
 
-	return base_response.NewSuccessResponse(c, result)
+	return helpers.SuccessResponse(c, http.StatusOK, response.TokenFromDomain(accessToken, refreshToken))
 }
 
 func (controller *AgentController) GetByID(c echo.Context) error {
@@ -55,7 +53,7 @@ func (controller *AgentController) GetByID(c echo.Context) error {
 
 	user, err := controller.agentUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	phone, _ := controller.phoneAgentUsecase.GetAllByAgentID(ctx, id)
@@ -65,5 +63,5 @@ func (controller *AgentController) GetByID(c echo.Context) error {
 		user.Phone = append(user.Phone, number.Phone)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(&user))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(&user))
 }

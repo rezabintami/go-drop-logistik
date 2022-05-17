@@ -1,0 +1,4 @@
+ALTER Table
+  drivers
+ADD
+  CONSTRAINT fk_drivers_truck FOREIGN KEY(truck_id) REFERENCES trucks(id) ON DELETE CASCADE ON UPDATE CASCADE;

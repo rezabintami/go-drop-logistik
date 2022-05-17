@@ -1,8 +1,9 @@
 package drivers
 
 import (
-	"go-drop-logistik/business/drivers"
 	"go-drop-logistik/drivers/databases/trucks"
+	"go-drop-logistik/modules/drivers"
+	"time"
 )
 
 type Drivers struct {
@@ -12,6 +13,9 @@ type Drivers struct {
 	Address string
 	TruckID int
 	Truck   *trucks.Trucks `gorm:"foreignkey:TruckID;references:ID"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 func fromDomain(driverDomain drivers.Domain) *Drivers {
@@ -21,6 +25,8 @@ func fromDomain(driverDomain drivers.Domain) *Drivers {
 		Phone:   driverDomain.Phone,
 		Address: driverDomain.Address,
 		TruckID: driverDomain.TruckID,
+		CreatedAt: driverDomain.CreatedAt,
+		UpdatedAt: driverDomain.UpdatedAt,
 	}
 }
 
@@ -32,5 +38,7 @@ func (rec *Drivers) ToDomain() *drivers.Domain {
 		Address: rec.Address,
 		TruckID: rec.TruckID,
 		Truck:   rec.Truck.ToDomain(),
+		CreatedAt: rec.CreatedAt,
+		UpdatedAt: rec.UpdatedAt,
 	}
 }

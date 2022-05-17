@@ -1,7 +1,9 @@
 package middleware
 
 import (
-	"go-drop-logistik/helper/logging"
+	"fmt"
+	"go-drop-logistik/helpers"
+	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -17,15 +19,21 @@ type JwtCustomClaims struct {
 }
 
 type ConfigJWT struct {
-	SecretJWT       string
-	ExpiresDuration int
+	SecretJWT        string
+	RefreshSecretJWT string
+	ExpiresDuration  int
+}
+
+type JwtRefreshToken struct {
+	ID int `json:"id"`
+	jwt.StandardClaims
 }
 
 type ConfigMiddleware struct {
-	logger logging.Logger
+	logger helpers.Logger
 }
 
-func NewMiddleware(logger logging.Logger) ConfigMiddleware {
+func NewMiddleware(logger helpers.Logger) ConfigMiddleware {
 	return ConfigMiddleware{
 		logger: logger,
 	}
@@ -35,6 +43,14 @@ func (jwtConf *ConfigJWT) Init() middleware.JWTConfig {
 	return middleware.JWTConfig{
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(jwtConf.SecretJWT),
+	}
+}
+
+func CustomHTTPErrorHandler(err error, c echo.Context) {
+	if result, ok := err.(*echo.HTTPError); ok {
+		helpers.ErrorResponse(c, result.Code, fmt.Errorf("%v", result.Message))
+	} else {
+		helpers.ErrorResponse(c, http.StatusInternalServerError, err)
 	}
 }
 
@@ -52,6 +68,22 @@ func (jwtConf *ConfigJWT) GenerateToken(userID int, name, role string) string {
 	// Create token with claims
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, _ := t.SignedString([]byte(jwtConf.SecretJWT))
+
+	return token
+}
+
+// GenerateToken jwt ...
+func (jwtConf *ConfigJWT) GenerateRefreshToken(userID int) string {
+	claims := JwtRefreshToken{
+		userID,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(int64(jwtConf.ExpiresDuration))).Unix(),
+		},
+	}
+
+	// Create token with claims
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, _ := t.SignedString([]byte(jwtConf.RefreshSecretJWT))
 
 	return token
 }

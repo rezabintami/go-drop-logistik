@@ -1,10 +1,8 @@
 package receipts
 
 import (
-	"go-drop-logistik/business/receipts"
+	"go-drop-logistik/modules/receipts"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Receipts struct {
@@ -24,7 +22,7 @@ type Receipts struct {
 	PickupAt        time.Time
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt
+	DeletedAt       *time.Time
 }
 
 func (rec *Receipts) ToDomain() *receipts.Domain {

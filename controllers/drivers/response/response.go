@@ -1,8 +1,8 @@
 package response
 
 import (
-	"go-drop-logistik/business/drivers"
 	truckResp "go-drop-logistik/controllers/trucks/response"
+	"go-drop-logistik/modules/drivers"
 )
 
 type Drivers struct {

@@ -1,7 +1,7 @@
 package response
 
 import (
-	"go-drop-logistik/business/phones"
+	"go-drop-logistik/modules/phones"
 	"time"
 )
 

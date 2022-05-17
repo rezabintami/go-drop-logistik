@@ -1,114 +1,93 @@
 package config
 
 import (
-	"fmt"
+	"bytes"
+	"html/template"
+	"log"
 	"os"
-	"strconv"
+	"sync"
 
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Debug bool `mapstructure:"DEBUG"`
+var (
+	config      *viper.Viper
+	message     *viper.Viper
+	onceConfig  sync.Once
+	onceMessage sync.Once
+)
 
-	// //! Server
-	// SERVER_PORT    string `mapstructure:"SERVER_PORT"`
-	// SERVER_TIMEOUT int    `mapstructure:"SERVER_TIMEOUT"`
+func GetConfiguration(code string) string {
+	if os.Getenv("app.env") == "" {
+		onceConfig.Do(func() {
+			config = viper.New()
+			config.SetConfigName("config.dev")
+			config.SetConfigType("yaml")
+			config.AddConfigPath("./")
 
-	// //! MYSQL
-	// MYSQL_DB_HOST string `mapstructure:"MYSQL_DB_HOST"`
-	// MYSQL_DB_PORT string `mapstructure:"MYSQL_DB_PORT"`
-	// MYSQL_DB_USER string `mapstructure:"MYSQL_DB_USER"`
-	// MYSQL_DB_PASS string `mapstructure:"MYSQL_DB_PASS"`
-	// MYSQL_DB_NAME string `mapstructure:"MYSQL_DB_NAME"`
+			err := config.ReadInConfig()
+			if err != nil {
+				log.Fatalf("err GetConfiguration: %s, code: %s", err.Error(), code)
+			}
+		})
 
-	// //! MONGO DB
-	// MONGO_DB_HOST string `mapstructure:"MONGO_DB_HOST"`
-	// MONGO_DB_PORT string `mapstructure:"MONGO_DB_PORT"`
-	// MONGO_DB_USER string `mapstructure:"MONGO_DB_USER"`
-	// MONGO_DB_PASS string `mapstructure:"MONGO_DB_PASS"`
-	// MONGO_DB_NAME string `mapstructure:"MONGO_DB_NAME"`
+		value := config.GetString(code)
+		if value == "" && !config.InConfig(code) {
+			log.Fatalf("err GetConfiguration: not found, code: %s \n", code)
+		}
+		return value
 
-	// //! OUATH2 GOOGLE
-	// GOOGLE_AUTH_CLIENT string `mapstructure:"GOOGLE_AUTH_CLIENT"`
-	// GOOGLE_AUTH_SECRET string `mapstructure:"GOOGLE_AUTH_SECRET"`
+	}
 
-	// //! OAUTH2 FACEBOOK
-	// FACEBOOK_AUTH_CLIENT string `mapstructure:"FACEBOOK_AUTH_CLIENT"`
-	// FACEBOOK_AUTH_SECRET string `mapstructure:"FACEBOOK_AUTH_SECRET"`
+	value := os.Getenv(code)
 
-	// //! MIDTRANS
-	// MIDTRANS_SERVER_KEY  string `mapstructure:"MIDTRANS_SERVER_KEY"`
-	// MIDTRANS_CLIENT_KEY  string `mapstructure:"MIDTRANS_CLIENT_KEY"`
-	// MIDTRANS_MERCHANT_ID string `mapstructure:"MIDTRANS_MERCHANT_ID"`
-
-	// //! JWT
-	// JWT_SECRET  string `mapstructure:"JWT_SECRET"`
-	// JWT_EXPIRED int    `mapstructure:"JWT_EXPIRED"`
-
-	// //! REDIS
-	// REDIS_ENDPOINT string `mapstructure:"REDIS_ENDPOINT"`
-	// REDIS_PASSWORD string `mapstructure:"REDIS_PASSWORD"`
-
-	// //! GOOGLE STORAGE
-	// GOOGLE_STORAGE_BUCKET_NAME  string `mapstructure:"GOOGLE_STORAGE_BUCKET_NAME"`
-	// GOOGLE_STORAGE_PRIVATE_KEY  string `mapstructure:"GOOGLE_STORAGE_PRIVATE_KEY"`
-	// GOOGLE_STORAGE_IAM_EMAIL    string `mapstructure:"GOOGLE_STORAGE_IAM_EMAIL"`
-	// GOOGLE_STORAGE_EXPIRED_TIME int    `mapstructure:"GOOGLE_STORAGE_EXPIRED_TIME"`
-
-	//! Server
-	Server struct {
-		Address string `mapstructure:"address"`
-		Timeout int    `mapstructure:"timeout"`
-	} `mapstructure:"server"`
-
-	//! MYSQL
-	Mysql struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-	} `mapstructure:"mysql"`
-
-	//! MONGO DB
-	Mongo struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-	} `mapstructure:"mongo"`
-
-	//! JWT
-	JWT struct {
-		Secret  string `mapstructure:"secret"`
-		Expired int    `mapstructure:"expired"`
-	} `mapstructure:"jwt"`
+	return value
 }
 
-func GetConfig() Config {
-	var conf Config
+// Message get message for message.json
+func Message(code string, data map[string]interface{}) string {
+	country := "en"
 
-	viper.SetConfigName("config")
-	viper.SetConfigType("json")
-	viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
+	onceMessage.Do(func() {
+		message = viper.New()
+		message.SetConfigType("json")
+		message.SetConfigName("global.json")
 
-	err := viper.ReadInConfig()
+		langFile := "./resources/lang/" + country
+		message.AddConfigPath(langFile)
+
+		err := message.ReadInConfig()
+		if err != nil {
+			log.Printf("err Message: %s, code: %s", err.Error(), code)
+		} else {
+			log.Printf("Successfully read language, file: %s", langFile)
+		}
+	})
+
+	if message == nil {
+		log.Printf("err Message: not initialized, code: %s", code)
+	}
+
+	text := message.GetString(code)
+	if text == "" {
+		if !message.InConfig(code) {
+			log.Printf("err Message: not found, code: %s", code)
+		}
+		return ""
+	}
+
+	var tpl bytes.Buffer
+	t, err := template.New("").Parse(text)
 	if err != nil {
-		fmt.Println("error: ", err)
-		conf.Mysql.Host = os.Getenv("MYSQL_DB_HOST")
-		conf.Mysql.Port = os.Getenv("MYSQL_DB_PORT")
-		conf.Mysql.User = os.Getenv("MYSQL_DB_USER")
-		conf.Mysql.Pass = os.Getenv("MYSQL_DB_PASS")
-		conf.Mysql.Name = os.Getenv("MYSQL_DB_NAME")
-
-		conf.JWT.Secret = os.Getenv("JWT_SECRET")
-		conf.JWT.Expired, _ = strconv.Atoi(os.Getenv("JWT_EXPIRED"))
+		log.Printf("err Message: %s, code: %s", err.Error(), code)
+		return ""
 	}
 
-	if err := viper.Unmarshal(&conf); err != nil {
-		panic(err)
+	err = t.Execute(&tpl, data)
+	if err != nil {
+		log.Printf("err Message: %s, code: %s", err.Error(), code)
+		return ""
 	}
-	return conf
+
+	return tpl.String()
 }

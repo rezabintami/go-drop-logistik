@@ -1,0 +1,136 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Go-Drop-Logistik API
+definitions:
+  customers.ReqDataHistoryFinancing:
+    properties:
+      memberplCode:
+        type: string
+    required:
+      - memberplCode
+    type: object
+  general.Tracking:
+    properties:
+      receipt_code:
+        type: string
+    type: object
+  finances.ReqAutoApprove:
+    properties:
+      autoApprove:
+        type: string
+    type: object
+  helpers.JSONResponse:
+    properties:
+      data:
+        type: object
+      responseCode:
+        type: string
+      responseMessage:
+        type: string
+      responseTimestamp:
+        type: string
+      validation:
+        type: object
+    type: object
+  helpers.JSONResponseAdmin:
+    properties:
+      data:
+        type: object
+      stat_code:
+        type: integer
+      stat_msg:
+        type: string
+      validation:
+        type: object
+    type: object
+  helpers.JSONResponseLoanOrdersList:
+    properties:
+      data:
+        type: object
+      pagination:
+        $ref: "#/definitions/helpers.Pagination"
+      responseTimestamp:
+        type: string
+      stat_code:
+        type: integer
+      stat_msg:
+        type: string
+      validation:
+        type: object
+    type: object
+  helpers.Pagination:
+    properties:
+      count:
+        type: integer
+      current_page:
+        type: integer
+      last_page:
+        type: integer
+      record_per_page:
+        type: integer
+    type: object
+paths:
+  /tracking:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/finances.ReqAutoApprove"
+      produces:
+        - application/json
+      parameters:
+        - description: Body
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/general.Tracking"
+  /auto-approve:
+    patch:
+      consumes:
+        - application/json
+      description:
+        "Setting foe active and deactive auto approve (Validation: Need
+        testing)"
+      parameters:
+        - description: Body
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/finances.ReqAutoApprove"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
+        "400":
+          description: Bad Request
+          schema:
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
+        "404":
+          description: Not Found
+          schema:
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: "#/definitions/helpers.JSONResponseAdmin"
+      security:
+        - ApiKeyAuth: []
+      summary: Set auto approve loan
+      tags:
+        - API Financing
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Token-app
+    type: apiKey

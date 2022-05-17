@@ -1,12 +1,13 @@
 package trackmanifest
 
 import (
-	"go-drop-logistik/business/trackmanifest"
 	"go-drop-logistik/drivers/databases/manifest"
 	"go-drop-logistik/drivers/databases/tracks"
+	"go-drop-logistik/modules/trackmanifest"
 )
 
 type TrackManifest struct {
+	ID         int `gorm:"primary_key"`
 	TrackID    int
 	Track      *tracks.Tracks `gorm:"foreignkey:TrackID;references:ID"`
 	ManifestID int
@@ -15,6 +16,7 @@ type TrackManifest struct {
 
 func fromDomain(trackManifestDomain trackmanifest.Domain) *TrackManifest {
 	return &TrackManifest{
+		ID:         trackManifestDomain.ID,
 		TrackID:    trackManifestDomain.TrackID,
 		ManifestID: trackManifestDomain.ManifestID,
 	}

@@ -1,13 +1,14 @@
 package response
 
 import (
-	"go-drop-logistik/business/receipts"
 	trackResp "go-drop-logistik/controllers/tracks/response"
+	"go-drop-logistik/modules/receipts"
 	"time"
 )
 
 type Receipts struct {
 	ID              int       `json:"id"`
+	ManifestID      int       `json:"manifest_id"`
 	Code            string    `json:"code"`
 	Receiver        string    `json:"receiver"`
 	PhoneReceiver   string    `json:"phone_receiver"`
@@ -49,6 +50,26 @@ type ReceiptPageResponse struct {
 func FromDomain(receiptDomain receipts.Domain) Receipts {
 	return Receipts{
 		ID:              receiptDomain.ID,
+		Code:            receiptDomain.Code,
+		Receiver:        receiptDomain.Receiver,
+		Sender:          receiptDomain.Sender,
+		PhoneReceiver:   receiptDomain.PhoneReceiver,
+		PhoneSender:     receiptDomain.PhoneSender,
+		AddressReceiver: receiptDomain.AddressReceiver,
+		AddressSender:   receiptDomain.AddressSender,
+		Weight:          receiptDomain.Weight,
+		Unit:            receiptDomain.Unit,
+		Price:           receiptDomain.Price,
+		Amount:          receiptDomain.Amount,
+		Status:          receiptDomain.Status,
+		PickupAt:        receiptDomain.PickupAt,
+	}
+}
+
+func FromDomainManifest(receiptDomain receipts.Domain, manifestId int) Receipts {
+	return Receipts{
+		ID:              receiptDomain.ID,
+		ManifestID:      manifestId,
 		Code:            receiptDomain.Code,
 		Receiver:        receiptDomain.Receiver,
 		Sender:          receiptDomain.Sender,

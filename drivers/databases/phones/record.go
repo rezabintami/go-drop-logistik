@@ -1,10 +1,8 @@
 package phones
 
 import (
-	"go-drop-logistik/business/phones"
+	"go-drop-logistik/modules/phones"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Phones struct {
@@ -12,7 +10,7 @@ type Phones struct {
 	Phone     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	DeletedAt *time.Time 
 }
 
 func fromDomain(phoneDomain phones.Domain) *Phones {

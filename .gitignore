@@ -1,6 +1,8 @@
 .vscode
-app/config.json
-app/config/config.json
+config.json
+config.dev.yaml
+config.prod.yaml
 api.log
 .env
-key
+config.dev.yaml
+config.prod.yaml

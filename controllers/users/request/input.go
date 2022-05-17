@@ -1,13 +1,13 @@
 package request
 
 import (
-	"go-drop-logistik/business/users"
+	"go-drop-logistik/modules/users"
 )
 
 type Users struct {
-	Name     string `json:"name"`
-	Password string `json:"password,omitempty"`
-	Email    string `json:"email"`
+	Name     string `json:"name" validate:"required" validName:"name"`
+	Password string `json:"password,omitempty" validate:"required" validName:"password"`
+	Email    string `json:"email" validate:"required,email,max=100" validName:"email"`
 }
 
 func (req *Users) ToDomain() *users.Domain {

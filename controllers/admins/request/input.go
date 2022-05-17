@@ -1,25 +1,26 @@
 package request
 
 import (
-	"go-drop-logistik/business/admins"
-	"go-drop-logistik/business/agents"
+	"go-drop-logistik/modules/admins"
+	"go-drop-logistik/modules/agents"
 )
 
-type Admins struct {
-	Name     string `json:"name"`
-	Password string `json:"password,omitempty"`
-	Email    string `json:"email"`
-}
-
-type Agents struct {
-	Name      string  `json:"name"`
-	Password  string  `json:"password,omitempty"`
-	Email     string  `json:"email"`
-	Address   string  `json:"address"`
-	Balance   float64 `json:"balance"`
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-}
+type (
+	Admins struct {
+		Name     string `json:"name" validate:"required" validName:"name"`
+		Password string `json:"password,omitempty"  validate:"required" validName:"password"`
+		Email    string `json:"email" validate:"required,email,max=100" validName:"email"`
+	}
+	Agents struct {
+		Name      string  `json:"name" validate:"required,max=100" validName:"name"`
+		Password  string  `json:"password,omitempty" validate:"required" validName:"password"`
+		Email     string  `json:"email" validate:"omitempty,email,max=100" validName:"email"`
+		Address   string  `json:"address" validate:"required" validName:"address"`
+		Balance   float64 `json:"balance"`
+		Latitude  float64 `json:"latitude" validate:"required" validName:"latitude"`
+		Longitude float64 `json:"longitude" validate:"required" validName:"longitude"`
+	}
+)
 
 func (req *Admins) ToDomain() *admins.Domain {
 	return &admins.Domain{
