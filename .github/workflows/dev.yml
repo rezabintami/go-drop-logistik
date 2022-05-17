@@ -28,7 +28,7 @@ jobs:
           go-version: 1.16
       - name: Running unit testing
         run: go test -v ./... -failfast -cover -coverpkg=./... -coverprofile=coverage.out && go tool cover -html=coverage.out -o cover.html
-      - name: Running unit testing
+      - name: Running migration database
         run: go run cmd/migrations/migrations.go go-drop-logistik:migrate --up
       - name: Upload Coverage report to CodeCov
         uses: codecov/codecov-action@v1.0.0
