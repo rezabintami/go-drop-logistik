@@ -1,75 +1,93 @@
 package config
 
 import (
-	"fmt"
+	"bytes"
+	"html/template"
+	"log"
 	"os"
-	"strconv"
+	"sync"
 
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	
-	//! APP
-	App struct {
-		Env string `mapstructure:"env"`
-		Debug bool `mapstructure:"debug"`
-		Version string `mapstructure:"version"`
-	} `mapstructure:"app"`
+var (
+	config      *viper.Viper
+	message     *viper.Viper
+	onceConfig  sync.Once
+	onceMessage sync.Once
+)
 
-	//! Server
-	Server struct {
-		Address string `mapstructure:"address"`
-		Timeout int    `mapstructure:"timeout"`
-	} `mapstructure:"server"`
+func GetConfiguration(code string) string {
+	if os.Getenv("app.env") == "" {
+		onceConfig.Do(func() {
+			config = viper.New()
+			config.SetConfigName("config.dev")
+			config.SetConfigType("yaml")
+			config.AddConfigPath("./")
 
-	//! MYSQL
-	Mysql struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-	} `mapstructure:"mysql"`
+			err := config.ReadInConfig()
+			if err != nil {
+				log.Fatalf("err GetConfiguration: %s, code: %s", err.Error(), code)
+			}
+		})
 
-	//! MONGO DB
-	Mongo struct {
-		Host string `mapstructure:"host"`
-		Port string `mapstructure:"port"`
-		User string `mapstructure:"user"`
-		Pass string `mapstructure:"pass"`
-		Name string `mapstructure:"name"`
-	} `mapstructure:"mongo"`
+		value := config.GetString(code)
+		if value == "" && !config.InConfig(code) {
+			log.Fatalf("err GetConfiguration: not found, code: %s \n", code)
+		}
+		return value
 
-	//! JWT
-	JWT struct {
-		Secret  string `mapstructure:"secret"`
-		Expired int    `mapstructure:"expired"`
-	} `mapstructure:"jwt"`
+	}
+
+	value := os.Getenv(code)
+
+	return value
 }
 
-func GetConfig() Config {
-	var conf Config
+// Message get message for message.json
+func Message(code string, data map[string]interface{}) string {
+	country := "en"
 
-	viper.SetConfigName("config.prod")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(os.Getenv("APP_PATH") + "app/config/")
+	onceMessage.Do(func() {
+		message = viper.New()
+		message.SetConfigType("json")
+		message.SetConfigName("global.json")
 
-	err := viper.ReadInConfig()
+		langFile := "./resources/lang/" + country
+		message.AddConfigPath(langFile)
+
+		err := message.ReadInConfig()
+		if err != nil {
+			log.Printf("err Message: %s, code: %s", err.Error(), code)
+		} else {
+			log.Printf("Successfully read language, file: %s", langFile)
+		}
+	})
+
+	if message == nil {
+		log.Printf("err Message: not initialized, code: %s", code)
+	}
+
+	text := message.GetString(code)
+	if text == "" {
+		if !message.InConfig(code) {
+			log.Printf("err Message: not found, code: %s", code)
+		}
+		return ""
+	}
+
+	var tpl bytes.Buffer
+	t, err := template.New("").Parse(text)
 	if err != nil {
-		fmt.Println("error: ", err)
-		conf.Mysql.Host = os.Getenv("MYSQL_DB_HOST")
-		conf.Mysql.Port = os.Getenv("MYSQL_DB_PORT")
-		conf.Mysql.User = os.Getenv("MYSQL_DB_USER")
-		conf.Mysql.Pass = os.Getenv("MYSQL_DB_PASS")
-		conf.Mysql.Name = os.Getenv("MYSQL_DB_NAME")
-
-		conf.JWT.Secret = os.Getenv("JWT_SECRET")
-		conf.JWT.Expired, _ = strconv.Atoi(os.Getenv("JWT_EXPIRED"))
+		log.Printf("err Message: %s, code: %s", err.Error(), code)
+		return ""
 	}
 
-	if err := viper.Unmarshal(&conf); err != nil {
-		panic(err)
+	err = t.Execute(&tpl, data)
+	if err != nil {
+		log.Printf("err Message: %s, code: %s", err.Error(), code)
+		return ""
 	}
-	return conf
+
+	return tpl.String()
 }

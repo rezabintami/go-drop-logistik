@@ -5,11 +5,11 @@ import (
 	"strconv"
 
 	"go-drop-logistik/app/middleware"
-	"go-drop-logistik/business/phoneagent"
-	"go-drop-logistik/business/phones"
 	"go-drop-logistik/controllers/phones/request"
 	"go-drop-logistik/controllers/phones/response"
-	base_response "go-drop-logistik/helper/response"
+	helpers "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/phoneagent"
+	"go-drop-logistik/modules/phones"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -33,20 +33,26 @@ func (controller *PhonesController) StorePhone(c echo.Context) error {
 
 	req := request.Phone{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
 	}
 
 	phoneId, err := controller.phonesUsecase.StorePhone(ctx, req.ToDomain(), id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.phoneAgentUsecase.Store(ctx, phoneId, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *PhonesController) GetByID(c echo.Context) error {
@@ -56,10 +62,10 @@ func (controller *PhonesController) GetByID(c echo.Context) error {
 
 	phone, err := controller.phonesUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromDomain(phone))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromDomain(phone))
 }
 
 func (controller *PhonesController) GetAll(c echo.Context) error {
@@ -69,7 +75,7 @@ func (controller *PhonesController) GetAll(c echo.Context) error {
 
 	allPhone, err := controller.phoneAgentUsecase.GetAllByAgentID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	var phoneDomain []phones.Domain
@@ -78,7 +84,7 @@ func (controller *PhonesController) GetAll(c echo.Context) error {
 		phoneDomain = append(phoneDomain, phone)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromListDomain(phoneDomain))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromListDomain(phoneDomain))
 }
 
 func (controller *PhonesController) DeletePhone(c echo.Context) error {
@@ -89,15 +95,15 @@ func (controller *PhonesController) DeletePhone(c echo.Context) error {
 
 	err := controller.phoneAgentUsecase.Delete(ctx, agentId, phoneId)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
 	err = controller.phonesUsecase.Delete(ctx, phoneId)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *PhonesController) UpdatePhone(c echo.Context) error {
@@ -106,12 +112,19 @@ func (controller *PhonesController) UpdatePhone(c echo.Context) error {
 
 	req := request.Phone{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
-	}
-	err := controller.phonesUsecase.Update(ctx, req.ToDomain(), phoneId)
-	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	}
+
+	err = controller.phonesUsecase.Update(ctx, req.ToDomain(), phoneId)
+	if err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }

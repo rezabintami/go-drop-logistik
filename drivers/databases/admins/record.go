@@ -1,7 +1,7 @@
 package admins
 
 import (
-	"go-drop-logistik/business/admins"
+	"go-drop-logistik/modules/admins"
 	"time"
 )
 

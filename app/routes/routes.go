@@ -31,14 +31,14 @@ type ControllerList struct {
 	TruckController    trucks.TrucksController
 	DriverController   drivers.DriversController
 	TrackController    tracks.TracksController
-	ConfigApp          _config.Config
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.Use(cl.MiddlewareLog.MiddlewareLogging)
+	e.HTTPErrorHandler = _middleware.CustomHTTPErrorHandler
 
 	// showing swagger files
-	if cl.ConfigApp.App.Env != "PROD" {
+	if _config.GetConfiguration("app.env") != "PROD" {
 		e.Static("/files", "files")
 		url := echoSwagger.URL("/files/swagger.yaml")
 		e.GET("/swagger/*", echoSwagger.EchoWrapHandler(url))
@@ -52,10 +52,18 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	auth := apiV1.Group("/auth")
 	auth.POST("/register", cl.UserController.Register)
 	auth.POST("/login", cl.UserController.Login)
+	// auth.POST("/logout", cl.UserController.Logout)
+	// auth.POST("/refresh", cl.UserController.Refresh)
 
+	//! USERS
+	user := apiV1.Group("/user")
+	user.GET("/", cl.UserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware))
+	
 	//! AGENTS
 	agent := apiV1.Group("/agent")
 	agent.POST("/login", cl.AgentController.Login)
+	// agent.POST("/refresh", cl.AgentController.Refresh)
+	// agent.POST("/logout", cl.AgentController.Logout)
 	agent.GET("/profile", cl.AgentController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT", "ADMIN"))
 
 	resi := agent.Group("/resi", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
@@ -70,11 +78,13 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	manifest.GET("", cl.ManifestController.Fetch)
 	manifest.GET("/:id", cl.ManifestController.GetByID)
 	manifest.PUT("/:id", cl.ManifestController.Update)
-	manifest.PUT("/:id/finish", cl.ManifestController.UpdateStatus)
+	manifest.PUT("/:id/finished", cl.ManifestController.FinishManifest)
 	manifest.DELETE("/:id/decline", cl.ManifestController.Delete)
 
-	manifestTrack := manifest.Group("/:id/track")
+	manifestTrack := manifest.Group("/:manifestId/track")
 	manifestTrack.POST("/add", cl.TrackController.CreateTrack)
+	manifestTrack.PUT("/:trackId", cl.TrackController.UpdateTrack)
+	manifestTrack.DELETE("/:trackId", cl.TrackController.DeleteTrack)
 
 	agentPhone := agent.Group("/phone", middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("AGENT"))
 	agentPhone.POST("/add", cl.PhoneController.StorePhone)
@@ -98,6 +108,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	admin := apiV1.Group("/admin")
 	admin.POST("/register", cl.AdminController.Register)
 	admin.POST("/login", cl.AdminController.Login)
+	// admin.POST("/refresh", cl.AdminController.Refresh)
+	// admin.POST("/logout", cl.AdminController.Logout)
 	admin.GET("/profile", cl.AdminController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
 
 	adminAgent := admin.Group("/agent") //, middleware.JWTWithConfig(cl.JWTMiddleware), _middleware.RoleValidation("ADMIN"))
@@ -105,8 +117,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	adminAgent.GET("/:id", cl.AdminController.AgentGetByID)
 	adminAgent.POST("/add", cl.AdminController.AgentRegister)
 	adminAgent.PUT("/:id", cl.AdminController.AgentUpdateByID)
-
-	//! USERS
-	user := apiV1.Group("/user")
-	user.GET("/", cl.UserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware))
+	adminAgent.DELETE("/:id", cl.AdminController.AgentDeleteByID)
 }

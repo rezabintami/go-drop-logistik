@@ -1,11 +1,11 @@
 package request
 
-import "go-drop-logistik/business/trucks"
+import "go-drop-logistik/modules/trucks"
 
 type Trucks struct {
-	Name         string `json:"name"`
-	Type         string `json:"type"`
-	LicensePlate string `json:"license_plate"`
+	Name         string `json:"name" validate:"required" validName:"name"`
+	Type         string `json:"type" validate:"required" validName:"type"`
+	LicensePlate string `json:"license_plate" validate:"required" validName:"license_plate"`
 }
 
 func (req *Trucks) ToDomain() *trucks.Domain {

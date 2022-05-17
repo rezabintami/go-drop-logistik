@@ -1,9 +1,9 @@
 package manifestreceipt
 
 import (
-	"go-drop-logistik/business/manifestreceipt"
 	"go-drop-logistik/drivers/databases/manifest"
 	"go-drop-logistik/drivers/databases/receipts"
+	"go-drop-logistik/modules/manifestreceipt"
 )
 
 type ManifestReceipt struct {

@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-drop-logistik/business/trucks"
 	"go-drop-logistik/controllers/trucks/request"
 	"go-drop-logistik/controllers/trucks/response"
-	base_response "go-drop-logistik/helper/response"
+	helpers "go-drop-logistik/helpers"
+	"go-drop-logistik/modules/trucks"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -27,14 +27,20 @@ func (controller *TrucksController) StoreTruck(c echo.Context) error {
 
 	req := request.Trucks{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	err := controller.trucksUsecase.StoreTruck(ctx, req.ToDomain())
-	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+	validateMessage, validate, err := helpers.Validate(&req)
+
+	if validate {
+		return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
 	}
-	return base_response.NewSuccessInsertResponse(c, "Successfully inserted")
+
+	err = controller.trucksUsecase.StoreTruck(ctx, req.ToDomain())
+	if err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+	return helpers.SuccessResponse(c, http.StatusCreated, nil)
 }
 
 func (controller *TrucksController) GetByID(c echo.Context) error {
@@ -44,10 +50,10 @@ func (controller *TrucksController) GetByID(c echo.Context) error {
 
 	phone, err := controller.trucksUsecase.GetByID(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, phone)
+	return helpers.SuccessResponse(c, http.StatusOK, phone)
 }
 
 func (controller *TrucksController) DeleteTruck(c echo.Context) error {
@@ -56,10 +62,10 @@ func (controller *TrucksController) DeleteTruck(c echo.Context) error {
 
 	err := controller.trucksUsecase.Delete(ctx, id)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Delete Successfully")
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *TrucksController) UpdateTruck(c echo.Context) error {
@@ -68,14 +74,21 @@ func (controller *TrucksController) UpdateTruck(c echo.Context) error {
 
 	req := request.Trucks{}
 	if err := c.Bind(&req); err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
-	}
-	err := controller.trucksUsecase.Update(ctx, req.ToDomain(), id)
-	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, "Update Successfully")
+	// validateMessage, validate, err := helpers.Validate(&req)
+
+	// if validate {
+	// 	return helpers.ErrorValidateResponse(c, http.StatusBadRequest, err, validateMessage)
+	// }
+
+	err := controller.trucksUsecase.Update(ctx, req.ToDomain(), id)
+	if err != nil {
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return helpers.SuccessResponse(c, http.StatusOK, nil)
 }
 
 func (controller *TrucksController) Fetch(c echo.Context) error {
@@ -86,8 +99,8 @@ func (controller *TrucksController) Fetch(c echo.Context) error {
 
 	agents, count, err := controller.trucksUsecase.Fetch(ctx, page, perpage)
 	if err != nil {
-		return base_response.NewErrorResponse(c, http.StatusBadRequest, err)
+		return helpers.ErrorResponse(c, http.StatusBadRequest, err)
 	}
 
-	return base_response.NewSuccessResponse(c, response.FromListDomain(agents, count))
+	return helpers.SuccessResponse(c, http.StatusOK, response.FromListDomain(agents, count))
 }

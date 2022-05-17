@@ -1,7 +1,7 @@
 package agents
 
 import (
-	"go-drop-logistik/business/agents"
+	"go-drop-logistik/modules/agents"
 	"time"
 )
 
@@ -17,6 +17,7 @@ type Agents struct {
 	Longitude float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 func (rec *Agents) ToExistingDomain() *agents.ExistingDomain {
