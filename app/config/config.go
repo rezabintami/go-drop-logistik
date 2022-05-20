@@ -21,7 +21,7 @@ func GetConfiguration(code string) string {
 	if os.Getenv("app.env") == "" {
 		onceConfig.Do(func() {
 			config = viper.New()
-			config.SetConfigName("config.dev")
+			config.SetConfigName("config")
 			config.SetConfigType("yaml")
 			config.AddConfigPath("./")
 
