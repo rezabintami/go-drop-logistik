@@ -26,3 +26,8 @@ Drop Logistic Indonesia is a freight forwarding company that handles retail good
 1. Install [CLI](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) in your computer.
 2. Create file migration using `migrate create -ext sql -dir your_project_dir -seq your_file_name` 
 3. Example cli command `migrate create -ext sql -dir drivers/postgres/files/migrations -seq add_foreign_key_tracks`
+
+## How to Add Mock
+
+1. Go to usecase folder.
+2. run cli command `mockery --all`

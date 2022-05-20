@@ -169,6 +169,7 @@ func TestUpdateAgent(t *testing.T) {
 			Latitude:  5.8234324,
 			Longitude: -5.8234324,
 		}
+		agentRepository.On("CheckByID", mock.Anything, mock.AnythingOfType("int")).Return(nil).Once()
 		agentRepository.On("Update", mock.Anything, mock.Anything, mock.AnythingOfType("int")).Return(nil).Once()
 
 		err := agentUsecase.Update(context.Background(), &domain, 1)
@@ -188,6 +189,7 @@ func TestUpdateAgent(t *testing.T) {
 			Longitude: -5.8234324,
 		}
 		errRepository := errors.New("id not found")
+		agentRepository.On("CheckByID", mock.Anything, mock.AnythingOfType("int")).Return(nil).Once()
 		agentRepository.On("Update", mock.Anything, mock.Anything, mock.AnythingOfType("int")).Return(errRepository).Once()
 
 		err := agentUsecase.Update(context.Background(), &domain, -1)
@@ -293,6 +295,7 @@ func TestGetByIdAgent(t *testing.T) {
 
 func TestDeleteAgent(t *testing.T) {
 	t.Run("test case 1, valid test", func(t *testing.T) {
+		agentRepository.On("CheckByID", mock.Anything, mock.AnythingOfType("int")).Return(nil).Once()
 		agentRepository.On("Delete", mock.Anything, mock.AnythingOfType("int")).Return(nil).Once()
 
 		err := agentUsecase.Delete(context.Background(), 1)
