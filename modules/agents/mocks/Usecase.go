@@ -80,7 +80,7 @@ func (_m *Usecase) GetByID(ctx context.Context, id int) (agents.Domain, error) {
 }
 
 // Login provides a mock function with given fields: ctx, email, password, sso
-func (_m *Usecase) Login(ctx context.Context, email string, password string, sso bool) (string, error) {
+func (_m *Usecase) Login(ctx context.Context, email string, password string, sso bool) (string, string, error) {
 	ret := _m.Called(ctx, email, password, sso)
 
 	var r0 string
@@ -90,14 +90,21 @@ func (_m *Usecase) Login(ctx context.Context, email string, password string, sso
 		r0 = ret.Get(0).(string)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, bool) error); ok {
+	var r1 string
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, bool) string); ok {
 		r1 = rf(ctx, email, password, sso)
 	} else {
-		r1 = ret.Error(1)
+		r1 = ret.Get(1).(string)
 	}
 
-	return r0, r1
+	var r2 error
+	if rf, ok := ret.Get(2).(func(context.Context, string, string, bool) error); ok {
+		r2 = rf(ctx, email, password, sso)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // Register provides a mock function with given fields: ctx, data, sso
