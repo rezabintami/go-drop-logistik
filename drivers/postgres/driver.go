@@ -17,11 +17,19 @@ var (
 )
 
 func GetConnection() string {
+	if _config.GetConfiguration("app.env") == "DEV" {
 	return fmt.Sprintf("user=%s host=%s dbname=%s sslmode=%s password=%s port=%s",
 		_config.GetConfiguration("postgres.user"),
 		_config.GetConfiguration("postgres.host"),
 		_config.GetConfiguration("postgres.name"),
 		_config.GetConfiguration("postgres.ssl"),
+		_config.GetConfiguration("postgres.pass"),
+		_config.GetConfiguration("postgres.port"))
+	}
+	return fmt.Sprintf("user=%s host=%s dbname=%s password=%s port=%s",
+		_config.GetConfiguration("postgres.user"),
+		_config.GetConfiguration("postgres.host"),
+		_config.GetConfiguration("postgres.name"),
 		_config.GetConfiguration("postgres.pass"),
 		_config.GetConfiguration("postgres.port"))
 }
