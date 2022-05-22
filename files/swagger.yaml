@@ -3,81 +3,63 @@ info:
   version: 1.0.0
   title: Go-Drop-Logistik API
 definitions:
-  customers.ReqDataHistoryFinancing:
-    properties:
-      memberplCode:
-        type: string
-    required:
-      - memberplCode
-    type: object
+
+  # General Parameter
   general.Tracking:
     properties:
       receipt_code:
         type: string
+        description: Tracking Code
+        example: "INV123456789"
+    required: [receipt_code]
     type: object
-  finances.ReqAutoApprove:
+
+  # Admins Parameter
+  admins.ReqLogin:
     properties:
-      autoApprove:
+      email:
         type: string
+        description: Email
+        example: "admin@gmail.com"
+      password:
+        type: string
+        description: Password
+        example: "admin"
+    required:
+      - email
+      - password
     type: object
+
+  # Admins Response
+  admins.ResLogin:
+    $ref: '#/definitions/helpers.JSONResponse'
+
+  # Helpers
   helpers.JSONResponse:
     properties:
+      meta:
+        type: object
+        properties: 
+          message:
+            type: string
       data:
         type: object
-      responseCode:
-        type: string
-      responseMessage:
-        type: string
-      responseTimestamp:
-        type: string
-      validation:
-        type: object
     type: object
-  helpers.JSONResponseAdmin:
-    properties:
-      data:
-        type: object
-      stat_code:
-        type: integer
-      stat_msg:
-        type: string
-      validation:
-        type: object
-    type: object
-  helpers.JSONResponseLoanOrdersList:
-    properties:
-      data:
-        type: object
-      pagination:
-        $ref: "#/definitions/helpers.Pagination"
-      responseTimestamp:
-        type: string
-      stat_code:
-        type: integer
-      stat_msg:
-        type: string
-      validation:
-        type: object
-    type: object
-  helpers.Pagination:
-    properties:
-      count:
-        type: integer
-      current_page:
-        type: integer
-      last_page:
-        type: integer
-      record_per_page:
-        type: integer
-    type: object
+
+
 paths:
+  # GENERAL
   /tracking:
     post:
+      consumes:
+        - application/json
+      description:
+        "Get tracking data"
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/finances.ReqAutoApprove"
+            $ref: "#/definitions/helpers.JSONResponse"
       produces:
         - application/json
       parameters:
@@ -87,48 +69,43 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/general.Tracking"
-  /auto-approve:
-    patch:
+      summary:
+        "Tracking package"
+      tags:
+          - General
+  
+  # ADMINS
+  /admin/login:
+    post:
       consumes:
         - application/json
       description:
-        "Setting foe active and deactive auto approve (Validation: Need
-        testing)"
+        "Login admin"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/helpers.JSONResponse"
+            example:
+              meta:
+                message: "success"
+              data:
+                access_token: "access_token"
+                refresh_token: "refresh_token" 
+      produces:
+        - application/json
       parameters:
         - description: Body
           in: body
           name: body
           required: true
           schema:
-            $ref: "#/definitions/finances.ReqAutoApprove"
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: "#/definitions/helpers.JSONResponseAdmin"
-        "400":
-          description: Bad Request
-          schema:
-            $ref: "#/definitions/helpers.JSONResponseAdmin"
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: "#/definitions/helpers.JSONResponseAdmin"
-        "404":
-          description: Not Found
-          schema:
-            $ref: "#/definitions/helpers.JSONResponseAdmin"
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: "#/definitions/helpers.JSONResponseAdmin"
-      security:
-        - ApiKeyAuth: []
-      summary: Set auto approve loan
+            $ref: "#/definitions/admins.ReqLogin"
+      summary:
+        "Login admin"
       tags:
-        - API Financing
+          - General
+
 securityDefinitions:
   ApiKeyAuth:
     in: header
