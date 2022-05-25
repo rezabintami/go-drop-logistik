@@ -1,113 +1,376 @@
-swagger: "2.0"
+openapi: "3.0.0"
 info:
   version: 1.0.0
   title: Go-Drop-Logistik API
-definitions:
-
+components:
   # General Parameter
-  general.Tracking:
-    properties:
-      receipt_code:
-        type: string
-        description: Tracking Code
-        example: "INV123456789"
-    required: [receipt_code]
-    type: object
+  schemas:
+    General.Tracking:
+      properties:
+        receipt_code:
+          type: string
+          example: "INV123456789"
+      required: [receipt_code]
+      type: object
 
-  # Admins Parameter
-  admins.ReqLogin:
-    properties:
-      email:
-        type: string
-        description: Email
-        example: "admin@gmail.com"
-      password:
-        type: string
-        description: Password
-        example: "admin"
-    required:
-      - email
-      - password
-    type: object
+    # Admins Parameter
+    admins.ReqLogin:
+      properties:
+        email:
+          type: string
+          example: "admin@gmail.com"
+        password:
+          type: string
+          example: "admin"
+      required:
+        - email
+        - password
+      type: object
 
-  # Admins Response
-  admins.ResLogin:
-    $ref: '#/definitions/helpers.JSONResponse'
+    admins.ReqRegisterAgent:
+      properties:
+        name:
+          type: string
+          example: "Agent Surabaya"
+        email:
+          type: string
+          example: "agent1@gmail.com"
+        password:
+          type: string
+          example: "123123"
+        address:
+          type: string
+          example: "Jl. Kebon Kacang No.1"
+        balance:
+          type: number
+          example: 100000
+        latitude:
+          type: number
+          example: -7.2968
+        longitude:
+          type: number
+          example: 112.7904
 
-  # Helpers
-  helpers.JSONResponse:
-    properties:
-      meta:
-        type: object
-        properties: 
-          message:
-            type: string
-      data:
-        type: object
-    type: object
 
+    # Users Parameter
+    users.ReqLogin:
+      properties:
+        email:
+          type: string
+          description: Email
+          example: "user@gmail.com"
+        password:
+          type: string
+          description: Password
+          example: "user"
+      required:
+        - email
+        - password
+      type: object
 
+    # Agents Parameter
+    agent.ReqLogin:
+      properties:
+        email:
+          type: string
+          description: Email
+          example: "agent@gmail.com"
+        password:
+          type: string
+          description: Password
+          example: "agent"
+      required:
+        - email
+        - password
+      type: object
+
+    # Helpers
+    helpers.JSONResponse:
+      properties:
+        meta:
+          type: object
+          properties:
+            message:
+              type: string
+        data:
+          type: object
+      type: object
+    
+    helpers.JSONResponseSuccess:
+      properties:
+        meta:
+          type: object
+          properties:
+            message:
+              type: string
+              example: "success"
+        data:
+          type: object
+          example: null
+
+  examples:
+    # Admins Response
+    ResLogin:
+      value:
+        meta:
+          message: "success"
+        data:
+          access_token: "c18ff11b7c6329f4fe2aca5e5191d6af108cfe9a34630464543bb8d77bad9f822fe69e10c3662f2f84df4ebd21a66602dde03f32f66bc72ad324a296b70d582d"
+          refresh_token: "1e9c6653d447d54c0de80c45ad0e72e762da4e7040a9047d3177ae99fd0778666e9e9c88021532024b2ed35205396ffde64b7f58c444a74b32dd6c01db57e55a"
+    
+    ResAdminProfile:
+      value:
+        meta:
+          message: "success"
+        data:
+          id: 1
+          name: "Admin"
+          email: "admin@gmail.com"
+    
+    ResAgentFetch:
+      value:
+        meta:
+          message: "success"
+        data:
+          agents:
+            - id: 1
+              name: "Agent Surabaya"
+              email: "agent1@gmail.com"
+              address: "Jl. Kebon Kacang No.1"
+              balance: 100000
+              latitude: -7.2968
+              longitude: 112.7904
+            - id: 2
+              name: "Agent Semarang"
+              email: "agent2@gmail.com"
+              address: "Jl. Kebon Kacang No.2"
+              balance: 100000
+              latitude: -7.2968
+              longitude: 112.7904
+          total: 2
+
+    # Agent Response
+    ResAgentProfile:
+      value:
+        meta:
+          message: "success"
+        data:
+          id: 1
+          name: "Agent Surabaya"
+          email: "agent1@gmail.com"
+          address: "Jl. Kebon Kacang No.1"
+          balance: 100000
+          latitude: -7.2968
+          longitude: 112.7904
 paths:
+
   # GENERAL
   /tracking:
     post:
-      consumes:
-        - application/json
-      description:
-        "Get tracking data"
+      description: "Get tracking data"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/General.Tracking"
       responses:
         "200":
           description: OK
-          schema:
-            $ref: "#/definitions/helpers.JSONResponse"
-      produces:
-        - application/json
-      parameters:
-        - description: Body
-          in: body
-          name: body
-          required: true
-          schema:
-            $ref: "#/definitions/general.Tracking"
-      summary:
-        "Tracking package"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+      summary: "Tracking package"
       tags:
-          - General
-  
+        - General
+
   # ADMINS
   /admin/login:
     post:
-      consumes:
-        - application/json
-      description:
-        "Login admin"
+      description: "Login admin"
       responses:
         "200":
           description: OK
-          schema:
-            $ref: "#/definitions/helpers.JSONResponse"
-            example:
-              meta:
-                message: "success"
-              data:
-                access_token: "access_token"
-                refresh_token: "refresh_token" 
-      produces:
-        - application/json
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+              examples:
+                admins.ResLogin:
+                  $ref: "#/components/examples/ResLogin"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/admins.ReqLogin"
+      summary: "Login admin"
+      tags:
+        - Admins
+  
+  /admin/agent/add:
+    post:
+      description: "Add agent"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/admins.ReqRegisterAgent"
+      summary: "Add agent"
+      tags:
+        - Admins
+
+  /admin/profile:
+    get:
+      description: "Get admin profile"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResAdminProfile:
+                  $ref: "#/components/examples/ResAdminProfile"
+      summary: "Get admin profile"
+      tags:
+        - Admins
+  
+  /admin/agent/{agentId}:
+    get:
+      description: "Get agent data"
       parameters:
-        - description: Body
-          in: body
-          name: body
+        - name: agentId
+          in: path
           required: true
           schema:
-            $ref: "#/definitions/admins.ReqLogin"
-      summary:
-        "Login admin"
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResAgentProfile:
+                  $ref: "#/components/examples/ResAgentProfile"
+      summary: "Get agent data"
       tags:
-          - General
+        - Admins
+    put:
+      description: "Update agent data"
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/admins.ReqRegisterAgent"
+      summary: "Update agent data"
+      tags:
+        - Admins
 
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Token-app
-    type: apiKey
+  /admin/agent:
+    get:
+      description: "Get all agent"
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResAgentFetch:
+                  type: array
+                  $ref: "#/components/examples/ResAgentFetch"
+      summary: "Get all agent"
+      tags:
+        - Admins
+  
+  
+  # AGENTS
+  /agent/login:
+    post:
+      description: "Login agent"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+              examples:
+                admins.ResLogin:
+                  $ref: "#/components/examples/ResLogin"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/agent.ReqLogin"
+      summary: "Login agent"
+      tags:
+        - Agents
+
+  # USERS
+  /login:
+    post:
+      description: "Login user"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/helpers.JSONResponse"
+              examples:
+                admins.ResLogin:
+                  $ref: "#/components/examples/ResLogin"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/users.ReqLogin"
+      summary: "Login user"
+      tags:
+        - Users
