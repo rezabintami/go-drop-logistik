@@ -57,7 +57,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	//! USERS
 	user := apiV1.Group("/user")
-	user.GET("/", cl.UserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware))
+	user.GET("/profile", cl.UserController.GetByID, middleware.JWTWithConfig(cl.JWTMiddleware))
 	
 	//! AGENTS
 	agent := apiV1.Group("/agent")
