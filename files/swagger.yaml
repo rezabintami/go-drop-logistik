@@ -2,168 +2,55 @@ openapi: "3.0.0"
 info:
   version: 1.0.0
   title: Go-Drop-Logistik API
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Go-Drop-Logistik API (Localhost)
+
 components:
-  # General Parameter
   schemas:
+    # General Parameter
     General.Tracking:
-      properties:
-        receipt_code:
-          type: string
-          example: "INV123456789"
-      required: [receipt_code]
-      type: object
-
-    # Admins Parameter
-    admins.ReqLogin:
-      properties:
-        email:
-          type: string
-          example: "admin@gmail.com"
-        password:
-          type: string
-          example: "admin"
-      required:
-        - email
-        - password
-      type: object
-
-    admins.ReqRegisterAgent:
-      properties:
-        name:
-          type: string
-          example: "Agent Surabaya"
-        email:
-          type: string
-          example: "agent1@gmail.com"
-        password:
-          type: string
-          example: "123123"
-        address:
-          type: string
-          example: "Jl. Kebon Kacang No.1"
-        balance:
-          type: number
-          example: 100000
-        latitude:
-          type: number
-          example: -7.2968
-        longitude:
-          type: number
-          example: 112.7904
-
-
-    # Users Parameter
-    users.ReqLogin:
-      properties:
-        email:
-          type: string
-          description: Email
-          example: "user@gmail.com"
-        password:
-          type: string
-          description: Password
-          example: "user"
-      required:
-        - email
-        - password
-      type: object
-
-    # Agents Parameter
-    agent.ReqLogin:
-      properties:
-        email:
-          type: string
-          description: Email
-          example: "agent@gmail.com"
-        password:
-          type: string
-          description: Password
-          example: "agent"
-      required:
-        - email
-        - password
-      type: object
-
+      $ref: './components-general.yaml#components/schemas/General.Tracking'
     # Helpers
     helpers.JSONResponse:
-      properties:
-        meta:
-          type: object
-          properties:
-            message:
-              type: string
-        data:
-          type: object
-      type: object
-    
+      $ref: './components-general.yaml#components/schemas/helpers.JSONResponse'
     helpers.JSONResponseSuccess:
-      properties:
-        meta:
-          type: object
-          properties:
-            message:
-              type: string
-              example: "success"
-        data:
-          type: object
-          example: null
-
-  examples:
-    # Admins Response
-    ResLogin:
-      value:
-        meta:
-          message: "success"
-        data:
-          access_token: "c18ff11b7c6329f4fe2aca5e5191d6af108cfe9a34630464543bb8d77bad9f822fe69e10c3662f2f84df4ebd21a66602dde03f32f66bc72ad324a296b70d582d"
-          refresh_token: "1e9c6653d447d54c0de80c45ad0e72e762da4e7040a9047d3177ae99fd0778666e9e9c88021532024b2ed35205396ffde64b7f58c444a74b32dd6c01db57e55a"
+      $ref: './components-general.yaml#components/schemas/helpers.JSONResponseSuccess'
+    # Admins
+    admins.ReqLogin:
+      $ref: './components-admins.yaml#components/schemas/admins.ReqLogin'
+    admins.ReqRegisterAgent:
+      $ref: './components-admins.yaml#components/schemas/admins.ReqRegisterAgent'
+    # Users
+    users.ReqLogin:
+      $ref: './components-users.yaml#components/schemas/users.ReqLogin'
+    # Agents
+    agents.ReqLogin:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqLogin'
+    agents.ReqAddPhone:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqAddPhone'
+    agents.ReqAddTruck:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqAddTruck'
+    agents.ReqAddDriver:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqAddDriver'
+    agents.ReqAddResi:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqAddResi'
+    agents.ReqAddManifest:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqAddManifest'
+    agents.ReqUpdateManifest:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqUpdateManifest'
+    agents.ReqTrack:
+      $ref: './components-agents.yaml#components/schemas/agents.ReqTrack'
+  
+  # securitySchemes:
+  #   Bearer:
+  #     type: http
+  #     scheme: bearer
+  #     bearerFormat: JWT
     
-    ResAdminProfile:
-      value:
-        meta:
-          message: "success"
-        data:
-          id: 1
-          name: "Admin"
-          email: "admin@gmail.com"
-    
-    ResAgentFetch:
-      value:
-        meta:
-          message: "success"
-        data:
-          agents:
-            - id: 1
-              name: "Agent Surabaya"
-              email: "agent1@gmail.com"
-              address: "Jl. Kebon Kacang No.1"
-              balance: 100000
-              latitude: -7.2968
-              longitude: 112.7904
-            - id: 2
-              name: "Agent Semarang"
-              email: "agent2@gmail.com"
-              address: "Jl. Kebon Kacang No.2"
-              balance: 100000
-              latitude: -7.2968
-              longitude: 112.7904
-          total: 2
 
-    # Agent Response
-    ResAgentProfile:
-      value:
-        meta:
-          message: "success"
-        data:
-          id: 1
-          name: "Agent Surabaya"
-          email: "agent1@gmail.com"
-          address: "Jl. Kebon Kacang No.1"
-          balance: 100000
-          latitude: -7.2968
-          longitude: 112.7904
 paths:
-
   # GENERAL
   /tracking:
     post:
@@ -173,14 +60,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/General.Tracking"
+              $ref: "./components-general.yaml#/components/schemas/General.Tracking"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#components/schemas/helpers.JSONResponse"
+              examples:
+                ResTracking:
+                  $ref: "./components-general.yaml#/components/examples/ResTracking"
       summary: "Tracking package"
       tags:
         - General
@@ -195,20 +85,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
               examples:
-                admins.ResLogin:
-                  $ref: "#/components/examples/ResLogin"
+                ResLogin:
+                  $ref: "./components-general.yaml#/components/examples/ResLogin"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/admins.ReqLogin"
+              $ref: "./components-admins.yaml#/components/schemas/admins.ReqLogin"
       summary: "Login admin"
       tags:
         - Admins
-  
   /admin/agent/add:
     post:
       description: "Add agent"
@@ -218,17 +107,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponseSuccess"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/admins.ReqRegisterAgent"
+              $ref: "./components-admins.yaml#/components/schemas/admins.ReqRegisterAgent"
       summary: "Add agent"
       tags:
         - Admins
-
   /admin/profile:
     get:
       description: "Get admin profile"
@@ -238,14 +126,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
               examples:
                 ResAdminProfile:
-                  $ref: "#/components/examples/ResAdminProfile"
+                  $ref: "./components-admins.yaml#/components/examples/ResAdminProfile"
       summary: "Get admin profile"
       tags:
         - Admins
-  
   /admin/agent/{agentId}:
     get:
       description: "Get agent data"
@@ -262,10 +149,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
               examples:
                 ResAgentProfile:
-                  $ref: "#/components/examples/ResAgentProfile"
+                  $ref: "./components-agents.yaml#/components/examples/ResAgentProfile"
       summary: "Get agent data"
       tags:
         - Admins
@@ -284,20 +171,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponseSuccess"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/admins.ReqRegisterAgent"
+              $ref: "./components-admins.yaml#/components/schemas/admins.ReqRegisterAgent"
       summary: "Update agent data"
       tags:
         - Admins
-
   /admin/agent:
     get:
-      description: "Get all agent"
+      description: "Get all agent by fetch"
       parameters:
         - name: page
           in: query
@@ -317,12 +203,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
               examples:
                 ResAgentFetch:
                   type: array
-                  $ref: "#/components/examples/ResAgentFetch"
-      summary: "Get all agent"
+                  $ref: "./components-admins.yaml#/components/examples/ResAgentFetch"
+      summary: "Get all agent by fetch"
       tags:
         - Admins
   
@@ -337,22 +223,608 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
               examples:
-                admins.ResLogin:
-                  $ref: "#/components/examples/ResLogin"
+                ResLogin:
+                  $ref: "./components-general.yaml#/components/examples/ResLogin"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/agent.ReqLogin"
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqLogin"
       summary: "Login agent"
       tags:
         - Agents
-
+  /agent/profile:
+    get:
+      description: "Get agent profile"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResAgentProfile:
+                  $ref: "./components-agents.yaml#/components/examples/ResAgentProfile"
+      summary: "Get agent profile"
+      tags:
+        - Agents
+  /agent/phone/add:
+    post:
+      description: "Add phone number"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddPhone"
+      summary: "Add phone number"
+      tags:
+        - Agents
+  /agent/phone/{phoneId}:
+    delete:
+      description: "Delete phone number"
+      parameters:
+        - name: phoneId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Delete phone number"
+      tags:
+        - Agents
+    put: 
+      description: "Update phone number"
+      parameters:
+        - name: phoneId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddPhone"
+      summary: "Update phone number"
+      tags:
+        - Agents
+  /agent/phone:
+    get:
+      description: "Get all phone number"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResPhone:
+                  type: array
+                  $ref: "./components-agents.yaml#/components/examples/ResPhone"
+      summary: "Get all phone number"
+      tags:
+        - Agents
+  /agent/truck/add:
+    post:
+      description: "Add truck"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddTruck"
+      summary: "Add truck"
+      tags:
+        - Agents Trucks
+  /agent/truck/{truckId}:
+    delete:
+      description: "Delete truck"
+      parameters:
+        - name: truckId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Delete truck"
+      tags:
+        - Agents Trucks
+    put: 
+      description: "Update truck"
+      parameters:
+        - name: truckId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddTruck"
+      summary: "Update truck"
+      tags:
+        - Agents Trucks
+  /agent/truck:
+    get:
+      description: "Get all truck"
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResTruck:
+                  type: array
+                  $ref: "./components-agents.yaml#/components/examples/ResFetchTruck"
+      summary: "Get all truck"
+      tags:
+        - Agents Trucks
+  /agent/driver/add:
+    post:
+      description: "Add driver"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddDriver"
+      summary: "Add driver"
+      tags:
+        - Agents Drivers
+  /agent/driver/{driverId}:
+    delete:
+      description: "Delete driver"
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Delete driver"
+      tags:
+        - Agents Drivers
+    put: 
+      description: "Update driver"
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddDriver"
+      summary: "Update driver"
+      tags:
+        - Agents Drivers
+    get:
+      description: "Get driver by id"
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResDriver:
+                  type: array
+                  $ref: "./components-agents.yaml#/components/examples/ResDriverById"
+      summary: "Get all driver"
+      tags:
+        - Agents Drivers
+  /agent/resi/add:
+    post:
+      description: "Add resi"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddResi"
+      summary: "Add resi"
+      tags:
+        - Agents Resi
+  /agent/resi/{resiId}:
+    put: 
+      description: "Update resi"
+      parameters:
+        - name: resiId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddResi"
+      summary: "Update resi"
+      tags:
+        - Agents Resi
+    get:
+      description: "Get resi by id"
+      parameters:
+        - name: resiId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResResi:
+                  type: array
+                  $ref: "./components-agents.yaml#/components/examples/ResResiById"
+      summary: "Get all resi"
+      tags:
+        - Agents Resi
+  /agent/resi/{resiId}/decline:
+    delete:
+      description: "Delete resi"
+      parameters:
+        - name: resiId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Delete resi"
+      tags:
+        - Agents Resi
+  /agent/manifest/add:
+    post:
+      description: "Add manifest"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqAddManifest"
+      summary: "Add manifest"
+      tags:
+        - Agents Manifest
+  /agent/manifest/{manifestId}:
+    put: 
+      description: "Update manifest"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqUpdateManifest"
+      summary: "Update manifest"
+      tags:
+        - Agents Manifest
+    get:
+      description: "Get manifest by id"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResManifest:
+                  type: array
+                  $ref: "./components-agents.yaml#/components/examples/ResManifestById"
+      summary: "Get manifest by id"
+      tags:
+        - Agents Manifest
+  /agent/manifest/{manifestId}/decline:
+    delete:
+      description: "Delete manifest"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Delete manifest"
+      tags:
+        - Agents Manifest
+  /agent/manifest/{manifestId}/finished:
+    put:
+      description: "Update manifest to finished"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Update manifest to finished"
+      tags:
+        - Agents Manifest
+  /agent/manifest:
+    get:
+      description: "Get all manifest by fetch"
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResManifest:
+                  type: array
+                  $ref: "./components-agents.yaml#/components/examples/ResFetchManifest"
+      summary: "Get all manifest by fetch"
+      tags:
+        - Agents Manifest
+  /agent/manifest/{manifestId}/track/add:
+    post:
+      description: "Add track"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqTrack"
+      summary: "Add track"
+      tags:
+        - Agents Manifest
+  /agent/manifest/{manifestId}/track/{trackId}:
+    put:
+      description: "Update track"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components-agents.yaml#/components/schemas/agents.ReqTrack"
+      summary: "Update track"
+      tags:
+        - Agents Manifest
+    delete:
+      description: "Delete track"
+      parameters:
+        - name: manifestId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponseSuccess"
+      summary: "Delete track"
+      tags:
+        - Agents Manifest
   # USERS
-  /login:
+  /auth/login:
     post:
       description: "Login user"
       responses:
@@ -361,16 +833,32 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/helpers.JSONResponse"
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
               examples:
-                admins.ResLogin:
-                  $ref: "#/components/examples/ResLogin"
+                ResLogin:
+                  $ref: "./components-general.yaml#/components/examples/ResLogin"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/users.ReqLogin"
+              $ref: "./components-users.yaml#/components/schemas/users.ReqLogin"
       summary: "Login user"
+      tags:
+        - Users
+  /user/profile:
+    get:
+      description: "Get user profile"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./components-general.yaml#/components/schemas/helpers.JSONResponse"
+              examples:
+                ResUserProfile:
+                  $ref: "./components-users.yaml#/components/examples/ResUserProfile"
+      summary: "Get user profile"
       tags:
         - Users
